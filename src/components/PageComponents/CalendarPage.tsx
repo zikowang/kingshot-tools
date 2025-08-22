@@ -1,17 +1,18 @@
 /** @format */
 
+import { Tooltip } from "@/components/ui/tooltip";
 import { allEvents } from "@/data/events";
 import ReactLayout from "@/layouts/ReactLayout";
 import type { Event } from "@/types/events";
-import { Box, Grid, GridItem, Image } from "@chakra-ui/react";
-import type { PropsWithChildren } from "react";
+import { Badge, Box, Grid, GridItem, Image, Text, VStack } from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
 
 const INTERVAL_DAYS = new Array(28).fill(0).map((_, i) => i + 1);
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const SERVER_START_DATE = getUTC(new Date("2025-05-30T00:00:00.000Z"));
 const INTERVAL_START_DATE = getUTC(new Date("2025-08-18T00:00:00.000Z"));
 
-const LOCAL_NOW = new Date();
+const LOCAL_NOW = new Date("2026-09-01T12:00:00.000Z");
 const UTC_START_OF_TODAY = getUTC(new Date(`${LOCAL_NOW.toISOString().split("T")[0]}`));
 
 function getUTC(date: Date) {
@@ -111,6 +112,23 @@ const CalendarRow = ({ event }: { event: Event }) => {
         <>
             {INTERVAL_DAYS.map((day) => {
                 const isActive = event.days.includes(day);
+                const dayDiffText = useMemo(() => {
+                    const diff = intervalDay - day;
+
+                    if (diff === 0) {
+                        return "Today";
+                    }
+
+                    if (diff === -1) {
+                        return "Tomorrow";
+                    }
+
+                    if (diff < 0) {
+                        return `in ${Math.abs(diff)} days`;
+                    }
+
+                    return `in ${28 - diff} days`;
+                }, [intervalDay, day]);
 
                 if (!isActive) {
                     return (
@@ -123,12 +141,23 @@ const CalendarRow = ({ event }: { event: Event }) => {
                 }
 
                 return (
-                    <CalendarCell
-                        key={`${event.id}-${day}`}
-                        isActiveDay={intervalDay === day}
-                        bgColor={isActive ? event.color : "transparent"}
-                    >
-                        <Image src={event.image} alt={event.name} width={8} />
+                    <CalendarCell key={`${event.id}-${day}`} isActiveDay={intervalDay === day}>
+                        <Tooltip
+                            content={`${event.name} ${dayDiffText} (${WEEK_DAYS[day % 7]})`}
+                            openDelay={500}
+                            interactive
+                        >
+                            <Box
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                width="100%"
+                                height="100%"
+                                bgColor={isActive ? event.color : "transparent"}
+                            >
+                                <Image src={event.image} alt={event.name} width={8} />
+                            </Box>
+                        </Tooltip>
                     </CalendarCell>
                 );
             })}
@@ -137,29 +166,67 @@ const CalendarRow = ({ event }: { event: Event }) => {
 };
 
 const CalendarPage = () => {
+    const calendarRef = useRef<HTMLDivElement>(null);
+
     const serverDay = getServerDay();
+    const intervalDay = getIntervalDay();
+
+    useEffect(() => {
+        if (calendarRef.current) {
+            const scrollTo = (intervalDay - 1) * 50 - 50;
+
+            calendarRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+        }
+    }, [intervalDay]);
 
     return (
         <ReactLayout>
-            <Box>{`Server Day: ${serverDay}`}</Box>
-
             <Box display="flex" gap={1} overflowX="hidden">
                 <Box display="flex" flexDirection="column" gap={1}>
-                    <Box height={12} />
+                    <VStack
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap={0}
+                        height={12}
+                    >
+                        <Text fontWeight="bold" fontSize={20}>
+                            #{`351`}
+                        </Text>
+                        <Badge colorPalette="blue" variant="subtle">
+                            <Text fontWeight="bold">{`Day`}</Text>
+                            <Text fontWeight="bold" ml={2} fontSize={16}>
+                                {serverDay}
+                            </Text>
+                        </Badge>
+                    </VStack>
+
                     <Box height={12} />
 
                     {allEvents.map((event) => {
                         return (
                             <Box
+                                key={`legend-${event.id}`}
                                 display="flex"
                                 alignItems="center"
+                                justifyContent={{ base: "center", md: "flex-start" }}
                                 bgColor={event.color}
                                 height={12}
-                                width="200px"
-                                key={`legend-${event.id}`}
+                                width={{ base: "100px", md: "200px" }}
                             >
-                                <Image src={event.image} alt={event.name} width={8} />
-                                <Box>{event.shortName}</Box>
+                                <Tooltip content={event.name} openDelay={500} interactive>
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        width={{ base: "100px", md: "unset" }}
+                                    >
+                                        <Image src={event.image} alt={event.name} width={8} />
+                                    </Box>
+                                </Tooltip>
+                                <Text ml={1} display={{ base: "none", md: "block" }}>
+                                    {event.shortName}
+                                </Text>
                             </Box>
                         );
                     })}
@@ -170,6 +237,7 @@ const CalendarPage = () => {
                     gridColumnGap={1}
                     gridRowGap={1}
                     overflowX="scroll"
+                    ref={calendarRef}
                 >
                     <CalendarWeeks />
 

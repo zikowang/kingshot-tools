@@ -12,6 +12,7 @@
     "dependencies": {
         "@astrojs/mdx": "^4.3.4",
         "@astrojs/react": "^4.3.0",
+        "@chakra-ui/icons": "^2.2.4",
         "@chakra-ui/react": "^3.25.0",
         "@emotion/react": "^11.14.0",
         "@types/react": "^19.1.10",
