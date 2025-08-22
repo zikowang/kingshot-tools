@@ -8,7 +8,7 @@ export const kvkMatchmakingPhase: Event = {
     shortName: "KVK MM",
     image: "/img/events/kingshot-kingdom-of-power-event-icon.png",
     color: "#FF5733",
-    days: [19, 20],
+    days: [20, 21],
 };
 
 export const kvkPreparationPhase: Event = {
@@ -17,7 +17,7 @@ export const kvkPreparationPhase: Event = {
     shortName: "KVK Prep",
     image: "/img/events/kingshot-kingdom-of-power-event-icon.png",
     color: "#FF5733",
-    days: [21, 22, 23, 24, 25],
+    days: [22, 23, 24, 25, 26],
 };
 
 export const kvkBattlePhase: Event = {
@@ -26,5 +26,5 @@ export const kvkBattlePhase: Event = {
     shortName: "KVK Battle",
     image: "/img/events/kingshot-kingdom-of-power-event-icon.png",
     color: "#FF5733",
-    days: [26],
+    days: [27],
 };
