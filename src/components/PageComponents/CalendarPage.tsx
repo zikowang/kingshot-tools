@@ -16,6 +16,7 @@ import {
     VStack,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
+import { useColorModeValue } from "../ui/color-mode";
 
 const INTERVAL_DAYS = new Array(28).fill(0).map((_, i) => i + 1);
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -47,16 +48,13 @@ function getIntervalDay() {
     return result;
 }
 
-const CalendarCell = ({
-    isActiveDay,
-    bgColor = "transparent",
-    children,
-}: { isActiveDay: boolean; bgColor?: string } & PropsWithChildren) => {
+const CalendarCell = ({ isActiveDay, children }: { isActiveDay: boolean } & PropsWithChildren) => {
+    const activeBgColor = useColorModeValue("lightgrey", "grey");
+
     return (
         <GridItem
             textAlign="center"
-            outline={isActiveDay ? "1px solid gray" : "none"}
-            bgColor={bgColor}
+            bgColor={isActiveDay ? activeBgColor : "transparent"}
             width="100%"
             height={12}
             alignItems="center"
@@ -122,6 +120,7 @@ const CalendarRow = ({ event }: { event: Event }) => {
         <>
             {INTERVAL_DAYS.map((day) => {
                 const isActive = event.days.includes(day);
+                const isActiveDay = intervalDay === day;
                 const dayDiffText = useMemo(() => {
                     const diff = intervalDay - day;
 
@@ -145,7 +144,6 @@ const CalendarRow = ({ event }: { event: Event }) => {
                         <CalendarCell
                             key={`${event.id}-${day}`}
                             isActiveDay={intervalDay === day}
-                            bgColor={isActive ? event.color : "transparent"}
                         />
                     );
                 }
@@ -161,6 +159,8 @@ const CalendarRow = ({ event }: { event: Event }) => {
                                     width="100%"
                                     height="100%"
                                     bgColor={isActive ? event.color : "transparent"}
+                                    opacity={isActiveDay ? 1 : 0.4}
+                                    _hover={{ opacity: 1, cursor: "pointer" }}
                                 >
                                     <Image src={event.image} alt={event.name} width={8} />
                                 </Box>
