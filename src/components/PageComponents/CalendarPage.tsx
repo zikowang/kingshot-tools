@@ -161,6 +161,7 @@ const CalendarRow = ({ event }: { event: Event }) => {
                                     bgColor={isActive ? event.color : "transparent"}
                                     opacity={isActiveDay ? 1 : 0.4}
                                     _hover={{ opacity: 1, cursor: "pointer" }}
+                                    transition="opacity 0.2s ease-in-out"
                                 >
                                     <Image src={event.image} alt={event.name} width={8} />
                                 </Box>
@@ -251,6 +252,8 @@ const CalendarPage = () => {
                                             alignItems="center"
                                             justifyContent="center"
                                             width={{ base: "100px", md: "unset" }}
+                                            px={1}
+                                            _hover={{ cursor: "pointer" }}
                                         >
                                             <Image src={event.image} alt={event.name} width={8} />
                                         </Box>

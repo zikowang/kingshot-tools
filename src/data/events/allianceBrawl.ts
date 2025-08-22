@@ -7,6 +7,6 @@ export const allianceBrawl: Event = {
     name: "Alliance Brawl",
     shortName: "Al. Brawl",
     image: "/img/events/kingshot-alliance-brawl-event-icon.png",
-    color: "blue",
+    color: "#528ec7",
     days: [1, 2, 3, 4, 5, 6, 7],
 };

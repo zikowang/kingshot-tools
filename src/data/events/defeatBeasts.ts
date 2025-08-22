@@ -7,6 +7,6 @@ export const defeatBeasts: Event = {
     name: "Defeat Beasts",
     shortName: "Defeat B.",
     image: "/img/events/kingshot-defeat-beasts-event-icon.png",
-    color: "blue",
+    color: "#528ec7",
     days: [9, 10],
 };

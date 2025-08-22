@@ -7,6 +7,6 @@ export const vikingsVengeance: Event = {
     name: "Vikings' Vengeance",
     shortName: "Vikings' Vengeance",
     image: "/img/events/kingshot-vikings-vengeance-event-icon.png",
-    color: "green",
+    color: "#94c37d",
     days: [9, 10, 11, 23, 24, 25],
 };

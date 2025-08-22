@@ -7,6 +7,6 @@ export const officerProject: Event = {
     name: "Officer Project",
     shortName: "Officer Project",
     image: "/img/events/kingshot-officer-project-event-icon.png",
-    color: "blue",
+    color: "#528ec7",
     days: [3, 4, 7, 8, 21, 22],
 };

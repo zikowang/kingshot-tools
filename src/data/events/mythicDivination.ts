@@ -7,6 +7,6 @@ export const mysticDivination: Event = {
     name: "Mystic Divination",
     shortName: "Mystic Div.",
     image: "/img/events/kingshot-mystic-divination-event-icon.png",
-    color: "purple",
+    color: "#8b76c6",
     days: [19, 20],
 };

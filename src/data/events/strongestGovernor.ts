@@ -7,6 +7,6 @@ export const strongestGovernor: Event = {
     name: "Strongest Governor",
     shortName: "Strongest Gov",
     image: "/img/events/kingshot-strongest-governor-event-icon.png",
-    color: "orange",
+    color: "#e48423",
     days: [8, 9, 10, 11, 12, 13, 14],
 };

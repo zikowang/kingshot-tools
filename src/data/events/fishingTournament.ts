@@ -7,6 +7,6 @@ export const fishingTournament: Event = {
     name: "Fishing Tournament",
     shortName: "Fishing Tournament",
     image: "/img/events/kingshot-fishing-tournament-event-icon.png",
-    color: "blue",
+    color: "#528ec7",
     days: [9, 23],
 };

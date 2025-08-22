@@ -7,6 +7,6 @@ export const eternitysReach: Event = {
     name: "Eternity's Reach",
     shortName: "Eternity's Reach",
     image: "/img/events/kingshot-eternitys-reach-event-icon.png",
-    color: "blue",
+    color: "#528ec7",
     days: [9, 23],
 };
