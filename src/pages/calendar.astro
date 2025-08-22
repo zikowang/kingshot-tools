@@ -1,0 +1,10 @@
+---
+import '@/styles/global.css';
+
+import CalendarPage from '@/components/PageComponents/CalendarPage';
+import DefaultLayout from '@/layouts/default-layout.astro';
+---
+
+<DefaultLayout title="Calendar">
+  <CalendarPage client:only="react" />
+</DefaultLayout>

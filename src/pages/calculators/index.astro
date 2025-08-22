@@ -1,0 +1,10 @@
+---
+import '@/styles/global.css';
+
+import HomePage from '@/components/PageComponents/HomePage';
+import DefaultLayout from '@/layouts/default-layout.astro';
+---
+
+<DefaultLayout title="Home">
+  <HomePage client:only="react" />
+</DefaultLayout>
