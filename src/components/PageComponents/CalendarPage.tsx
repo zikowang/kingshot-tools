@@ -6,23 +6,34 @@ import type { Event } from "@/types/events";
 import { Box, Grid, GridItem, Image } from "@chakra-ui/react";
 import type { PropsWithChildren } from "react";
 
-const intervalDays = new Array(28).fill(0).map((_, i) => i + 1);
-const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const serverStartDate = new Date("2025-05-30");
-const intervalStartDate = new Date("2025-08-18 00:00:00");
+const INTERVAL_DAYS = new Array(28).fill(0).map((_, i) => i + 1);
+const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const SERVER_START_DATE = getUTC(new Date("2025-05-30T00:00:00.000Z"));
+const INTERVAL_START_DATE = getUTC(new Date("2025-08-18T00:00:00.000Z"));
+
+const LOCAL_NOW = new Date();
+const UTC_START_OF_TODAY = getUTC(new Date(`${LOCAL_NOW.toISOString().split("T")[0]}`));
 
 function getUTC(date: Date) {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 }
 
 function getServerDay() {
-    return Math.floor((new Date().getTime() - serverStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    const result = Math.floor(
+        (UTC_START_OF_TODAY.getTime() - SERVER_START_DATE.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    return result;
 }
 
 function getIntervalDay() {
-    return (
-        Math.ceil((new Date().getTime() - intervalStartDate.getTime()) / (1000 * 60 * 60 * 24)) % 28
+    const daysSinceServerStart = Math.ceil(
+        (UTC_START_OF_TODAY.getTime() - INTERVAL_START_DATE.getTime()) / (1000 * 60 * 60 * 24)
     );
+
+    const result = (daysSinceServerStart % 28) + 1;
+
+    return result;
 }
 
 const CalendarCell = ({
@@ -49,7 +60,7 @@ const CalendarCell = ({
 const CalendarWeeks = () => {
     return (
         <>
-            {intervalDays.map((day) => {
+            {INTERVAL_DAYS.map((day) => {
                 if (day % 7 !== 1) {
                     return null;
                 }
@@ -75,25 +86,17 @@ const CalendarWeeks = () => {
 };
 
 const CalendarDays = () => {
-    const now = new Date();
     const intervalDay = getIntervalDay();
-
-    console.log("UTC", now.toISOString());
-    console.log("UTC 2", getUTC(now));
-    console.log("First part", now.toISOString().split(".").at(0));
-    console.log("new Date", new Date(now.toISOString().split(".").at(0) as string));
-
-    console.log((now.getTime() - intervalStartDate.getTime()) / (1000 * 60 * 60 * 24));
 
     return (
         <>
-            {intervalDays.map((day) => {
+            {INTERVAL_DAYS.map((day) => {
                 return (
                     <CalendarCell
                         key={`calendar-header-day-${day}`}
                         isActiveDay={intervalDay === day}
                     >
-                        {weekDays[day % 7]}
+                        {WEEK_DAYS[day % 7]}
                     </CalendarCell>
                 );
             })}
@@ -106,7 +109,7 @@ const CalendarRow = ({ event }: { event: Event }) => {
 
     return (
         <>
-            {intervalDays.map((day) => {
+            {INTERVAL_DAYS.map((day) => {
                 const isActive = event.days.includes(day);
 
                 if (!isActive) {
@@ -163,7 +166,7 @@ const CalendarPage = () => {
                 </Box>
 
                 <Grid
-                    templateColumns={`repeat(${intervalDays.length}, 50px)`}
+                    templateColumns={`repeat(${INTERVAL_DAYS.length}, 50px)`}
                     gridColumnGap={1}
                     gridRowGap={1}
                     overflowX="scroll"

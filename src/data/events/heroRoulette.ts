@@ -7,6 +7,6 @@ export const heroRoulette: Event = {
     name: "Hero Roulette",
     shortName: "Hero Roulette",
     image: "/img/events/kingshot-hero-roulette-event-icon.png",
-    color: "#FFDD00",
+    color: "orange",
     days: [9, 10, 11, 23, 24, 25],
 };

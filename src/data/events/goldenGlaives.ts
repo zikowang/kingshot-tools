@@ -7,6 +7,6 @@ export const goldenGlaives: Event = {
     name: "Golden Glaives",
     shortName: "Golden Glaives",
     image: "/img/events/kingshot-golden-glaives-event-icon.png",
-    color: "gold",
+    color: "orange",
     days: [8, 9],
 };
