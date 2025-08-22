@@ -203,7 +203,7 @@ const CalendarPage = () => {
 
     useEffect(() => {
         if (calendarRef.current) {
-            const scrollTo = (intervalDay - 1) * 50 - 50;
+            const scrollTo = (intervalDay - 1) * 50 - 100;
 
             calendarRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
         }
