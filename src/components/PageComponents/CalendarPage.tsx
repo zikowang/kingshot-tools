@@ -22,7 +22,7 @@ const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const SERVER_START_DATE = getUTC(new Date("2025-05-30T00:00:00.000Z"));
 const INTERVAL_START_DATE = getUTC(new Date("2025-08-18T00:00:00.000Z"));
 
-const LOCAL_NOW = new Date("2026-09-01T12:00:00.000Z");
+const LOCAL_NOW = new Date();
 const UTC_START_OF_TODAY = getUTC(new Date(`${LOCAL_NOW.toISOString().split("T")[0]}`));
 
 function getUTC(date: Date) {
