@@ -1,10 +1,20 @@
 /** @format */
 
-import { Tooltip } from "@/components/ui/tooltip";
 import { allEvents } from "@/data/events";
 import ReactLayout from "@/layouts/ReactLayout";
 import type { Event } from "@/types/events";
-import { Badge, Box, Grid, GridItem, Image, Text, VStack } from "@chakra-ui/react";
+import {
+    Badge,
+    Box,
+    Grid,
+    GridItem,
+    HStack,
+    Image,
+    Popover,
+    Portal,
+    Text,
+    VStack,
+} from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
 
 const INTERVAL_DAYS = new Array(28).fill(0).map((_, i) => i + 1);
@@ -142,22 +152,42 @@ const CalendarRow = ({ event }: { event: Event }) => {
 
                 return (
                     <CalendarCell key={`${event.id}-${day}`} isActiveDay={intervalDay === day}>
-                        <Tooltip
-                            content={`${event.name} ${dayDiffText} (${WEEK_DAYS[day % 7]})`}
-                            openDelay={500}
-                            interactive
-                        >
-                            <Box
-                                display="flex"
-                                justifyContent="center"
-                                alignItems="center"
-                                width="100%"
-                                height="100%"
-                                bgColor={isActive ? event.color : "transparent"}
-                            >
-                                <Image src={event.image} alt={event.name} width={8} />
-                            </Box>
-                        </Tooltip>
+                        <Popover.Root>
+                            <Popover.Trigger asChild>
+                                <Box
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    width="100%"
+                                    height="100%"
+                                    bgColor={isActive ? event.color : "transparent"}
+                                >
+                                    <Image src={event.image} alt={event.name} width={8} />
+                                </Box>
+                            </Popover.Trigger>
+                            <Portal>
+                                <Popover.Positioner>
+                                    <Popover.Content>
+                                        <Popover.Arrow />
+                                        <Popover.Body>
+                                            <Popover.Title fontWeight="medium">
+                                                <HStack>
+                                                    <Image
+                                                        src={event.image}
+                                                        alt={event.name}
+                                                        width={8}
+                                                    />
+                                                    {`${event.name}`}
+                                                </HStack>
+                                            </Popover.Title>
+                                            <Text my="4">
+                                                {` ${dayDiffText} (${WEEK_DAYS[day % 7]})`}
+                                            </Text>
+                                        </Popover.Body>
+                                    </Popover.Content>
+                                </Popover.Positioner>
+                            </Portal>
+                        </Popover.Root>
                     </CalendarCell>
                 );
             })}
@@ -214,16 +244,37 @@ const CalendarPage = () => {
                                 height={12}
                                 width={{ base: "100px", md: "200px" }}
                             >
-                                <Tooltip content={event.name} openDelay={500} interactive>
-                                    <Box
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        width={{ base: "100px", md: "unset" }}
-                                    >
-                                        <Image src={event.image} alt={event.name} width={8} />
-                                    </Box>
-                                </Tooltip>
+                                <Popover.Root>
+                                    <Popover.Trigger asChild>
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            width={{ base: "100px", md: "unset" }}
+                                        >
+                                            <Image src={event.image} alt={event.name} width={8} />
+                                        </Box>
+                                    </Popover.Trigger>
+                                    <Portal>
+                                        <Popover.Positioner>
+                                            <Popover.Content>
+                                                <Popover.Arrow />
+                                                <Popover.Body>
+                                                    <Popover.Title fontWeight="medium">
+                                                        <HStack>
+                                                            <Image
+                                                                src={event.image}
+                                                                alt={event.name}
+                                                                width={8}
+                                                            />
+                                                            {`${event.name}`}
+                                                        </HStack>
+                                                    </Popover.Title>
+                                                </Popover.Body>
+                                            </Popover.Content>
+                                        </Popover.Positioner>
+                                    </Portal>
+                                </Popover.Root>
                                 <Text ml={1} display={{ base: "none", md: "block" }}>
                                     {event.shortName}
                                 </Text>
