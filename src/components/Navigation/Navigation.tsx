@@ -32,7 +32,7 @@ const Navigation = () => {
                         key={item.label}
                         href={item.href}
                         fontWeight="bold"
-                        color={pathname === item.href ? "orange" : "inherit"}
+                        color={pathname.includes(item.href) ? "orange" : "inherit"}
                     >
                         {item.label}
                     </Link>
