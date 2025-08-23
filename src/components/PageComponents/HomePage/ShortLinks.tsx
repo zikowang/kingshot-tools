@@ -6,7 +6,7 @@ import { Badge, Stack } from "@chakra-ui/react";
 
 const ShortLinks = () => {
     const { colorMode } = useColorMode();
-    console.log(colorMode);
+
     return (
         <Stack gap={4} alignItems="flex-start" direction="row" wrap="wrap" mt={8}>
             <CardVertical

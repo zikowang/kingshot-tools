@@ -15,7 +15,7 @@ const navigationItems = [
 
 const Navigation = () => {
     const pathname = window.location.pathname;
-    console.log(pathname);
+
     return (
         <HStack justifyContent="space-between" mb={4}>
             <Link href="/" textDecoration="none">
