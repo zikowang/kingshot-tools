@@ -12,9 +12,9 @@ const ReactLayout = ({ children }: PropsWithChildren) => {
                 display="flex"
                 flexDirection="column"
                 mx="auto"
-                mb={4}
                 px={{ base: 4 }}
                 maxW="1280px"
+                pb={8}
             >
                 <Navigation />
                 {children}

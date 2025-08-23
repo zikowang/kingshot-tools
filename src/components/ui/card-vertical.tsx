@@ -21,7 +21,7 @@ const CardVertical = ({
         <Link href={href} variant="plain" _hover={{ textDecoration: "none", boxShadow: "md" }}>
             <Card.Root maxW="sm" overflow="hidden" variant="elevated" asChild>
                 <Box>
-                    <Image src={img} alt={alt} />
+                    <Image src={img} alt={alt} width="100%" height="auto" />
                     <Card.Body>
                         <Card.Title mb="2">{title}</Card.Title>
                         <Card.Description>{description}</Card.Description>

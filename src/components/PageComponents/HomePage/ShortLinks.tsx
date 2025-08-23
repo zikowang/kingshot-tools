@@ -11,7 +11,7 @@ const ShortLinks = () => {
         <Stack gap={4} alignItems="flex-start" direction="row" wrap="wrap" mt={8}>
             <CardVertical
                 title="Calendar"
-                img={`/img/calendar-${colorMode}.jpeg`}
+                img={`/img/kingshot-calendar.png`}
                 alt="calender teaser image"
                 description="Useful overview of all upcoming events and their schedule."
                 href="/calendar"
@@ -25,7 +25,7 @@ const ShortLinks = () => {
 
             <CardVertical
                 title="Troop Calculator"
-                img={`/img/coming-soon-${colorMode}.jpeg`}
+                img={`/img/kingshot-archer.png`}
                 alt="troops calculator teaser image"
                 description="Find out how many speed ups and resources you need for your troop training and promotions."
                 href="/calculators/troop"

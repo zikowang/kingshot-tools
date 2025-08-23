@@ -20,7 +20,7 @@ const Navigation = () => {
         <HStack justifyContent="space-between" mb={4}>
             <Link href="/" textDecoration="none">
                 <VStack gap={0}>
-                    <Image src="/img/kingshot-logo.webp" width={200} />
+                    <Image src="/img/kingshot-logo.webp" width={{ base: 100, md: 200 }} />
                     <HStack gap={0} alignItems="baseline">
                         <Text fontWeight="bold" color="orange">
                             FAN
