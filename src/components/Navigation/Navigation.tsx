@@ -7,6 +7,10 @@ const navigationItems = [
         label: "Calendar",
         href: "/calendar",
     },
+    {
+        label: "Troop Calculator",
+        href: "/calculators/troop",
+    },
 ];
 
 const Navigation = () => {
