@@ -6,24 +6,27 @@ import type { Tier } from "@/types/tier";
 import {
     Box,
     Button,
-    Checkbox,
     createListCollection,
     InputGroup,
     NumberInput,
     Portal,
+    SegmentGroup,
     Select,
     Stack,
+    Switch,
+    Text,
 } from "@chakra-ui/react";
 import { useEffect, useState, type Dispatch } from "react";
-import { LuPercent } from "react-icons/lu";
+import { LuArrowBigUpDash, LuCirclePlus, LuPercent, LuTimer, LuUserPlus } from "react-icons/lu";
 
 const KINGDOM_BUFF = "25";
 const POSITION_BUFF = "50";
+const DEFAULT_CALCULATION_TYPE = "amount-of-time";
 
 const defaultFormValues: {
-    calculationType: string[];
-    trainType: string[];
-    troopType: string[];
+    calculationType: string;
+    trainType: string;
+    troopType: string;
     rootTier: string[];
     targetTier: string[];
     quantity: string;
@@ -37,9 +40,9 @@ const defaultFormValues: {
     kingdomBuffSpeed: string;
     positionBuffSpeed: string;
 } = {
-    calculationType: ["amount-of-time"],
-    trainType: ["train"],
-    troopType: ["infantry"],
+    calculationType: DEFAULT_CALCULATION_TYPE,
+    trainType: "train",
+    troopType: "infantry",
     rootTier: [],
     targetTier: ["t10"],
     quantity: "1",
@@ -54,30 +57,8 @@ const defaultFormValues: {
     positionBuffSpeed: "0",
 };
 
-const calculationTypeCollection = createListCollection({
-    items: [
-        { label: "Amount of Troops", value: "amount-of-troops" },
-        { label: "Amount of Time", value: "amount-of-time" },
-    ],
-});
-
-const trainTypeCollection = createListCollection({
-    items: [
-        { label: "Train Troops", value: "train" },
-        { label: "Promote Troops", value: "promote" },
-    ],
-});
-
 const tierCollection = createListCollection({
     items: tier.filter((t) => t !== "t11").map((t) => ({ label: t.toUpperCase(), value: t })),
-});
-
-const troopTypeCollection = createListCollection({
-    items: [
-        { label: "Infantry", value: "infantry" },
-        { label: "Cavalry", value: "cavalry" },
-        { label: "Archer", value: "archer" },
-    ],
 });
 
 export type TroopCalculatorResult = {
@@ -118,21 +99,19 @@ const TroopsForm = ({
         return initialValues;
     });
 
-    const isCalculateAmountOfTroops = formValues.calculationType[0] === "amount-of-troops";
-    const isCalculateAmountOfTime = formValues.calculationType[0] === "amount-of-time";
-    const isPromotion = formValues.trainType[0] === "promote";
+    const isCalculateAmountOfTroops = formValues.calculationType === "amount-of-troops";
+    const isCalculateAmountOfTime = formValues.calculationType === "amount-of-time";
+    const isPromotion = formValues.trainType === "promote";
 
     const onReset = () => {
         setFormValues(defaultFormValues);
     };
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        const calculationType = formValues.calculationType[0] as
-            | "amount-of-troops"
-            | "amount-of-time";
-        const troopType = formValues.troopType[0] as "infantry" | "cavalry" | "archer";
+    // const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+    useEffect(() => {
+        const calculationType = formValues.calculationType as "amount-of-troops" | "amount-of-time";
+        const troopType = formValues.troopType as "infantry" | "cavalry" | "archer";
         const rootTier = formValues.rootTier[0] as Tier;
         const targetTier = formValues.targetTier[0] as Tier;
         const quantity = parseInt(formValues.quantity, 10);
@@ -158,9 +137,9 @@ const TroopsForm = ({
         const targetBaseTime = targetTrain.buildTime;
         const rootBaseTime = rootTrain?.buildTime || 0;
 
-        const buildCalculationBaseTime = isPromotion
-            ? Math.floor((targetBaseTime - rootBaseTime) / sumSpeedBuff)
-            : Math.floor(targetBaseTime / sumSpeedBuff);
+        const calculationBaseTime = isPromotion
+            ? Math.floor(targetBaseTime - rootBaseTime)
+            : Math.floor(targetBaseTime);
 
         if (calculationType === "amount-of-troops") {
             const speedupDays = parseInt(formValues.speedupDays, 10);
@@ -170,8 +149,11 @@ const TroopsForm = ({
 
             const totalSpeedupInSeconds =
                 speedupDays * 86400 + speedupHours * 3600 + speedupMinutes * 60 + speedupSeconds;
-            const resultQuantity = Math.floor(totalSpeedupInSeconds / buildCalculationBaseTime);
-            const effectiveTime = resultQuantity * buildCalculationBaseTime;
+            const updatedEffectiveSpeedupInSeconds = totalSpeedupInSeconds * sumSpeedBuff;
+            const resultQuantity = Math.floor(
+                updatedEffectiveSpeedupInSeconds / calculationBaseTime
+            );
+            const effectiveTime = totalSpeedupInSeconds;
             const kvkPoints = resultQuantity * targetTrain.points.kvk;
             const strongestGovernorPoints = resultQuantity * targetTrain.points.sg;
 
@@ -203,7 +185,7 @@ const TroopsForm = ({
             return;
         }
 
-        const resultTime = buildCalculationBaseTime * quantity;
+        const resultTime = Math.floor((calculationBaseTime * quantity) / sumSpeedBuff);
         const resultCost = {
             bread: isPromotion
                 ? (targetCost.bread - (rootTrain?.cost?.bread || 0)) * quantity
@@ -230,7 +212,7 @@ const TroopsForm = ({
             strongestGovernorPoints,
             ...resultCost,
         });
-    };
+    }, [formValues]);
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -244,109 +226,117 @@ const TroopsForm = ({
         });
 
         window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
-    }, [formValues]);
+    }, [formValues, isPromotion]);
 
     return (
-        <form onSubmit={onSubmit} style={{ width: "100%" }}>
+        <Box
+            onSubmit={(e) => {
+                e.preventDefault();
+            }}
+            style={{ width: "100%" }}
+        >
             <Stack gap={4} width="100%">
-                <Select.Root
+                <SegmentGroup.Root
+                    defaultValue={DEFAULT_CALCULATION_TYPE}
                     value={formValues.calculationType}
                     onValueChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, calculationType: e.value }))
+                        setFormValues((prev) => ({
+                            ...prev,
+                            calculationType: e.value || "amount-of-troops",
+                        }))
                     }
-                    collection={calculationTypeCollection}
-                    width={{ base: "100%" }}
-                    required
                 >
-                    <Select.HiddenSelect />
-                    <Select.Label>What to calculate?</Select.Label>
-                    <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText placeholder="Select calculation" />
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                            <Select.Indicator />
-                        </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Portal>
-                        <Select.Positioner>
-                            <Select.Content>
-                                {calculationTypeCollection.items.map((trainType) => (
-                                    <Select.Item item={trainType} key={trainType.value}>
-                                        {trainType.label}
-                                        <Select.ItemIndicator />
-                                    </Select.Item>
-                                ))}
-                            </Select.Content>
-                        </Select.Positioner>
-                    </Portal>
-                </Select.Root>
+                    <SegmentGroup.Indicator />
+                    <SegmentGroup.Items
+                        items={[
+                            {
+                                label: (
+                                    <Box display="flex" alignItems="center" gap={1}>
+                                        <LuUserPlus />
+                                        <Text>Troops</Text>
+                                    </Box>
+                                ),
+                                value: "amount-of-troops",
+                            },
+                            {
+                                label: (
+                                    <Box display="flex" alignItems="center" gap={1}>
+                                        <LuTimer />
+                                        <Text>Time</Text>
+                                    </Box>
+                                ),
+                                value: "amount-of-time",
+                            },
+                        ]}
+                        width="100%"
+                        opacity={0.7}
+                        _hover={{ cursor: "pointer", opacity: 1 }}
+                        _checked={{ opacity: 1, outline: "2px solid blue" }}
+                    />
+                </SegmentGroup.Root>
 
-                <Select.Root
+                <SegmentGroup.Root
+                    defaultValue="training"
                     value={formValues.trainType}
                     onValueChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, trainType: e.value }))
+                        setFormValues((prev) => ({
+                            ...prev,
+                            trainType: e.value || "train",
+                        }))
                     }
-                    collection={trainTypeCollection}
-                    required
                 >
-                    <Select.HiddenSelect />
-                    <Select.Label>Promoting or Training?</Select.Label>
-                    <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText placeholder="Select Training / Promotion" />
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                            <Select.Indicator />
-                        </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Portal>
-                        <Select.Positioner>
-                            <Select.Content>
-                                {trainTypeCollection.items.map((trainType) => (
-                                    <Select.Item item={trainType} key={trainType.value}>
-                                        {trainType.label}
-                                        <Select.ItemIndicator />
-                                    </Select.Item>
-                                ))}
-                            </Select.Content>
-                        </Select.Positioner>
-                    </Portal>
-                </Select.Root>
+                    <SegmentGroup.Indicator />
+                    <SegmentGroup.Items
+                        items={[
+                            {
+                                label: (
+                                    <Box display="flex" alignItems="center" gap={1}>
+                                        <LuCirclePlus />
+                                        <Text>Train</Text>
+                                    </Box>
+                                ),
+                                value: "train",
+                            },
+                            {
+                                label: (
+                                    <Box display="flex" alignItems="center" gap={1}>
+                                        <LuArrowBigUpDash />
+                                        <Text>Promote</Text>
+                                    </Box>
+                                ),
+                                value: "promote",
+                            },
+                        ]}
+                        width="100%"
+                        opacity={0.7}
+                        _hover={{ cursor: "pointer", opacity: 1 }}
+                        _checked={{ opacity: 1, outline: "2px solid blue" }}
+                    />
+                </SegmentGroup.Root>
 
-                <Select.Root
+                <SegmentGroup.Root
+                    defaultValue="infantry"
                     value={formValues.troopType}
                     onValueChange={(e) =>
-                        setFormValues((prev) => ({ ...prev, troopType: e.value }))
+                        setFormValues((prev) => ({
+                            ...prev,
+                            troopType: e.value || "infantry",
+                        }))
                     }
-                    collection={troopTypeCollection}
-                    required
                 >
-                    <Select.HiddenSelect />
-                    <Select.Label>Troop Type</Select.Label>
-                    <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText placeholder="Select Troop Type" />
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                            <Select.Indicator />
-                        </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Portal>
-                        <Select.Positioner>
-                            <Select.Content>
-                                {troopTypeCollection.items.map((troopType) => {
-                                    return (
-                                        <Select.Item item={troopType} key={troopType.value}>
-                                            {troopType.label}
-                                            <Select.ItemIndicator />
-                                        </Select.Item>
-                                    );
-                                })}
-                            </Select.Content>
-                        </Select.Positioner>
-                    </Portal>
-                </Select.Root>
+                    <SegmentGroup.Indicator />
+                    <SegmentGroup.Items
+                        items={[
+                            { label: "Infantry", value: "infantry" },
+                            { label: "Cavalry", value: "cavalry" },
+                            { label: "Archer", value: "archer" },
+                        ]}
+                        width="100%"
+                        opacity={0.7}
+                        _hover={{ cursor: "pointer", opacity: 1 }}
+                        _checked={{ opacity: 1, outline: "2px solid blue" }}
+                    />
+                </SegmentGroup.Root>
 
                 {isPromotion && (
                     <Select.Root
@@ -440,6 +430,7 @@ const TroopsForm = ({
                         }
                         required
                         min={1}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         onBlur={(e) => {
                             if (e.target instanceof HTMLInputElement) {
                                 let value = parseFloat(e.target.value.replace(",", "."));
@@ -479,14 +470,14 @@ const TroopsForm = ({
                         }
                     }}
                 >
-                    <NumberInput.Label>Troop Training %</NumberInput.Label>
+                    <NumberInput.Label>Training Speed</NumberInput.Label>
                     <InputGroup startElement={<LuPercent />}>
                         <NumberInput.Input />
                     </InputGroup>
                     <NumberInput.Scrubber />
                 </NumberInput.Root>
 
-                <Checkbox.Root
+                <Switch.Root
                     checked={formValues.kingdomBuffSpeed !== "0"}
                     onCheckedChange={(e) =>
                         setFormValues((prev) => ({
@@ -494,13 +485,19 @@ const TroopsForm = ({
                             kingdomBuffSpeed: e.checked ? KINGDOM_BUFF : "0",
                         }))
                     }
+                    colorPalette="blue"
+                    opacity={0.5}
+                    _checked={{ opacity: 1 }}
+                    _hover={{ opacity: 1 }}
                 >
-                    <Checkbox.HiddenInput />
-                    <Checkbox.Control />
-                    <Checkbox.Label>Kingdom Buff ({KINGDOM_BUFF}%)</Checkbox.Label>
-                </Checkbox.Root>
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                    <Switch.Label _hover={{ cursor: "pointer" }}>
+                        Kingdom Buff ({KINGDOM_BUFF}%)
+                    </Switch.Label>
+                </Switch.Root>
 
-                <Checkbox.Root
+                <Switch.Root
                     checked={formValues.positionBuffSpeed !== "0"}
                     onCheckedChange={(e) =>
                         setFormValues((prev) => ({
@@ -508,11 +505,17 @@ const TroopsForm = ({
                             positionBuffSpeed: e.checked ? POSITION_BUFF : "0",
                         }))
                     }
+                    colorPalette="blue"
+                    opacity={0.5}
+                    _checked={{ opacity: 1 }}
+                    _hover={{ opacity: 1 }}
                 >
-                    <Checkbox.HiddenInput />
-                    <Checkbox.Control />
-                    <Checkbox.Label>Position Buff ({POSITION_BUFF}%)</Checkbox.Label>
-                </Checkbox.Root>
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                    <Switch.Label _hover={{ cursor: "pointer" }}>
+                        Position Buff ({POSITION_BUFF}%)
+                    </Switch.Label>
+                </Switch.Root>
 
                 {isCalculateAmountOfTroops && (
                     <>
@@ -520,6 +523,9 @@ const TroopsForm = ({
                             value={formValues.speedupDays}
                             onValueChange={(e) =>
                                 setFormValues((prev) => ({ ...prev, speedupDays: e.value }))
+                            }
+                            onFocus={(e) =>
+                                e.target instanceof HTMLInputElement && e.target.select()
                             }
                             required
                             min={0}
@@ -536,6 +542,9 @@ const TroopsForm = ({
                                     speedupHours: e.value,
                                 }))
                             }
+                            onFocus={(e) =>
+                                e.target instanceof HTMLInputElement && e.target.select()
+                            }
                             required
                             min={0}
                         >
@@ -550,6 +559,9 @@ const TroopsForm = ({
                                     ...prev,
                                     speedupMinutes: e.value,
                                 }))
+                            }
+                            onFocus={(e) =>
+                                e.target instanceof HTMLInputElement && e.target.select()
                             }
                             required
                             min={0}
@@ -566,6 +578,9 @@ const TroopsForm = ({
                                     speedupSeconds: e.value,
                                 }))
                             }
+                            onFocus={(e) =>
+                                e.target instanceof HTMLInputElement && e.target.select()
+                            }
                             required
                             min={0}
                         >
@@ -577,7 +592,7 @@ const TroopsForm = ({
                 )}
             </Stack>
 
-            <Box display="flex" justifyContent="space-between" my={4}>
+            <Box display="flex" justifyContent="flex-start" my={4}>
                 <Button
                     type="button"
                     onClick={onReset}
@@ -587,11 +602,8 @@ const TroopsForm = ({
                 >
                     Reset
                 </Button>
-                <Button type="submit" variant="solid" size="sm">
-                    Submit
-                </Button>
             </Box>
-        </form>
+        </Box>
     );
 };
 
