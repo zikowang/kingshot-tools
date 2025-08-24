@@ -107,15 +107,13 @@ const TroopsForm = ({
         setFormValues(defaultFormValues);
     };
 
-    // const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
     useEffect(() => {
         const calculationType = formValues.calculationType as "amount-of-troops" | "amount-of-time";
         const troopType = formValues.troopType as "infantry" | "cavalry" | "archer";
         const rootTier = formValues.rootTier[0] as Tier;
         const targetTier = formValues.targetTier[0] as Tier;
         const quantity = parseInt(formValues.quantity, 10);
-        const troopTrainingSpeed = parseInt(formValues.troopTrainingSpeed || "0", 10);
+        const troopTrainingSpeed = parseFloat(formValues.troopTrainingSpeed || "0");
         const kingdomBuffSpeed = parseInt(formValues.kingdomBuffSpeed || "0", 10);
         const positionBuffSpeed = parseInt(formValues.positionBuffSpeed || "0", 10);
         const sumSpeedBuff =
@@ -186,6 +184,7 @@ const TroopsForm = ({
         }
 
         const resultTime = Math.floor((calculationBaseTime * quantity) / sumSpeedBuff);
+
         const resultCost = {
             bread: isPromotion
                 ? (targetCost.bread - (rootTrain?.cost?.bread || 0)) * quantity
