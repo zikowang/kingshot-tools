@@ -6,7 +6,7 @@ export const armamentCompetition: Event = {
     id: "armament-competition",
     name: "Armament Competition",
     shortName: "Armament Comp.",
-    image: "/img/events/kingshot-armament-competition-event-icon.png",
+    image: "/img/100x100/events/kingshot-armament-competition-event-icon.png",
     color: "#528ec7",
     days: [1, 2, 5, 6],
 };

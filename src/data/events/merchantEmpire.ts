@@ -6,7 +6,7 @@ export const merchantEmpire: Event = {
     id: "merchant-empire",
     name: "Merchant Empire",
     shortName: "Merchant",
-    image: "/img/events/kingshot-merchant-empire-event-icon.png",
+    image: "/img/100x100/events/kingshot-merchant-empire-event-icon.png",
     color: "#e48423",
     days: [1, 2, 3, 4, 5, 6, 7],
 };

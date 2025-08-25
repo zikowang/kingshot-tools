@@ -6,7 +6,7 @@ export const allOut: Event = {
     id: "all-out",
     name: "All Out",
     shortName: "All Out",
-    image: "/img/events/kingshot-all-out-event-icon.png",
+    image: "/img/100x100/events/kingshot-all-out-event-icon.png",
     color: "#d27070",
     days: [12, 13],
 };

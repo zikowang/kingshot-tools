@@ -6,7 +6,7 @@ export const allianceMobilization: Event = {
     id: "alliance-mobilization",
     name: "Alliance Mobilization",
     shortName: "Al. Mobilization",
-    image: "/img/events/kingshot-alliance-mobilization-event-icon.png",
+    image: "/img/100x100/events/kingshot-alliance-mobilization-event-icon.png",
     color: "#8b76c6",
     days: [15, 16, 17, 18, 19, 20],
 };

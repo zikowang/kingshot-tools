@@ -102,7 +102,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <Text>KvK Points:</Text>
                 <HStack justifyContent="center">
                     <Image
-                        src="/img/events/kingshot-kingdom-of-power-event-icon.png"
+                        src="/img/100x100/events/kingshot-kingdom-of-power-event-icon.png"
                         alt="KvK"
                         height={6}
                     />
@@ -118,7 +118,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <Text>Strongest Gov. Points:</Text>
                 <HStack justifyContent="center">
                     <Image
-                        src="/img/events/kingshot-strongest-governor-event-icon.png"
+                        src="/img/100x100/events/kingshot-strongest-governor-event-icon.png"
                         alt="KvK"
                         height={6}
                     />
