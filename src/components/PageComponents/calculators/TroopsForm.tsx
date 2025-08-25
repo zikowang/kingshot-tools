@@ -153,6 +153,9 @@ const TroopsForm = ({
         const calculationBaseTime = isPromotion
             ? Math.floor(targetBaseTime - rootBaseTime)
             : Math.floor(targetBaseTime);
+        const powerBaseGain = isPromotion
+            ? targetTrain.power - (rootTrain?.power || 0)
+            : targetTrain.power;
 
         if (calculationType === "amount-of-troops") {
             const speedupDays = parseInt(formValues.speedupDays, 10);
@@ -191,7 +194,7 @@ const TroopsForm = ({
                 quantity: resultQuantity,
                 time: effectiveTime,
 
-                power: resultQuantity * targetTrain.power,
+                power: resultQuantity * powerBaseGain,
 
                 kvkPoints,
                 strongestGovernorPoints,
@@ -226,7 +229,7 @@ const TroopsForm = ({
             quantity,
             time: resultTime,
 
-            power: quantity * targetTrain.power,
+            power: quantity * powerBaseGain,
 
             kvkPoints,
             strongestGovernorPoints,
