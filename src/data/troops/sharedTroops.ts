@@ -1,9 +1,25 @@
 /** @format */
 
-import type { TGTier, Tier } from "@/types/tier";
+import type { Tier, TierTG } from "@/types/tier";
 
-export const tier: Tier[] = ["t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9", "t10", "t11"];
-export const tgTier: TGTier[] = ["tg1", "tg2", "tg3", "tg4", "tg5"];
+export const tierList: Tier[] = [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9",
+    "t10",
+    "t11",
+    "tg1",
+    "tg2",
+    "tg3",
+    "tg4",
+    "tg5",
+];
 
 export const buildTime: Record<Tier, number> = {
     t1: 12,
@@ -17,6 +33,11 @@ export const buildTime: Record<Tier, number> = {
     t9: 131,
     t10: 152,
     t11: 180,
+    tg1: 152,
+    tg2: 152,
+    tg3: 152,
+    tg4: 152,
+    tg5: 152,
 };
 
 export const tierPower: Record<Tier, number> = {
@@ -31,9 +52,14 @@ export const tierPower: Record<Tier, number> = {
     t9: 50,
     t10: 66,
     t11: 80,
+    tg1: 71,
+    tg2: 76,
+    tg3: 83,
+    tg4: 88,
+    tg5: 94,
 };
 
-export const tgPower: Record<TGTier, number> = {
+export const tgPower: Record<TierTG, number> = {
     tg1: 5,
     tg2: 5,
     tg3: 6,
@@ -53,6 +79,11 @@ export const tierHogPoints: Record<Tier, number> = {
     t9: 1485,
     t10: 1960,
     t11: 2700,
+    tg1: 1960,
+    tg2: 1960,
+    tg3: 1960,
+    tg4: 1960,
+    tg5: 1960,
 };
 
 export const tierKvKPoints: Record<Tier, number> = {
@@ -67,6 +98,11 @@ export const tierKvKPoints: Record<Tier, number> = {
     t9: 45,
     t10: 60,
     t11: 75,
+    tg1: 60,
+    tg2: 60,
+    tg3: 60,
+    tg4: 60,
+    tg5: 60,
 };
 
 export const tierSGPoints: Record<Tier, number> = {
@@ -81,4 +117,9 @@ export const tierSGPoints: Record<Tier, number> = {
     t9: 30,
     t10: 39,
     t11: 51,
+    tg1: 39,
+    tg2: 39,
+    tg3: 39,
+    tg4: 39,
+    tg5: 39,
 };

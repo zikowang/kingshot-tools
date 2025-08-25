@@ -70,6 +70,36 @@ const cavalryCost: Record<Tier, Cost> = {
         stone: 900,
         iron: 250,
     },
+    tg1: {
+        bread: 2440,
+        wood: 2301,
+        stone: 474,
+        iron: 109,
+    },
+    tg2: {
+        bread: 2440,
+        wood: 2301,
+        stone: 474,
+        iron: 109,
+    },
+    tg3: {
+        bread: 2440,
+        wood: 2301,
+        stone: 474,
+        iron: 109,
+    },
+    tg4: {
+        bread: 2440,
+        wood: 2301,
+        stone: 474,
+        iron: 109,
+    },
+    tg5: {
+        bread: 2440,
+        wood: 2301,
+        stone: 474,
+        iron: 109,
+    },
 };
 
 export default cavalryCost;

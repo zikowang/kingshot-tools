@@ -1,12 +1,20 @@
 /** @format */
 
-import { buildTime, tier, tierHogPoints, tierKvKPoints, tierSGPoints } from "../sharedTroops";
+import {
+    buildTime,
+    tierHogPoints,
+    tierKvKPoints,
+    tierList,
+    tierPower,
+    tierSGPoints,
+} from "../sharedTroops";
 import infantryCost from "./infantryCost";
 
-const infantryTrain = tier.map((elem) => ({
+const infantryTrain = tierList.map((elem) => ({
     tier: elem,
     buildTime: buildTime[elem],
     cost: infantryCost[elem],
+    power: tierPower[elem],
     points: {
         hog: tierHogPoints[elem],
         kvk: tierKvKPoints[elem],

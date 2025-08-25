@@ -1,12 +1,14 @@
 /** @format */
 
-import { tier } from "@/data/troops/sharedTroops";
+import { ToggleTip } from "@/components/ui/toggle-tip";
+import { tierList } from "@/data/troops/sharedTroops";
 import trainingData from "@/data/troops/train";
 import type { Tier } from "@/types/tier";
 import {
     Box,
     Button,
     createListCollection,
+    Field,
     InputGroup,
     NumberInput,
     Portal,
@@ -15,13 +17,22 @@ import {
     Stack,
     Switch,
     Text,
+    VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState, type Dispatch } from "react";
-import { LuArrowBigUpDash, LuCirclePlus, LuPercent, LuTimer, LuUserPlus } from "react-icons/lu";
+import {
+    LuArrowBigUpDash,
+    LuCirclePlus,
+    LuInfo,
+    LuPercent,
+    LuTimer,
+    LuUserPlus,
+} from "react-icons/lu";
 
 const KINGDOM_BUFF = "25";
 const POSITION_BUFF = "50";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
+const HIDDEN_TIER_LIST = ["t11", "tg4", "tg5"];
 
 const defaultFormValues: {
     calculationType: string;
@@ -58,7 +69,9 @@ const defaultFormValues: {
 };
 
 const tierCollection = createListCollection({
-    items: tier.filter((t) => t !== "t11").map((t) => ({ label: t.toUpperCase(), value: t })),
+    items: tierList
+        .filter((t) => !HIDDEN_TIER_LIST.includes(t))
+        .map((t) => ({ label: t.toUpperCase(), value: t })),
 });
 
 export type TroopCalculatorResult = {
@@ -70,6 +83,8 @@ export type TroopCalculatorResult = {
     wood: number;
     stone: number;
     iron: number;
+
+    power: number;
 
     kvkPoints: number;
     strongestGovernorPoints: number;
@@ -175,6 +190,9 @@ const TroopsForm = ({
                 calculationType: "amount-of-troops",
                 quantity: resultQuantity,
                 time: effectiveTime,
+
+                power: resultQuantity * targetTrain.power,
+
                 kvkPoints,
                 strongestGovernorPoints,
                 ...resultCost,
@@ -207,6 +225,9 @@ const TroopsForm = ({
             calculationType: "amount-of-troops",
             quantity,
             time: resultTime,
+
+            power: quantity * targetTrain.power,
+
             kvkPoints,
             strongestGovernorPoints,
             ...resultCost,
@@ -448,33 +469,81 @@ const TroopsForm = ({
                     </NumberInput.Root>
                 )}
 
-                <NumberInput.Root
-                    value={formValues.troopTrainingSpeed || "0"}
-                    onValueChange={(e) => {
-                        const value = e.value.replace(",", ".");
-                        setFormValues((prev) => ({ ...prev, troopTrainingSpeed: value || "0" }));
-                    }}
-                    step={0.1}
-                    min={0}
-                    onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                    onBlur={(e) => {
-                        if (e.target instanceof HTMLInputElement) {
-                            let value = parseFloat(e.target.value.replace(",", "."));
-                            if (isNaN(value) || value < 0) value = 0;
-                            e.target.value = value.toString();
+                <Field.Root invalid={parseFloat(formValues.troopTrainingSpeed) <= 0}>
+                    <NumberInput.Root
+                        value={formValues.troopTrainingSpeed || "0"}
+                        onValueChange={(e) => {
+                            const value = e.value.replace(",", ".");
                             setFormValues((prev) => ({
                                 ...prev,
-                                troopTrainingSpeed: value.toString(),
+                                troopTrainingSpeed: value || "0",
                             }));
-                        }
-                    }}
-                >
-                    <NumberInput.Label>Training Speed</NumberInput.Label>
-                    <InputGroup startElement={<LuPercent />}>
-                        <NumberInput.Input />
-                    </InputGroup>
-                    <NumberInput.Scrubber />
-                </NumberInput.Root>
+                        }}
+                        step={0.1}
+                        min={0}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        onBlur={(e) => {
+                            if (e.target instanceof HTMLInputElement) {
+                                let value = parseFloat(e.target.value.replace(",", "."));
+                                if (isNaN(value) || value < 0) value = 0;
+                                e.target.value = value.toString();
+                                setFormValues((prev) => ({
+                                    ...prev,
+                                    troopTrainingSpeed: value.toString(),
+                                }));
+                            }
+                        }}
+                        width="100%"
+                    >
+                        <NumberInput.Label>Training Speed</NumberInput.Label>
+                        <InputGroup
+                            startElement={<LuPercent />}
+                            endElement={
+                                <ToggleTip
+                                    content={
+                                        <VStack
+                                            justifyContent="flex-start"
+                                            alignItems="flex-start"
+                                            p={2}
+                                        >
+                                            <Text>
+                                                You can find your training speed in the bonus
+                                                overview.
+                                            </Text>
+                                            <Box
+                                                as="ul"
+                                                listStyleType="circle"
+                                                listStylePosition="inside"
+                                            >
+                                                <li>
+                                                    Tap on your Power on the top left (next to your
+                                                    profile picture
+                                                </li>
+                                                <li>Find "Training Speed" in the list</li>
+                                            </Box>
+                                        </VStack>
+                                    }
+                                >
+                                    <Button
+                                        size="xs"
+                                        colorPalette={
+                                            parseFloat(formValues.troopTrainingSpeed) <= 0
+                                                ? "red"
+                                                : "blue"
+                                        }
+                                        variant="ghost"
+                                    >
+                                        <LuInfo />
+                                    </Button>
+                                </ToggleTip>
+                            }
+                        >
+                            <NumberInput.Input />
+                        </InputGroup>
+                        <NumberInput.Scrubber />
+                    </NumberInput.Root>
+                    <Field.ErrorText>You should add your Training Speed!</Field.ErrorText>
+                </Field.Root>
 
                 <Switch.Root
                     checked={formValues.kingdomBuffSpeed !== "0"}

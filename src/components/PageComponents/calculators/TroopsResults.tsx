@@ -82,6 +82,17 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 </HStack>
             </HStack>
 
+            <HStack gap={2} justifyContent="space-between" width="100%">
+                <Text>Power:</Text>
+                <HStack justifyContent="center">
+                    <Text>
+                        {new Intl.NumberFormat("de-DE", {
+                            style: "decimal",
+                        }).format(result.power)}
+                    </Text>
+                </HStack>
+            </HStack>
+
             <Separator size="lg" width="100%" />
 
             <HStack gap={2} justifyContent="space-between" width="100%">

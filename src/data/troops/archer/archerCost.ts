@@ -70,6 +70,36 @@ const archerCost: Record<Tier, Cost> = {
         stone: 900,
         iron: 250,
     },
+    tg1: {
+        bread: 1740,
+        wood: 2579,
+        stone: 433,
+        iron: 140,
+    },
+    tg2: {
+        bread: 1740,
+        wood: 2579,
+        stone: 433,
+        iron: 140,
+    },
+    tg3: {
+        bread: 1740,
+        wood: 2579,
+        stone: 433,
+        iron: 140,
+    },
+    tg4: {
+        bread: 1740,
+        wood: 2579,
+        stone: 433,
+        iron: 140,
+    },
+    tg5: {
+        bread: 1740,
+        wood: 2579,
+        stone: 433,
+        iron: 140,
+    },
 };
 
 export default archerCost;

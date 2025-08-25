@@ -16,6 +16,8 @@ const defaultResultValue: TroopCalculatorResult = {
     stone: 0,
     iron: 0,
 
+    power: 0,
+
     kvkPoints: 0,
     strongestGovernorPoints: 0,
 };
