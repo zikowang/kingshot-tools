@@ -22,7 +22,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             {result.calculationType === "amount-of-troops" && (
                 <HStack gap={2} justifyContent="space-between" width="100%">
                     <Text>Troops:</Text>{" "}
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.quantity)}
@@ -31,14 +31,17 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             )}
 
             <HStack gap={2} justifyContent="space-between" width="100%">
-                <Text>Time:</Text> <Text>{getResultTimeText(result.time)}</Text>
+                <Text>Time:</Text>{" "}
+                <Text fontSize="lg" fontWeight="bold">
+                    {getResultTimeText(result.time)}
+                </Text>
             </HStack>
 
             <HStack gap={2} justifyContent="space-between" width="100%">
                 <Text>Bread:</Text>
                 <HStack>
                     <Image src="/img/resources/kingshot-bread.png" alt="Bread" height={6} />
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.bread)}
@@ -50,7 +53,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <Text>Wood:</Text>
                 <HStack>
                     <Image src="/img/resources/kingshot-wood.png" alt="Wood" height={6} />
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.wood)}
@@ -62,7 +65,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <Text>Stone:</Text>
                 <HStack justifyContent="center">
                     <Image src="/img/resources/kingshot-stone.png" alt="Stone" height={6} />
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.stone)}
@@ -74,7 +77,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <Text>Iron:</Text>
                 <HStack justifyContent="center">
                     <Image src="/img/resources/kingshot-iron.png" alt="Iron" height={6} />
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.iron)}
@@ -85,7 +88,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             <HStack gap={2} justifyContent="space-between" width="100%">
                 <Text>Power:</Text>
                 <HStack justifyContent="center">
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.power)}
@@ -103,7 +106,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                         alt="KvK"
                         height={6}
                     />
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.kvkPoints)}
@@ -119,7 +122,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                         alt="KvK"
                         height={6}
                     />
-                    <Text>
+                    <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
                         }).format(result.strongestGovernorPoints)}
