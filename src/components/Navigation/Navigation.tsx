@@ -1,19 +1,23 @@
 /** @format */
 
-import { HStack, Image, Link, Text, VStack } from "@chakra-ui/react";
+import { Box, HoverCard, HStack, Image, Link, Portal, Text, VStack } from "@chakra-ui/react";
+import { useState } from "react";
+import { LuChevronDown } from "react-icons/lu";
 
-const navigationItems = [
-    {
-        label: "Calendar",
-        href: "/calendar",
-    },
+const calculators = [
     {
         label: "Troop Calculator",
         href: "/calculators/troop",
     },
+    {
+        label: "Truegold Calculator",
+        href: "/calculators/truegold",
+    },
 ];
 
 const Navigation = () => {
+    const [open, setOpen] = useState(false);
+
     const pathname = window.location.pathname;
 
     return (
@@ -31,17 +35,63 @@ const Navigation = () => {
             </Link>
 
             <HStack gap={4}>
-                {navigationItems.map((item) => (
-                    <Link
-                        key={item.label}
-                        href={item.href}
-                        fontWeight="bold"
-                        color={pathname.includes(item.href) ? "orange" : "inherit"}
-                    >
-                        {item.label}
-                    </Link>
-                ))}
-                {/* <Link href="/calculators/troops">Troops Calculator</Link> */}
+                <Link
+                    key={"Calendar"}
+                    href={"/calendar"}
+                    fontWeight="bold"
+                    color={pathname.includes("/calendar") ? "orange" : "inherit"}
+                    _hover={{ textDecoration: "none", color: "orange" }}
+                >
+                    {"Calendar"}
+                </Link>
+
+                <HoverCard.Root
+                    open={open}
+                    onOpenChange={(e) => setOpen(e.open)}
+                    size="sm"
+                    openDelay={0}
+                    closeDelay={50}
+                    positioning={{ placement: "bottom" }}
+                >
+                    <HoverCard.Trigger asChild>
+                        <Link
+                            href="#"
+                            fontWeight="bold"
+                            onTouchStart={() => setOpen(!open)}
+                            _hover={{ textDecoration: "none", color: "orange" }}
+                        >
+                            Calculator{" "}
+                            <Box rotate={open ? "180deg" : "0deg"} transition={"0.2s"}>
+                                <LuChevronDown />
+                            </Box>
+                        </Link>
+                    </HoverCard.Trigger>
+
+                    <Portal>
+                        <HoverCard.Positioner marginTop={-2}>
+                            <HoverCard.Content>
+                                <VStack gap={4} alignItems="flex-start">
+                                    {calculators.map((item) => (
+                                        <Link
+                                            key={item.label}
+                                            href={item.href}
+                                            fontWeight="bold"
+                                            color={
+                                                pathname.includes(item.href) ? "orange" : "inherit"
+                                            }
+                                            _hover={{
+                                                textDecoration: "none",
+                                                color: "orange",
+                                            }}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    ))}
+                                </VStack>
+                            </HoverCard.Content>
+                        </HoverCard.Positioner>
+                    </Portal>
+                </HoverCard.Root>
             </HStack>
         </HStack>
     );

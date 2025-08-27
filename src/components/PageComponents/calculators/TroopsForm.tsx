@@ -29,7 +29,7 @@ import {
     LuUserPlus,
 } from "react-icons/lu";
 
-const KINGDOM_BUFF = "25";
+const KING_SKILL = "30";
 const POSITION_BUFF = "50";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
 const HIDDEN_TIER_LIST = ["t11", "tg4", "tg5"];
@@ -553,7 +553,7 @@ const TroopsForm = ({
                     onCheckedChange={(e) =>
                         setFormValues((prev) => ({
                             ...prev,
-                            kingdomBuffSpeed: e.checked ? KINGDOM_BUFF : "0",
+                            kingdomBuffSpeed: e.checked ? KING_SKILL : "0",
                         }))
                     }
                     colorPalette="blue"
@@ -564,7 +564,7 @@ const TroopsForm = ({
                     <Switch.HiddenInput />
                     <Switch.Control />
                     <Switch.Label _hover={{ cursor: "pointer" }}>
-                        Kingdom Buff ({KINGDOM_BUFF}%)
+                        Kingdom Skill Buff ({KING_SKILL}%)
                     </Switch.Label>
                 </Switch.Root>
 
@@ -584,7 +584,7 @@ const TroopsForm = ({
                     <Switch.HiddenInput />
                     <Switch.Control />
                     <Switch.Label _hover={{ cursor: "pointer" }}>
-                        Position Buff ({POSITION_BUFF}%)
+                        Noble Advisor Buff ({POSITION_BUFF}%)
                     </Switch.Label>
                 </Switch.Root>
 
