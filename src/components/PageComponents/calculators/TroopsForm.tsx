@@ -29,7 +29,7 @@ import {
     LuUserPlus,
 } from "react-icons/lu";
 
-const KINGDOM_BUFF = "25";
+const KINGDOM_BUFF = "30";
 const POSITION_BUFF = "50";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
 const HIDDEN_TIER_LIST = ["t11", "tg4", "tg5"];
