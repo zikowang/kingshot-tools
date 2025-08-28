@@ -43,9 +43,13 @@ export const allEvents = [
     eternitysReach,
     vikingsVengeance,
     cesaresFury,
+    // * add back as soon as next event is scheduled
+    // championsWay,
 
-    fishingTournament,
+    // * add back as soon as next event is scheduled
+    // champagneFair,
     mysticDivination,
+    fishingTournament,
     buccaneerBounty,
 
     desertTrial,

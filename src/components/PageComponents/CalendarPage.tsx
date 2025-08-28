@@ -18,10 +18,11 @@ import {
 import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
 import { useColorModeValue } from "../ui/color-mode";
 
-const INTERVAL_DAYS = new Array(28).fill(0).map((_, i) => i + 1);
+const INTERVAL_SIZE = 28;
+const INTERVAL_DAYS = new Array(INTERVAL_SIZE).fill(0).map((_, i) => i + 1);
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const SERVER_START_DATE = getUTC(new Date("2025-05-30T00:00:00.000Z"));
-const INTERVAL_START_DATE = getUTC(new Date("2025-08-18T00:00:00.000Z"));
+const FIRST_DAY_AFTER_FIRST_KVK = getUTC(new Date("2025-08-18T00:00:00.000Z"));
 
 const LOCAL_NOW = new Date();
 const UTC_START_OF_TODAY = getUTC(new Date(`${LOCAL_NOW.toISOString().split("T")[0]}`));
@@ -40,10 +41,21 @@ function getServerDay() {
 
 function getIntervalDay() {
     const daysSinceServerStart = Math.ceil(
-        (UTC_START_OF_TODAY.getTime() - INTERVAL_START_DATE.getTime()) / (1000 * 60 * 60 * 24)
+        (UTC_START_OF_TODAY.getTime() - FIRST_DAY_AFTER_FIRST_KVK.getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    const result = (daysSinceServerStart % 28) + 1;
+    const result = (daysSinceServerStart % INTERVAL_SIZE) + 1;
+
+    return result;
+}
+
+function getKvKRotationNumber() {
+    const result =
+        Math.ceil(
+            (FIRST_DAY_AFTER_FIRST_KVK.getTime() - new Date().getTime()) /
+                (1000 * 60 * 60 * 24) /
+                INTERVAL_SIZE
+        ) + 2;
 
     return result;
 }
@@ -75,7 +87,7 @@ const CalendarWeeks = () => {
                 }
 
                 const week = (day - 1) / 7 + 1;
-
+                const kvkRotationNumber = getKvKRotationNumber();
                 return (
                     <GridItem
                         key={`calendar-header-week-${day}`}
@@ -86,7 +98,7 @@ const CalendarWeeks = () => {
                         justifyContent="center"
                         bgColor={week % 2 === 0 ? "gray" : "darkgray"}
                     >
-                        {`Week ${week}`}
+                        {`KvK ${kvkRotationNumber} (Week ${week})`}
                     </GridItem>
                 );
             })}
@@ -121,22 +133,25 @@ const CalendarRow = ({ event }: { event: Event }) => {
             {INTERVAL_DAYS.map((day) => {
                 const isActive = event.days.includes(day);
                 const isActiveDay = intervalDay === day;
-                const dayDiffText = useMemo(() => {
+                const [dayDiffText, date] = useMemo(() => {
                     const diff = intervalDay - day;
 
                     if (diff === 0) {
-                        return "Today";
+                        return ["Today", new Date()];
                     }
 
                     if (diff === -1) {
-                        return "Tomorrow";
+                        return ["Tomorrow", new Date(Date.now() + 86400000)];
                     }
 
                     if (diff < 0) {
-                        return `in ${Math.abs(diff)} days`;
+                        return [
+                            `in ${Math.abs(diff)} days`,
+                            new Date(Date.now() + Math.abs(diff) * 86400000),
+                        ];
                     }
 
-                    return `in ${28 - diff} days`;
+                    return [`in ${28 - diff} days`, new Date(Date.now() + (28 - diff) * 86400000)];
                 }, [intervalDay, day]);
 
                 if (!isActive) {
@@ -182,7 +197,15 @@ const CalendarRow = ({ event }: { event: Event }) => {
                                                 </HStack>
                                             </Popover.Title>
                                             <Text my="4">
-                                                {` ${dayDiffText} (${WEEK_DAYS[day % 7]})`}
+                                                {` ${dayDiffText} (${date.toLocaleDateString(
+                                                    undefined,
+                                                    {
+                                                        weekday: "long",
+                                                        month: "2-digit",
+                                                        day: "2-digit",
+                                                        year: "numeric",
+                                                    }
+                                                )})`}
                                             </Text>
                                         </Popover.Body>
                                     </Popover.Content>
