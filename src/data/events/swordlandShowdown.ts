@@ -8,5 +8,5 @@ export const swordlandShowdown: Event = {
     shortName: "Swordland",
     image: "/img/100x100/events/kingshot-swordland-showdown-event-icon.png",
     color: "#8b76c6",
-    days: [1, 2, 3, 4, 5, 6, 7],
+    days: [1, 2, 3, 4, 5, 6, 7, 15, 16, 17, 18, 19, 20, 21],
 };
