@@ -3,7 +3,7 @@
 import type { Cost } from "@/types/resource";
 import type { Tier } from "@/types/tier";
 
-const cavalryCost: Record<Tier, Cost> = {
+const cavalryCost: Record<Tier["name"], Cost> = {
     t1: {
         bread: 32,
         wood: 30,

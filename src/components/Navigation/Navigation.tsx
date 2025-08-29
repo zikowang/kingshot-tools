@@ -58,7 +58,9 @@ const Navigation = () => {
                             href="#"
                             fontWeight="bold"
                             onTouchStart={() => setOpen(!open)}
+                            color={pathname.includes("/calculators/") ? "orange" : "inherit"}
                             _hover={{ textDecoration: "none", color: "orange" }}
+                            _focus={{ textDecoration: "none", outline: "none" }}
                         >
                             Calculator{" "}
                             <Box rotate={open ? "180deg" : "0deg"} transition={"0.2s"}>

@@ -1,8 +1,7 @@
 /** @format */
 
 import ReactLayout from "@/layouts/ReactLayout";
-import { Alert, Text } from "@chakra-ui/react";
-import { LuConstruction } from "react-icons/lu";
+import { Text } from "@chakra-ui/react";
 
 import ShortLinks from "./ShortLinks";
 
@@ -13,12 +12,12 @@ const HomePage = () => {
                 Welcome to Kingdom 351!
             </Text>
 
-            <Alert.Root status="warning" mt={4}>
+            {/* <Alert.Root status="warning" mt={4}>
                 <Alert.Indicator>
                     <LuConstruction />
                 </Alert.Indicator>
                 <Alert.Title>This is a website under construction.</Alert.Title>
-            </Alert.Root>
+            </Alert.Root> */}
 
             <ShortLinks />
         </ReactLayout>

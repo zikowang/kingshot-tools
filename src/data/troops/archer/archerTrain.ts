@@ -11,14 +11,16 @@ import {
 import archerCost from "./archerCost";
 
 const archerTrain = tierList.map((elem) => ({
-    tier: elem,
-    buildTime: buildTime[elem],
-    cost: archerCost[elem],
-    power: tierPower[elem],
+    id: `archer-${elem.name}`,
+    tierId: elem.id,
+    tierName: elem.name,
+    buildTime: buildTime[elem.name],
+    cost: archerCost[elem.name],
+    power: tierPower[elem.name],
     points: {
-        hog: tierHogPoints[elem],
-        kvk: tierKvKPoints[elem],
-        sg: tierSGPoints[elem],
+        hog: tierHogPoints[elem.name],
+        kvk: tierKvKPoints[elem.name],
+        sg: tierSGPoints[elem.name],
     },
 }));
 

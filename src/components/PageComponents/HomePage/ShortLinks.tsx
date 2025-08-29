@@ -48,6 +48,20 @@ const ShortLinks = () => {
                         </>
                     }
                 />
+
+                <CardVertical
+                    title="Truegold Calculator"
+                    img={`/img/coming-soon-${colorMode}.jpeg`}
+                    alt="truegold calculator teaser image"
+                    description="Find out how many speed ups and resources you need for your truegold buildings"
+                    href="/calculators/truegold"
+                    badges={
+                        <>
+                            <Badge colorPalette="orange">Buildings</Badge>
+                            <Badge colorPalette="purple">Calculator</Badge>
+                        </>
+                    }
+                />
             </Stack>
 
             <Stack
@@ -84,6 +98,20 @@ const ShortLinks = () => {
                     badges={
                         <>
                             <Badge colorPalette="red">Troops</Badge>
+                            <Badge colorPalette="purple">Calculator</Badge>
+                        </>
+                    }
+                />
+
+                <CardHorizontal
+                    title="Truegold Calculator"
+                    img={`/img/coming-soon-${colorMode}.jpeg`}
+                    alt="truegold calculator teaser image"
+                    description="Find out how many speed ups and resources you need for your truegold buildings"
+                    href="/calculators/truegold"
+                    badges={
+                        <>
+                            <Badge colorPalette="orange">Buildings</Badge>
                             <Badge colorPalette="purple">Calculator</Badge>
                         </>
                     }

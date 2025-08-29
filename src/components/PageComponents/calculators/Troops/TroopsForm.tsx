@@ -70,8 +70,8 @@ const defaultFormValues: {
 
 const tierCollection = createListCollection({
     items: tierList
-        .filter((t) => !HIDDEN_TIER_LIST.includes(t))
-        .map((t) => ({ label: t.toUpperCase(), value: t })),
+        .filter((t) => !HIDDEN_TIER_LIST.includes(t.name))
+        .map((t) => ({ label: t.name.toUpperCase(), value: t.name })),
 });
 
 export type TroopCalculatorResult = {
@@ -125,8 +125,8 @@ const TroopsForm = ({
     useEffect(() => {
         const calculationType = formValues.calculationType as "amount-of-troops" | "amount-of-time";
         const troopType = formValues.troopType as "infantry" | "cavalry" | "archer";
-        const rootTier = formValues.rootTier[0] as Tier;
-        const targetTier = formValues.targetTier[0] as Tier;
+        const rootTier = formValues.rootTier[0] as Tier["name"];
+        const targetTier = formValues.targetTier[0] as Tier["name"];
         const quantity = parseInt(formValues.quantity, 10);
         const troopTrainingSpeed = parseFloat(formValues.troopTrainingSpeed || "0");
         const kingdomBuffSpeed = parseInt(formValues.kingdomBuffSpeed || "0", 10);
@@ -134,8 +134,8 @@ const TroopsForm = ({
         const sumSpeedBuff =
             1 + troopTrainingSpeed / 100 + kingdomBuffSpeed / 100 + positionBuffSpeed / 100;
 
-        const rootTrain = trainingData[troopType].find((t) => t.tier === rootTier);
-        const targetTrain = trainingData[troopType].find((t) => t.tier === targetTier);
+        const rootTrain = trainingData[troopType].find((t) => t.tierName === rootTier);
+        const targetTrain = trainingData[troopType].find((t) => t.tierName === targetTier);
 
         if (!targetTrain) {
             setResult((prev) => ({
@@ -382,7 +382,7 @@ const TroopsForm = ({
                         </Select.Control>
                         <Portal>
                             <Select.Positioner>
-                                <Select.Content>
+                                <Select.Content maxHeight="200px" overflowY="auto">
                                     {tierCollection.items.map((tier) => {
                                         return (
                                             <Select.Item item={tier} key={tier.value}>
@@ -417,7 +417,7 @@ const TroopsForm = ({
                     </Select.Control>
                     <Portal>
                         <Select.Positioner>
-                            <Select.Content>
+                            <Select.Content maxHeight="200px" overflowY="auto">
                                 {tierCollection.items.map((tier) => {
                                     if (isPromotion && formValues.rootTier[0]) {
                                         if (
