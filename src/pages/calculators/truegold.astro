@@ -1,0 +1,10 @@
+---
+import '@/styles/global.css';
+
+import TruegoldPage from '@/components/PageComponents/calculators/Truegold/TruegoldPage';
+import DefaultLayout from '@/layouts/default-layout.astro';
+---
+
+<DefaultLayout title="Truegold Calculator">
+  <TruegoldPage client:only="react" />
+</DefaultLayout>

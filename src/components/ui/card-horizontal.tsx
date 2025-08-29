@@ -20,7 +20,7 @@ export const CardHorizontal = ({
     <Link href={href} variant="plain" _hover={{ textDecoration: "none", boxShadow: "md" }}>
         <Card.Root flexDirection="row" overflow="hidden" maxW="lg" asChild variant="elevated">
             <Box>
-                <Image objectFit="cover" maxW="200px" src={img} alt={alt} />
+                <Image objectFit="cover" maxW="150px" src={img} alt={alt} />
                 <Box>
                     <Card.Body>
                         <Card.Title mb="2">{title}</Card.Title>

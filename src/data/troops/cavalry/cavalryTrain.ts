@@ -11,14 +11,16 @@ import {
 import cavalryCost from "./cavalryCost";
 
 const cavalryTrain = tierList.map((elem) => ({
-    tier: elem,
-    buildTime: buildTime[elem],
-    cost: cavalryCost[elem],
-    power: tierPower[elem],
+    id: `cavalry-${elem.name}`,
+    tierId: elem.id,
+    tierName: elem.name,
+    buildTime: buildTime[elem.name],
+    cost: cavalryCost[elem.name],
+    power: tierPower[elem.name],
     points: {
-        hog: tierHogPoints[elem],
-        kvk: tierKvKPoints[elem],
-        sg: tierSGPoints[elem],
+        hog: tierHogPoints[elem.name],
+        kvk: tierKvKPoints[elem.name],
+        sg: tierSGPoints[elem.name],
     },
 }));
 
