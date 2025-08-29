@@ -16,7 +16,7 @@ import {
     VStack,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
-import { useColorModeValue } from "../ui/color-mode";
+import { useColorModeValue } from "../../ui/color-mode";
 
 const INTERVAL_SIZE = 28;
 const INTERVAL_DAYS = new Array(INTERVAL_SIZE).fill(0).map((_, i) => i + 1);
