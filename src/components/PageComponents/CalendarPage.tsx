@@ -49,13 +49,17 @@ function getIntervalDay() {
     return result;
 }
 
-function getKvKRotationNumber() {
+function getKvKRotationNumber(currentWeekNumber: number) {
+    const intervalDay = getIntervalDay();
+    const intervalWeek = Math.ceil(intervalDay / 7);
+    const isNextKvK = intervalWeek > currentWeekNumber;
+
     const result =
         Math.ceil(
-            (FIRST_DAY_AFTER_FIRST_KVK.getTime() - new Date().getTime()) /
+            (FIRST_DAY_AFTER_FIRST_KVK.getTime() - UTC_START_OF_TODAY.getTime()) /
                 (1000 * 60 * 60 * 24) /
                 INTERVAL_SIZE
-        ) + 2;
+        ) + (isNextKvK ? 3 : 2);
 
     return result;
 }
@@ -87,7 +91,8 @@ const CalendarWeeks = () => {
                 }
 
                 const week = (day - 1) / 7 + 1;
-                const kvkRotationNumber = getKvKRotationNumber();
+                const kvkRotationNumber = getKvKRotationNumber(week);
+
                 return (
                     <GridItem
                         key={`calendar-header-week-${day}`}
