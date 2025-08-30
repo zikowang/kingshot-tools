@@ -1,7 +1,6 @@
 /** @format */
 
 import { allianceBrawl } from "./allianceBrawl";
-import { allianceChampionship } from "./allianceChampionship";
 import { allianceMobilization } from "./allianceMobilization";
 import { allOut } from "./allOut";
 import { armamentCompetition } from "./armamentCompetition";
@@ -31,7 +30,8 @@ export const allEvents = [
     strongestGovernor,
     heroRoulette,
 
-    allianceChampionship,
+    // * not important to default player
+    // allianceChampionship,
     allianceBrawl,
     merchantEmpire,
     swordlandShowdown,

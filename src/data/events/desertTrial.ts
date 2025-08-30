@@ -8,5 +8,5 @@ export const desertTrial: Event = {
     shortName: "Desert Trial",
     image: "/img/100x100/events/kingshot-desert-trial-event-icon.png",
     color: "#528ec7",
-    days: [3, 4, 5, 18, 19, 20],
+    days: [3, 4, 5, 17, 18, 19],
 };
