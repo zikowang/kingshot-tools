@@ -1,15 +1,14 @@
 /** @format */
 
-import { useColorModeValue } from "@/components/ui/color-mode";
+import { useColorMode, useColorModeValue } from "@/components/ui/color-mode";
 import { allEvents } from "@/data/events";
 import ReactLayout from "@/layouts/ReactLayout";
 import type { Event } from "@/types/events";
-import { Box, HStack, Image, Popover, Portal, Table, Text } from "@chakra-ui/react";
-import { useMemo, type PropsWithChildren } from "react";
+import { Box, HStack, Image, Popover, Portal, Table, Text, VStack } from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
 
 const INTERVAL_SIZE = 28;
 const INTERVAL_DAYS = new Array(INTERVAL_SIZE).fill(0).map((_, i) => i + 1);
-const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const SERVER_START_DATE = getUTC(new Date("2025-05-30T00:00:00.000Z"));
 const FIRST_DAY_AFTER_FIRST_KVK = getUTC(new Date("2025-08-18T00:00:00.000Z"));
 
@@ -53,6 +52,26 @@ function getKvKRotationNumber(currentWeekNumber: number) {
         ) + (isNextKvK ? 3 : 2);
 
     return result;
+}
+
+function getDayDiffsForDate(day: number): [string, Date] {
+    const intervalDay = getIntervalDay();
+
+    const diff = intervalDay - day;
+
+    if (diff === 0) {
+        return ["Today", new Date()];
+    }
+
+    if (diff === -1) {
+        return ["Tomorrow", new Date(Date.now() + 86400000)];
+    }
+
+    if (diff < 0) {
+        return [`in ${Math.abs(diff)} days`, new Date(Date.now() + Math.abs(diff) * 86400000)];
+    }
+
+    return [`in ${28 - diff} days`, new Date(Date.now() + (28 - diff) * 86400000)];
 }
 
 const CalendarCell = ({ isActiveDay, children }: { isActiveDay: boolean } & PropsWithChildren) => {
@@ -128,26 +147,10 @@ const CalendarRow = ({ event }: { event: Event }) => {
             {INTERVAL_DAYS.map((day) => {
                 const isActive = event.days.includes(day);
                 const isActiveDay = intervalDay === day;
-                const [dayDiffText, date] = useMemo(() => {
-                    const diff = intervalDay - day;
-
-                    if (diff === 0) {
-                        return ["Today", new Date()];
-                    }
-
-                    if (diff === -1) {
-                        return ["Tomorrow", new Date(Date.now() + 86400000)];
-                    }
-
-                    if (diff < 0) {
-                        return [
-                            `in ${Math.abs(diff)} days`,
-                            new Date(Date.now() + Math.abs(diff) * 86400000),
-                        ];
-                    }
-
-                    return [`in ${28 - diff} days`, new Date(Date.now() + (28 - diff) * 86400000)];
-                }, [intervalDay, day]);
+                const [dayDiffText, date] = useMemo(
+                    () => getDayDiffsForDate(day),
+                    [intervalDay, day]
+                );
 
                 if (!isActive) {
                     return (
@@ -214,19 +217,120 @@ const CalendarRow = ({ event }: { event: Event }) => {
     );
 };
 
-const CalendarPage = () => {
+const CalendarWeeksHeader = () => {
+    return (
+        <Table.Row bg="bg.subtle">
+            <Table.ColumnHeader data-sticky="end" left={0} top={0} minW={firstColumnWidth} />
+
+            {INTERVAL_DAYS.map((day) => {
+                if (day % 7 !== 1) {
+                    return null;
+                }
+
+                const week = (day - 1) / 7 + 1;
+                const kvkRotationNumber = getKvKRotationNumber(week);
+
+                return (
+                    <Table.ColumnHeader
+                        key={`calendar-header-week-${day}`}
+                        colSpan={7}
+                        height={12}
+                        bgColor={week % 2 === 0 ? "gray" : "darkgray"}
+                    >
+                        {`KvK ${kvkRotationNumber} (Week ${week})`}
+                    </Table.ColumnHeader>
+                );
+            })}
+        </Table.Row>
+    );
+};
+
+const CalendarDaysHeader = () => {
     const intervalDay = getIntervalDay();
+    const { colorMode } = useColorMode();
+
+    return (
+        <Table.Row bg="bg.subtle" zIndex={10}>
+            <Table.ColumnHeader
+                bgColor={"transparent"}
+                data-sticky="end"
+                height={16}
+                left={0}
+                top={0}
+                minW={firstColumnWidth}
+            >
+                <HStack alignItems="baseline">
+                    <Text>Day:</Text>
+                    <Text fontWeight="bold" fontSize={20}>
+                        {getServerDay()}
+                    </Text>
+                </HStack>
+            </Table.ColumnHeader>
+
+            {INTERVAL_DAYS.map((day) => {
+                const isActiveDay = intervalDay === day;
+                const [_, date] = useMemo(() => getDayDiffsForDate(day), [intervalDay, day]);
+
+                return (
+                    <Table.ColumnHeader
+                        key={`calendar-header-day-${day}`}
+                        height={12}
+                        bgColor={
+                            isActiveDay
+                                ? colorMode === "light"
+                                    ? "lightgrey"
+                                    : "grey"
+                                : "transparent"
+                        }
+                    >
+                        <VStack gap={0}>
+                            <Text fontWeight="bold">
+                                {date.toLocaleDateString(undefined, {
+                                    weekday: "short",
+                                })}
+                            </Text>
+                            <Text>
+                                {date.toLocaleDateString(undefined, {
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                })}
+                            </Text>
+                        </VStack>
+                    </Table.ColumnHeader>
+                );
+            })}
+        </Table.Row>
+    );
+};
+
+const CalendarPage = () => {
+    const calendarRef = useRef<HTMLDivElement>(null);
+
+    const intervalDay = getIntervalDay();
+
+    useEffect(() => {
+        if (calendarRef.current) {
+            const scrollTo = (intervalDay - 1) * 50 + 25;
+
+            calendarRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+        }
+    }, [intervalDay]);
 
     return (
         <ReactLayout>
-            <Table.ScrollArea borderWidth="1px" rounded="md" height="calc(100vh - 120px)">
+            <Text textStyle="3xl" fontWeight="bold">
+                Calendar #351
+            </Text>
+
+            <Table.ScrollArea height="calc(100vh - 210px)" ref={calendarRef} mt={8}>
                 <Table.Root
                     size="sm"
+                    showColumnBorder
                     stickyHeader
                     css={{
                         "& [data-sticky]": {
                             position: "sticky",
-                            zIndex: 0,
+                            zIndex: 1,
                             bg: "bg",
 
                             _after: {
@@ -257,65 +361,9 @@ const CalendarPage = () => {
                     }}
                 >
                     <Table.Header>
-                        <Table.Row bg="bg.subtle">
-                            <Table.ColumnHeader
-                                data-sticky="end"
-                                left="0"
-                                zIndex={2}
-                                minW={firstColumnWidth}
-                            >
-                                <Box left="0" zIndex={20} position="absolute">
-                                    #351
-                                </Box>
-                            </Table.ColumnHeader>
-                            {INTERVAL_DAYS.map((day) => {
-                                if (day % 7 !== 1) {
-                                    return null;
-                                }
+                        {/* <CalendarWeeksHeader /> */}
 
-                                const week = (day - 1) / 7 + 1;
-                                const kvkRotationNumber = getKvKRotationNumber(week);
-
-                                return (
-                                    <Table.ColumnHeader
-                                        key={`calendar-header-week-${day}`}
-                                        colSpan={7}
-                                        height={12}
-                                        bgColor={week % 2 === 0 ? "gray" : "darkgray"}
-                                    >
-                                        {`KvK ${kvkRotationNumber} (Week ${week})`}
-                                    </Table.ColumnHeader>
-                                );
-                            })}
-                        </Table.Row>
-
-                        <Table.Row bg="bg.subtle">
-                            <Table.ColumnHeader
-                                data-sticky="end"
-                                left="0"
-                                zIndex={2}
-                                height={12}
-                                minW={firstColumnWidth}
-                            >
-                                <Box left="0" zIndex={20} position="absolute">
-                                    day 21
-                                </Box>
-                            </Table.ColumnHeader>
-
-                            {INTERVAL_DAYS.map((day) => {
-                                const isActiveDay = intervalDay === day;
-
-                                return (
-                                    <Table.ColumnHeader
-                                        key={`calendar-header-day-${day}`}
-                                        height={12}
-                                        bgColor={isActiveDay ? "lightgrey" : "darkgrey"}
-                                    >
-                                        {WEEK_DAYS[day % 7]}
-                                    </Table.ColumnHeader>
-                                );
-                            })}
-                        </Table.Row>
+                        <CalendarDaysHeader />
                     </Table.Header>
 
                     <Table.Body>
