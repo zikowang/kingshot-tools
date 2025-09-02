@@ -17,8 +17,13 @@ export const CardHorizontal = ({
     href: string;
     badges?: React.ReactNode;
 }) => (
-    <Link href={href} variant="plain" _hover={{ textDecoration: "none", boxShadow: "md" }}>
-        <Card.Root flexDirection="row" overflow="hidden" maxW="lg" asChild variant="elevated">
+    <Link
+        href={href}
+        variant="plain"
+        width="100%"
+        _hover={{ textDecoration: "none", boxShadow: "md" }}
+    >
+        <Card.Root flexDirection="row" overflow="hidden" width="100%" asChild variant="elevated">
             <Box>
                 <Image objectFit="cover" maxW="150px" src={img} alt={alt} />
                 <Box>

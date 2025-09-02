@@ -37,7 +37,7 @@ const ShortLinks = () => {
 
                 <CardVertical
                     title="Troop Calculator"
-                    img={`/img/kingshot-archer.png`}
+                    img={`/img/kingshot-troops.png`}
                     alt="troops calculator teaser image"
                     description="Find out how many speed ups and resources you need for your troop training and promotions."
                     href="/calculators/troop"
@@ -51,7 +51,7 @@ const ShortLinks = () => {
 
                 <CardVertical
                     title="Truegold Calculator"
-                    img={`/img/coming-soon-${colorMode}.jpeg`}
+                    img={`/img/kingshot-truegold-calculator-blue.png`}
                     alt="truegold calculator teaser image"
                     description="Find out how many speed ups and resources you need for your truegold buildings"
                     href="/calculators/truegold"
@@ -91,7 +91,7 @@ const ShortLinks = () => {
 
                 <CardHorizontal
                     title="Troop Calculator"
-                    img={`/img/kingshot-archer.png`}
+                    img={`/img/kingshot-troops.png`}
                     alt="troops calculator teaser image"
                     description="Find out how many speed ups and resources you need for your troop training and promotions."
                     href="/calculators/troop"
@@ -105,7 +105,7 @@ const ShortLinks = () => {
 
                 <CardHorizontal
                     title="Truegold Calculator"
-                    img={`/img/coming-soon-${colorMode}.jpeg`}
+                    img={`/img/kingshot-truegold-calculator-blue.png`}
                     alt="truegold calculator teaser image"
                     description="Find out how many speed ups and resources you need for your truegold buildings"
                     href="/calculators/truegold"
