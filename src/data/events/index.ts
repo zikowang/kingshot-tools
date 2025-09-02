@@ -5,6 +5,7 @@ import { allianceMobilization } from "./allianceMobilization";
 import { allOut } from "./allOut";
 import { armamentCompetition } from "./armamentCompetition";
 import { buccaneerBounty } from "./buccaneerBounty";
+import { callOfSovereign } from "./callOfSovereign";
 import { castleBattle } from "./castleBattle";
 import { cesaresFury } from "./cesaresFury";
 import { defeatBeasts } from "./defeatBeasts";
@@ -40,6 +41,7 @@ export const allEvents = [
 
     hallOfHeroes,
     goldenGlaives,
+    callOfSovereign,
     eternitysReach,
     vikingsVengeance,
     cesaresFury,
