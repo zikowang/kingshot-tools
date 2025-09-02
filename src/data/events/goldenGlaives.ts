@@ -1,6 +1,7 @@
 /** @format */
 
 import type { Event } from "@/types/events";
+import { resources, speedups, truegold } from "../items";
 
 export const goldenGlaives: Event = {
     id: "golden-glaives",
@@ -9,4 +10,6 @@ export const goldenGlaives: Event = {
     image: "/img/100x100/events/kingshot-golden-glaives-event-icon.png",
     color: "#e48423",
     days: [8, 9],
+    rewards: [truegold, speedups, resources],
+    optionalTodo: ["Finish Intel Missions", "Defeat Golden Glaives"],
 };

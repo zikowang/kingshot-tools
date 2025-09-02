@@ -1,6 +1,15 @@
 /** @format */
 
 import type { Event } from "@/types/events";
+import {
+    artisansVision,
+    charmDesign,
+    charmGuide,
+    forgeHammer,
+    mithril,
+    mythicGeneralHeroShard,
+    widget,
+} from "../items";
 
 export const champagneFair: Event = {
     id: "champagne-fair",
@@ -9,4 +18,14 @@ export const champagneFair: Event = {
     image: "/img/100x100/events/kingshot-champagne-fair-event-icon.png",
     color: "#e48423",
     days: [3, 4, 5, 18, 19, 20],
+    rewards: [
+        widget,
+        mithril,
+        forgeHammer,
+        mythicGeneralHeroShard,
+        artisansVision,
+        charmDesign,
+        charmGuide,
+    ],
+    optionalTodo: ["Exchange Hero Shards", "Exchange Hero Skill Books"],
 };

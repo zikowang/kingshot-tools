@@ -1,6 +1,12 @@
 /** @format */
 
 import type { Event } from "@/types/events";
+import {
+    artisansVision,
+    gems,
+    mythicConquestSkillManual,
+    mythicExpeditionSkillManual,
+} from "../items";
 
 export const armamentCompetition: Event = {
     id: "armament-competition",
@@ -9,4 +15,6 @@ export const armamentCompetition: Event = {
     image: "/img/100x100/events/kingshot-armament-competition-event-icon.png",
     color: "#528ec7",
     days: [1, 2, 5, 6, 15, 16, 19, 20],
+    rewards: [gems, artisansVision, mythicExpeditionSkillManual, mythicConquestSkillManual],
+    todo: ["Raise Governor Gear", "Use Truegold", "Use Hero Shards", "Use Speedups"],
 };
