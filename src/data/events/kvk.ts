@@ -1,6 +1,7 @@
 /** @format */
 
 import type { Event } from "@/types/events";
+import { gems, kingdomCoins } from "../items";
 
 export const kvkMatchmakingPhase: Event = {
     id: "kvkMatchmakingPhase",
@@ -9,6 +10,8 @@ export const kvkMatchmakingPhase: Event = {
     image: "/img/100x100/events/kingshot-kingdom-of-power-event-icon.png",
     color: "#FF5733",
     days: [20, 21],
+    rewards: [gems, kingdomCoins],
+    todo: [],
 };
 
 export const kvkPreparationPhase: Event = {

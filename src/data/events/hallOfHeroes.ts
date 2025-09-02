@@ -1,6 +1,7 @@
 /** @format */
 
 import type { Event } from "@/types/events";
+import { mythicHeroShard } from "../items";
 
 export const hallOfHeroes: Event = {
     id: "hall-of-heroes",
@@ -9,4 +10,6 @@ export const hallOfHeroes: Event = {
     image: "/img/100x100/events/kingshot-hall-of-heroes-event-icon.png",
     color: "#8b76c6",
     days: [1, 2, 7, 8, 9, 14, 15, 16, 21, 22, 23, 28],
+    rewards: [mythicHeroShard],
+    optionalTodo: ["Use gems to obtain Hero Shards"],
 };

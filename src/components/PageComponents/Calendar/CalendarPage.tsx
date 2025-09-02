@@ -4,7 +4,18 @@ import { useColorMode, useColorModeValue } from "@/components/ui/color-mode";
 import { allEvents } from "@/data/events";
 import ReactLayout from "@/layouts/ReactLayout";
 import type { Event } from "@/types/events";
-import { Box, HStack, Image, Popover, Portal, Table, Text, VStack } from "@chakra-ui/react";
+import {
+    Box,
+    HStack,
+    Image,
+    List,
+    ListItem,
+    Popover,
+    Portal,
+    Table,
+    Text,
+    VStack,
+} from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
 
 const INTERVAL_SIZE = 28;
@@ -74,6 +85,107 @@ function getDayDiffsForDate(day: number): [string, Date] {
     return [`in ${28 - diff} days`, new Date(Date.now() + (28 - diff) * 86400000)];
 }
 
+const EventInformationPopover = ({
+    event,
+    isActive,
+    isActiveDay,
+    date,
+    dayDiffText,
+}: {
+    event: Event;
+    isActive: boolean;
+    isActiveDay: boolean;
+    date?: Date;
+    dayDiffText?: string;
+}) => {
+    return (
+        <Popover.Root>
+            <Popover.Trigger asChild>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    width="100%"
+                    height="100%"
+                    bgColor={isActive ? event.color : "transparent"}
+                    opacity={isActiveDay ? 1 : 0.4}
+                    _hover={{ opacity: 1, cursor: "pointer" }}
+                    transition="opacity 0.2s ease-in-out"
+                >
+                    <Image src={event.image} alt={event.name} width={8} />
+                </Box>
+            </Popover.Trigger>
+            <Portal>
+                <Popover.Positioner>
+                    <Popover.Content>
+                        <Popover.Arrow />
+                        <Popover.Body>
+                            <Popover.Title fontWeight="medium">
+                                <HStack>
+                                    <Image src={event.image} alt={event.name} width={8} />
+                                    {`${event.name}`}
+                                </HStack>
+                            </Popover.Title>
+                            {date && dayDiffText ? (
+                                <Text my="4">
+                                    {` ${dayDiffText} (${date.toLocaleDateString(undefined, {
+                                        weekday: "long",
+                                        month: "2-digit",
+                                        day: "2-digit",
+                                        year: "numeric",
+                                    })})`}
+                                </Text>
+                            ) : null}
+                            {event.rewards && event.rewards.length > 0 && (
+                                <>
+                                    <Text my={2}>Rewards:</Text>
+                                    <List.Root ps={4}>
+                                        {event.rewards.map((reward) => (
+                                            <ListItem key={reward.name}>
+                                                <HStack>
+                                                    <Text>{reward.name}</Text>
+                                                </HStack>
+                                            </ListItem>
+                                        ))}
+                                    </List.Root>
+                                </>
+                            )}
+                            {event.todo && event.todo.length > 0 && (
+                                <>
+                                    <Text my={2}>Todos:</Text>
+                                    <List.Root ps={4}>
+                                        {event.todo.map((todo) => (
+                                            <ListItem key={`${event.id}-${todo}`}>
+                                                <HStack>
+                                                    <Text>{todo}</Text>
+                                                </HStack>
+                                            </ListItem>
+                                        ))}
+                                    </List.Root>
+                                </>
+                            )}
+                            {event.optionalTodo && event.optionalTodo.length > 0 && (
+                                <>
+                                    <Text my={2}>Optional Todos:</Text>
+                                    <List.Root ps={4}>
+                                        {event.optionalTodo.map((optionalTodo) => (
+                                            <ListItem key={`${event.id}-${optionalTodo}`}>
+                                                <HStack>
+                                                    <Text>{optionalTodo}</Text>
+                                                </HStack>
+                                            </ListItem>
+                                        ))}
+                                    </List.Root>
+                                </>
+                            )}
+                        </Popover.Body>
+                    </Popover.Content>
+                </Popover.Positioner>
+            </Portal>
+        </Popover.Root>
+    );
+};
+
 const CalendarCell = ({ isActiveDay, children }: { isActiveDay: boolean } & PropsWithChildren) => {
     const activeBgColor = useColorModeValue("lightgrey", "grey");
 
@@ -105,40 +217,17 @@ const CalendarRow = ({ event }: { event: Event }) => {
                 padding={0}
             >
                 <HStack bgColor={event.color} height={12}>
-                    <Popover.Root>
-                        <Popover.Trigger asChild>
-                            <Box
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
-                                width={{ base: "100px", md: "unset" }}
-                                px={1}
-                                _hover={{ cursor: "pointer" }}
-                            >
-                                <Image src={event.image} alt={event.name} width={8} />
-                            </Box>
-                        </Popover.Trigger>
-                        <Portal>
-                            <Popover.Positioner>
-                                <Popover.Content>
-                                    <Popover.Arrow />
-                                    <Popover.Body>
-                                        <Popover.Title fontWeight="medium">
-                                            <HStack>
-                                                <Image
-                                                    src={event.image}
-                                                    alt={event.name}
-                                                    width={8}
-                                                />
-                                                {`${event.name}`}
-                                            </HStack>
-                                        </Popover.Title>
-                                    </Popover.Body>
-                                </Popover.Content>
-                            </Popover.Positioner>
-                        </Portal>
-                    </Popover.Root>
-                    <Text ml={1} display={{ base: "none", md: "block" }}>
+                    <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        width={{ base: "100px", md: "unset" }}
+                        px={1}
+                        _hover={{ cursor: "pointer" }}
+                    >
+                        <EventInformationPopover event={event} isActive={true} isActiveDay={true} />
+                    </Box>
+                    <Text ml={1} display={{ base: "none", md: "block" }} flexGrow={1}>
                         {event.shortName}
                     </Text>
                 </HStack>
@@ -163,53 +252,13 @@ const CalendarRow = ({ event }: { event: Event }) => {
 
                 return (
                     <CalendarCell key={`${event.id}-${day}`} isActiveDay={intervalDay === day}>
-                        <Popover.Root>
-                            <Popover.Trigger asChild>
-                                <Box
-                                    display="flex"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    width="100%"
-                                    height="100%"
-                                    bgColor={isActive ? event.color : "transparent"}
-                                    opacity={isActiveDay ? 1 : 0.4}
-                                    _hover={{ opacity: 1, cursor: "pointer" }}
-                                    transition="opacity 0.2s ease-in-out"
-                                >
-                                    <Image src={event.image} alt={event.name} width={8} />
-                                </Box>
-                            </Popover.Trigger>
-                            <Portal>
-                                <Popover.Positioner>
-                                    <Popover.Content>
-                                        <Popover.Arrow />
-                                        <Popover.Body>
-                                            <Popover.Title fontWeight="medium">
-                                                <HStack>
-                                                    <Image
-                                                        src={event.image}
-                                                        alt={event.name}
-                                                        width={8}
-                                                    />
-                                                    {`${event.name}`}
-                                                </HStack>
-                                            </Popover.Title>
-                                            <Text my="4">
-                                                {` ${dayDiffText} (${date.toLocaleDateString(
-                                                    undefined,
-                                                    {
-                                                        weekday: "long",
-                                                        month: "2-digit",
-                                                        day: "2-digit",
-                                                        year: "numeric",
-                                                    }
-                                                )})`}
-                                            </Text>
-                                        </Popover.Body>
-                                    </Popover.Content>
-                                </Popover.Positioner>
-                            </Portal>
-                        </Popover.Root>
+                        <EventInformationPopover
+                            event={event}
+                            isActive={isActive}
+                            isActiveDay={isActiveDay}
+                            dayDiffText={dayDiffText}
+                            date={date}
+                        />
                     </CalendarCell>
                 );
             })}

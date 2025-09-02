@@ -1,5 +1,10 @@
 /** @format */
 
+export type Item = {
+    name: string;
+    image?: string;
+};
+
 export type Event = {
     id: string;
     name: string;
@@ -7,4 +12,7 @@ export type Event = {
     image?: string;
     color: string;
     days: number[];
+    rewards?: Item[];
+    todo?: string[];
+    optionalTodo?: string[];
 };
