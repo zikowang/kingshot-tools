@@ -1,8 +1,8 @@
 /** @format */
 
-import ComingSoon from "@/components/PageComponents/ComingSoonPage";
 import ReactLayout from "@/layouts/ReactLayout";
 import { Text } from "@chakra-ui/react";
+import TruegoldForm from "./TruegoldForm";
 
 const TruegoldPage = () => {
     return (
@@ -11,7 +11,7 @@ const TruegoldPage = () => {
                 Truegold Calculator
             </Text>
 
-            <ComingSoon />
+            <TruegoldForm />
         </ReactLayout>
     );
 };

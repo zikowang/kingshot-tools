@@ -252,12 +252,7 @@ const TroopsForm = ({
     }, [formValues, isPromotion]);
 
     return (
-        <Box
-            onSubmit={(e) => {
-                e.preventDefault();
-            }}
-            style={{ width: "100%" }}
-        >
+        <Box style={{ width: "100%" }}>
             <Stack gap={4} width="100%">
                 <SegmentGroup.Root
                     defaultValue={DEFAULT_CALCULATION_TYPE}
