@@ -4,7 +4,7 @@ import type { BuildingStage } from "@/types/building";
 import type { TruegoldFormValues } from "@/types/forms";
 import { ChevronRightIcon } from "@chakra-ui/icons/ChevronRight";
 
-import { Button, Dialog, Grid } from "@chakra-ui/react";
+import { Button, CloseButton, Dialog, Grid, Portal } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 function getVariant(
@@ -106,54 +106,64 @@ const SelectTier = ({
                         )}
                     </Button>
                 </Dialog.Trigger>
-                <Dialog.Backdrop />
-                <Dialog.Positioner>
-                    <Dialog.Content>
-                        <Dialog.CloseTrigger />
-                        <Dialog.Header>
-                            <Dialog.Title>{label}</Dialog.Title>
-                        </Dialog.Header>
-                        <Dialog.Body>
-                            <Grid
-                                width="100%"
-                                gridTemplateColumns={"repeat(5, 1fr)"}
-                                gridTemplateRows={"repeat(6, 50px)"}
-                                gap={1}
-                            >
-                                {options.map((item) => {
-                                    const isDisabled =
-                                        newValue.from === newValue.to &&
-                                        String(item.level) < newValue.from;
-                                    const isStart = newValue.from === String(item.level);
-                                    const isEnd = newValue.to === String(item.level);
-                                    const isBetween =
-                                        !!newValue.to &&
-                                        newValue.from < String(item.level) &&
-                                        newValue.to > String(item.level);
+                <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                        <Dialog.Content>
+                            <Dialog.CloseTrigger />
+                            <Dialog.Header>
+                                <Dialog.Title>{label}</Dialog.Title>
+                            </Dialog.Header>
+                            <Dialog.Body>
+                                <Grid
+                                    width="100%"
+                                    gridTemplateColumns={"repeat(5, 1fr)"}
+                                    gridTemplateRows={"repeat(6, 50px)"}
+                                    gap={1}
+                                >
+                                    {options.map((item) => {
+                                        const isDisabled =
+                                            newValue.from === newValue.to &&
+                                            String(item.level) < newValue.from;
+                                        const isStart = newValue.from === String(item.level);
+                                        const isEnd = newValue.to === String(item.level);
+                                        const isBetween =
+                                            !!newValue.to &&
+                                            newValue.from < String(item.level) &&
+                                            newValue.to > String(item.level);
 
-                                    const { variant, color } = getSelectButtonColorAndVariant(
-                                        isStart,
-                                        isEnd,
-                                        isBetween
-                                    );
+                                        const { variant, color } = getSelectButtonColorAndVariant(
+                                            isStart,
+                                            isEnd,
+                                            isBetween
+                                        );
 
-                                    return (
-                                        <Button
-                                            key={item.id}
-                                            variant={variant}
-                                            colorPalette={color}
-                                            onClick={() => handleClick(item)}
-                                            disabled={isDisabled}
-                                            height="100%"
-                                        >
-                                            {item.id.replace("-", " ").toUpperCase()}
-                                        </Button>
-                                    );
-                                })}
-                            </Grid>
-                        </Dialog.Body>
-                    </Dialog.Content>
-                </Dialog.Positioner>
+                                        return (
+                                            <Button
+                                                key={item.id}
+                                                variant={variant}
+                                                colorPalette={color}
+                                                onClick={() => handleClick(item)}
+                                                disabled={isDisabled}
+                                                height="100%"
+                                            >
+                                                {item.id.replace("-", " ").toUpperCase()}
+                                            </Button>
+                                        );
+                                    })}
+                                </Grid>
+                            </Dialog.Body>
+                            <Dialog.Footer>
+                                <Dialog.ActionTrigger asChild>
+                                    <Button variant="outline">Close</Button>
+                                </Dialog.ActionTrigger>
+                            </Dialog.Footer>
+                            <Dialog.CloseTrigger asChild>
+                                <CloseButton size="sm" />
+                            </Dialog.CloseTrigger>
+                        </Dialog.Content>
+                    </Dialog.Positioner>
+                </Portal>
             </Dialog.Root>
         </>
     );
