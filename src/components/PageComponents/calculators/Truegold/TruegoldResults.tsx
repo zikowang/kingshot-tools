@@ -118,16 +118,16 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                 <Drawer.Title>Building Details</Drawer.Title>
                             </Drawer.Header>
                             <Drawer.Body>
-                                <Grid gridTemplateColumns="repeat(3, 1fr)" gap={2}>
+                                <Grid gridTemplateColumns="2fr 1fr 2fr" gap={2}>
                                     {result.buildingList.map((building) => (
                                         <React.Fragment key={building.id}>
-                                            <Text>{building.name}</Text>
+                                            <Text fontWeight="bold">{building.name}</Text>
 
                                             <HStack justifyContent="center" alignItems="center">
                                                 <Image
                                                     src="/img/100x100/resources/kingshot-truegold.png"
                                                     alt="Truegold"
-                                                    height={6}
+                                                    height={5}
                                                 />
                                                 <Text>
                                                     {new Intl.NumberFormat(undefined, {
@@ -153,7 +153,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                                     <Image
                                                         src="/img/100x100/resources/kingshot-bread.png"
                                                         alt="Bread"
-                                                        height={6}
+                                                        height={5}
                                                     />
                                                     <Text>
                                                         {new Intl.NumberFormat(undefined, {
@@ -170,7 +170,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                                     <Image
                                                         src="/img/100x100/resources/kingshot-wood.png"
                                                         alt="Wood"
-                                                        height={6}
+                                                        height={5}
                                                     />
                                                     <Text>
                                                         {new Intl.NumberFormat(undefined, {
@@ -187,7 +187,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                                     <Image
                                                         src="/img/100x100/resources/kingshot-stone.png"
                                                         alt="Stone"
-                                                        height={6}
+                                                        height={5}
                                                     />
                                                     <Text>
                                                         {new Intl.NumberFormat(undefined, {
@@ -204,7 +204,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                                     <Image
                                                         src="/img/100x100/resources/kingshot-iron.png"
                                                         alt="Iron"
-                                                        height={6}
+                                                        height={5}
                                                     />
                                                     <Text>
                                                         {new Intl.NumberFormat(undefined, {
