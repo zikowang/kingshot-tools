@@ -7,6 +7,7 @@ const townCenterBuild = [
         stages: [
             {
                 id: "tc-30",
+                type: "tc",
                 name: "Town Center 30",
                 level: 30,
                 buildTime: 0,
@@ -22,6 +23,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-30-1",
+                type: "tc",
                 name: "Town Center 30-1",
                 level: 31,
                 buildTime: 604_800,
@@ -37,6 +39,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-30-2",
+                type: "tc",
                 name: "Town Center 30-2",
                 level: 32,
                 buildTime: 604_800,
@@ -52,6 +55,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-30-3",
+                type: "tc",
                 name: "Town Center 30-3",
                 level: 33,
                 buildTime: 604_800,
@@ -67,6 +71,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-30-4",
+                type: "tc",
                 name: "Town Center 30-4",
                 level: 34,
                 buildTime: 604_800,
@@ -88,6 +93,7 @@ const townCenterBuild = [
         stages: [
             {
                 id: "tc-tg1",
+                type: "tc",
                 name: "Town Center TG 1",
                 level: 35,
                 buildTime: 604_800,
@@ -103,6 +109,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg1-1",
+                type: "tc",
                 name: "Town Center TG 1-1",
                 level: 36,
                 buildTime: 777_600,
@@ -118,6 +125,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg1-2",
+                type: "tc",
                 name: "Town Center TG 1-2",
                 level: 37,
                 buildTime: 777_600,
@@ -133,6 +141,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg1-3",
+                type: "tc",
                 name: "Town Center TG 1-3",
                 level: 38,
                 buildTime: 777_600,
@@ -148,6 +157,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg1-4",
+                type: "tc",
                 name: "Town Center TG 1-4",
                 level: 39,
                 buildTime: 777_600,
@@ -169,6 +179,7 @@ const townCenterBuild = [
         stages: [
             {
                 id: "tc-tg2",
+                type: "tc",
                 name: "Town Center TG 2",
                 level: 40,
                 buildTime: 777_600,
@@ -184,6 +195,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg2-1",
+                type: "tc",
                 name: "Town Center TG 2-1",
                 level: 41,
                 buildTime: 950_400,
@@ -199,6 +211,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg2-2",
+                type: "tc",
                 name: "Town Center TG 2-2",
                 level: 42,
                 buildTime: 950_400,
@@ -214,6 +227,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg2-3",
+                type: "tc",
                 name: "Town Center TG 2-3",
                 level: 43,
                 buildTime: 950_400,
@@ -229,6 +243,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg2-4",
+                type: "tc",
                 name: "Town Center TG 2-4",
                 level: 44,
                 buildTime: 950_400,
@@ -250,6 +265,7 @@ const townCenterBuild = [
         stages: [
             {
                 id: "tc-tg3",
+                type: "tc",
                 name: "Town Center TG 3",
                 level: 45,
                 buildTime: 950_400,
@@ -265,6 +281,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg3-1",
+                type: "tc",
                 name: "Town Center TG 3-1",
                 level: 46,
                 buildTime: 1_036_800,
@@ -280,6 +297,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg3-2",
+                type: "tc",
                 name: "Town Center TG 3-2",
                 level: 47,
                 buildTime: 950_400,
@@ -295,6 +313,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg3-3",
+                type: "tc",
                 name: "Town Center TG 3-3",
                 level: 48,
                 buildTime: 950_400,
@@ -310,6 +329,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg3-4",
+                type: "tc",
                 name: "Town Center TG 3-4",
                 level: 49,
                 buildTime: 950_400,
@@ -331,6 +351,7 @@ const townCenterBuild = [
         stages: [
             {
                 id: "tc-tg4",
+                type: "tc",
                 name: "Town Center TG 4",
                 level: 50,
                 buildTime: 1_036_800,
@@ -346,6 +367,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg4-1",
+                type: "tc",
                 name: "Town Center TG 4-1",
                 level: 51,
                 buildTime: 1_209_600,
@@ -361,6 +383,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg4-2",
+                type: "tc",
                 name: "Town Center TG 4-2",
                 level: 52,
                 buildTime: 950_400,
@@ -376,6 +399,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg4-3",
+                type: "tc",
                 name: "Town Center TG 4-3",
                 level: 53,
                 buildTime: 950_400,
@@ -391,6 +415,7 @@ const townCenterBuild = [
             },
             {
                 id: "tc-tg4-4",
+                type: "tc",
                 name: "Town Center TG 4-4",
                 level: 54,
                 buildTime: 950_400,
@@ -412,6 +437,7 @@ const townCenterBuild = [
         stages: [
             {
                 id: "tc-tg5",
+                type: "tc",
                 name: "Town Center TG 5",
                 level: 55,
                 buildTime: 1_209_600,

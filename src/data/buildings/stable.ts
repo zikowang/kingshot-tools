@@ -1,12 +1,15 @@
 /** @format */
 
-const stableBuild = [
+import type { Building } from "@/types/building";
+
+const stableBuild: Building[] = [
     {
         id: "st-30",
         name: "Stable 30",
         stages: [
             {
                 id: "st-30",
+                type: "st",
                 name: "Stable 30",
                 level: 30,
                 buildTime: 0,
@@ -22,6 +25,7 @@ const stableBuild = [
             },
             {
                 id: "st-30-1",
+                type: "st",
                 name: "Stable 30-1",
                 level: 31,
                 buildTime: 90_720,
@@ -37,6 +41,7 @@ const stableBuild = [
             },
             {
                 id: "st-30-2",
+                type: "st",
                 name: "Stable 30-2",
                 level: 32,
                 buildTime: 90_720,
@@ -52,6 +57,7 @@ const stableBuild = [
             },
             {
                 id: "st-30-3",
+                type: "st",
                 name: "Stable 30-3",
                 level: 33,
                 buildTime: 90_720,
@@ -67,6 +73,7 @@ const stableBuild = [
             },
             {
                 id: "st-30-4",
+                type: "st",
                 name: "Stable 30-4",
                 level: 34,
                 buildTime: 90_720,
@@ -88,6 +95,7 @@ const stableBuild = [
         stages: [
             {
                 id: "st-tg1",
+                type: "st",
                 name: "Stable TG 1",
                 level: 35,
                 buildTime: 90_720,
@@ -103,6 +111,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg1-1",
+                type: "st",
                 name: "Stable TG 1-1",
                 level: 36,
                 buildTime: 116_640,
@@ -118,6 +127,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg1-2",
+                type: "st",
                 name: "Stable TG 1-2",
                 level: 37,
                 buildTime: 116_640,
@@ -133,6 +143,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg1-3",
+                type: "st",
                 name: "Stable TG 1-3",
                 level: 38,
                 buildTime: 116_640,
@@ -148,6 +159,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg1-4",
+                type: "st",
                 name: "Stable TG 1-4",
                 level: 39,
                 buildTime: 116_640,
@@ -169,6 +181,7 @@ const stableBuild = [
         stages: [
             {
                 id: "st-tg2",
+                type: "st",
                 name: "Stable TG 2",
                 level: 40,
                 buildTime: 116_640,
@@ -184,6 +197,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg2-1",
+                type: "st",
                 name: "Stable TG 2-1",
                 level: 41,
                 buildTime: 142_560,
@@ -199,6 +213,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg2-2",
+                type: "st",
                 name: "Stable TG 2-2",
                 level: 42,
                 buildTime: 142_560,
@@ -214,6 +229,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg2-3",
+                type: "st",
                 name: "Stable TG 2-3",
                 level: 43,
                 buildTime: 142_560,
@@ -229,6 +245,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg2-4",
+                type: "st",
                 name: "Stable TG 2-4",
                 level: 44,
                 buildTime: 142_560,
@@ -250,6 +267,7 @@ const stableBuild = [
         stages: [
             {
                 id: "st-tg3",
+                type: "st",
                 name: "Stable TG 3",
                 level: 45,
                 buildTime: 142_560,
@@ -265,6 +283,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg3-1",
+                type: "st",
                 name: "Stable TG 3-1",
                 level: 46,
                 buildTime: 155_520,
@@ -280,6 +299,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg3-2",
+                type: "st",
                 name: "Stable TG 3-2",
                 level: 47,
                 buildTime: 155_520,
@@ -295,6 +315,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg3-3",
+                type: "st",
                 name: "Stable TG 3-3",
                 level: 48,
                 buildTime: 155_520,
@@ -310,6 +331,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg3-4",
+                type: "st",
                 name: "Stable TG 3-4",
                 level: 49,
                 buildTime: 155_520,
@@ -331,6 +353,7 @@ const stableBuild = [
         stages: [
             {
                 id: "st-tg4",
+                type: "st",
                 name: "Stable TG 4",
                 level: 50,
                 buildTime: 155_520,
@@ -346,6 +369,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg4-1",
+                type: "st",
                 name: "Stable TG 4-1",
                 level: 51,
                 buildTime: 181_440,
@@ -361,6 +385,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg4-2",
+                type: "st",
                 name: "Stable TG 4-2",
                 level: 52,
                 buildTime: 181_440,
@@ -376,6 +401,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg4-3",
+                type: "st",
                 name: "Stable TG 4-3",
                 level: 53,
                 buildTime: 181_440,
@@ -391,6 +417,7 @@ const stableBuild = [
             },
             {
                 id: "st-tg4-4",
+                type: "st",
                 name: "Stable TG 4-4",
                 level: 54,
                 buildTime: 181_440,
@@ -412,6 +439,7 @@ const stableBuild = [
         stages: [
             {
                 id: "st-tg5",
+                type: "st",
                 name: "Stable TG 5",
                 level: 55,
                 buildTime: 181_440,

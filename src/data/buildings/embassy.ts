@@ -1,12 +1,15 @@
 /** @format */
 
-const embassyBuild = [
+import type { Building } from "@/types/building";
+
+const embassyBuild: Building[] = [
     {
         id: "em-30",
         name: "Embassy 30",
         stages: [
             {
                 id: "em-30",
+                type: "em",
                 name: "Embassy 30",
                 level: 30,
                 buildTime: 0,
@@ -22,6 +25,7 @@ const embassyBuild = [
             },
             {
                 id: "em-30-1",
+                type: "em",
                 name: "Embassy 30-1",
                 level: 31,
                 buildTime: 399_120,
@@ -37,6 +41,7 @@ const embassyBuild = [
             },
             {
                 id: "em-30-2",
+                type: "em",
                 name: "Embassy 30-2",
                 level: 32,
                 buildTime: 399_120,
@@ -52,6 +57,7 @@ const embassyBuild = [
             },
             {
                 id: "em-30-3",
+                type: "em",
                 name: "Embassy 30-3",
                 level: 33,
                 buildTime: 399_120,
@@ -67,6 +73,7 @@ const embassyBuild = [
             },
             {
                 id: "em-30-4",
+                type: "em",
                 name: "Embassy 30-4",
                 level: 34,
                 buildTime: 399_120,
@@ -88,6 +95,7 @@ const embassyBuild = [
         stages: [
             {
                 id: "em-tg1",
+                type: "em",
                 name: "Embassy TG 1",
                 level: 35,
                 buildTime: 399_120,
@@ -103,6 +111,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg1-1",
+                type: "em",
                 name: "Embassy TG 1-1",
                 level: 36,
                 buildTime: 513_180,
@@ -118,6 +127,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg1-2",
+                type: "em",
                 name: "Embassy TG 1-2",
                 level: 37,
                 buildTime: 513_180,
@@ -133,6 +143,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg1-3",
+                type: "em",
                 name: "Embassy TG 1-3",
                 level: 38,
                 buildTime: 513_180,
@@ -148,6 +159,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg1-4",
+                type: "em",
                 name: "Embassy TG 1-4",
                 level: 39,
                 buildTime: 513_180,
@@ -169,6 +181,7 @@ const embassyBuild = [
         stages: [
             {
                 id: "em-tg2",
+                type: "em",
                 name: "Embassy TG 2",
                 level: 40,
                 buildTime: 513_180,
@@ -184,6 +197,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg2-1",
+                type: "em",
                 name: "Embassy TG 2-1",
                 level: 41,
                 buildTime: 627_240,
@@ -199,6 +213,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg2-2",
+                type: "em",
                 name: "Embassy TG 2-2",
                 level: 42,
                 buildTime: 627_240,
@@ -214,6 +229,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg2-3",
+                type: "em",
                 name: "Embassy TG 2-3",
                 level: 43,
                 buildTime: 627_240,
@@ -229,6 +245,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg2-4",
+                type: "em",
                 name: "Embassy TG 2-4",
                 level: 44,
                 buildTime: 627_240,
@@ -250,6 +267,7 @@ const embassyBuild = [
         stages: [
             {
                 id: "em-tg3",
+                type: "em",
                 name: "Embassy TG 3",
                 level: 45,
                 buildTime: 627_240,
@@ -265,6 +283,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg3-1",
+                type: "em",
                 name: "Embassy TG 3-1",
                 level: 46,
                 buildTime: 684_240,
@@ -280,6 +299,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg3-2",
+                type: "em",
                 name: "Embassy TG 3-2",
                 level: 47,
                 buildTime: 684_240,
@@ -295,6 +315,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg3-3",
+                type: "em",
                 name: "Embassy TG 3-3",
                 level: 48,
                 buildTime: 684_240,
@@ -310,6 +331,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg3-4",
+                type: "em",
                 name: "Embassy TG 3-4",
                 level: 49,
                 buildTime: 684_240,
@@ -331,6 +353,7 @@ const embassyBuild = [
         stages: [
             {
                 id: "em-tg4",
+                type: "em",
                 name: "Embassy TG 4",
                 level: 50,
                 buildTime: 684_240,
@@ -346,6 +369,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg4-1",
+                type: "em",
                 name: "Embassy TG 4-1",
                 level: 51,
                 buildTime: 798_300,
@@ -361,6 +385,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg4-2",
+                type: "em",
                 name: "Embassy TG 4-2",
                 level: 52,
                 buildTime: 798_300,
@@ -376,6 +401,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg4-3",
+                type: "em",
                 name: "Embassy TG 4-3",
                 level: 53,
                 buildTime: 798_300,
@@ -391,6 +417,7 @@ const embassyBuild = [
             },
             {
                 id: "em-tg4-4",
+                type: "em",
                 name: "Embassy TG 4-4",
                 level: 54,
                 buildTime: 798_300,
@@ -412,6 +439,7 @@ const embassyBuild = [
         stages: [
             {
                 id: "em-tg5",
+                type: "em",
                 name: "Embassy TG 5",
                 level: 55,
                 buildTime: 798_300,

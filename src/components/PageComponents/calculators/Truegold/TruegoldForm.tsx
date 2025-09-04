@@ -1,31 +1,12 @@
 /** @format */
 
-import CustomSelect from "@/components/ui/select";
-import { barracks, embassy, range, stable, townCenter } from "@/data/buildings";
-import { Box, createListCollection, HStack, Stack } from "@chakra-ui/react";
+import { allBuildings, barracks, embassy, range, stable, townCenter } from "@/data/buildings";
+import type { TruegoldFormValues } from "@/types/forms";
+import { Box, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import SelectTier from "./SelectTier/SelectTier";
 
-const defaultFormValues: {
-    currentTcLevel: string;
-    targetTcLevel: string;
-
-    currentEmLevel: string;
-    targetEmLevel: string;
-
-    currentBaLevel: string;
-    targetBaLevel: string;
-
-    currentStLevel: string;
-    targetStLevel: string;
-
-    currentRaLevel: string;
-    targetRaLevel: string;
-
-    buildingSpeed: string;
-    kingdomBuffSpeed: string;
-    positionBuffSpeed: string;
-    doubleTime: string;
-} = {
+const defaultFormValues: TruegoldFormValues = {
     currentTcLevel: "30",
     targetTcLevel: "35",
 
@@ -46,26 +27,6 @@ const defaultFormValues: {
     positionBuffSpeed: "0",
     doubleTime: "false",
 };
-
-const townCenterCollection = createListCollection({
-    items: townCenter.map((t) => ({ label: t.name, value: t.level.toString() })),
-});
-
-const embassyCollection = createListCollection({
-    items: embassy.map((t) => ({ label: t.name, value: t.level.toString() })),
-});
-
-const barracksCollection = createListCollection({
-    items: barracks.map((t) => ({ label: t.name, value: t.level.toString() })),
-});
-
-const stablesCollection = createListCollection({
-    items: stable.map((t) => ({ label: t.name, value: t.level.toString() })),
-});
-
-const rangeCollection = createListCollection({
-    items: range.map((t) => ({ label: t.name, value: t.level.toString() })),
-});
 
 const TruegoldForm = () => {
     const [result, setResult] = useState<any>("");
@@ -90,143 +51,141 @@ const TruegoldForm = () => {
     });
 
     useEffect(() => {
-        console.log("render");
-        // calculation for TC
         const currentTcLevel = parseInt(formValues.currentTcLevel);
         const targetTcLevel = parseInt(formValues.targetTcLevel);
+        const currentEmLevel = parseInt(formValues.currentEmLevel);
+        const targetEmLevel = parseInt(formValues.targetEmLevel);
+        const currentBaLevel = parseInt(formValues.currentBaLevel);
+        const targetBaLevel = parseInt(formValues.targetBaLevel);
+        const currentStLevel = parseInt(formValues.currentStLevel);
+        const targetStLevel = parseInt(formValues.targetStLevel);
+        const currentRaLevel = parseInt(formValues.currentRaLevel);
+        const targetRaLevel = parseInt(formValues.targetRaLevel);
+
         const buildingSpeed = parseFloat(formValues.buildingSpeed);
         const kingdomBuffSpeed = parseFloat(formValues.kingdomBuffSpeed);
         const positionBuffSpeed = parseFloat(formValues.positionBuffSpeed);
         const doubleTime = formValues.doubleTime === "true";
 
-        // Perform calculations here
         const currentTc = townCenter.find((t) => t.level === currentTcLevel);
         const targetTc = townCenter.find((t) => t.level === targetTcLevel);
+        const currentEm = embassy.find((e) => e.level === currentEmLevel);
+        const targetEm = embassy.find((e) => e.level === targetEmLevel);
+        const currentBa = barracks.find((b) => b.level === currentBaLevel);
+        const targetBa = barracks.find((b) => b.level === targetBaLevel);
+        const currentSt = stable.find((s) => s.level === currentStLevel);
+        const targetSt = stable.find((s) => s.level === targetStLevel);
+        const currentRa = range.find((r) => r.level === currentRaLevel);
+        const targetRa = range.find((r) => r.level === targetRaLevel);
 
-        if (!currentTc || !targetTc) {
+        // calculation for TC
+        if (
+            !currentTc ||
+            !targetTc ||
+            !currentEm ||
+            !targetEm ||
+            !currentBa ||
+            !targetBa ||
+            !currentSt ||
+            !targetSt ||
+            !currentRa ||
+            !targetRa
+        ) {
             console.error("nothing");
             return;
         }
 
-        console.log(currentTc);
-        console.log(targetTc);
+        const tcToBuild = townCenter.filter(
+            (t) => t.level > currentTcLevel && t.level <= targetTcLevel
+        );
 
-        const buildTimeTc = targetTc.buildTime;
-        console.log(buildTimeTc);
+        const allBaseRequirements = [
+            ...allBuildings.filter((elem) => targetTc.requirements.includes(elem.id)),
+            ...allBuildings.filter((elem) => targetEm.requirements.includes(elem.id)),
+            ...allBuildings.filter((elem) => targetBa.requirements.includes(elem.id)),
+            ...allBuildings.filter((elem) => targetSt.requirements.includes(elem.id)),
+            ...allBuildings.filter((elem) => targetRa.requirements.includes(elem.id)),
+        ];
+
+        console.log(allBaseRequirements);
+    }, [formValues]);
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+
+        Object.entries(formValues).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                if (value.length > 0) params.set(key, value.join(","));
+            } else if (value !== "0" && value !== "" && value !== undefined) {
+                params.set(key, value);
+            }
+        });
+
+        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
     }, [formValues]);
 
     return (
         <Box style={{ width: "100%" }}>
             <Stack gap={4} width="100%">
-                <HStack>
-                    <CustomSelect
-                        value={formValues.currentTcLevel}
-                        options={townCenterCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, currentTcLevel: value }))
-                        }
-                        label={"Current Town Center Level"}
-                        placeholder={"Select Current Town Center Level"}
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentTcLevel"
+                        toKey="targetTcLevel"
+                        options={townCenter}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Town Center Level"}
+                        placeholder={"Select Town Center Level"}
                     />
+                </Box>
 
-                    <CustomSelect
-                        value={formValues.targetTcLevel}
-                        options={townCenterCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, targetTcLevel: value }))
-                        }
-                        label={"Target Town Center Level"}
-                        placeholder={"Select Target Town Center Level"}
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentEmLevel"
+                        toKey="targetEmLevel"
+                        options={embassy}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Embassy Level"}
+                        placeholder={"Select Embassy Level"}
                     />
-                </HStack>
+                </Box>
 
-                <HStack>
-                    <CustomSelect
-                        value={formValues.currentEmLevel}
-                        options={embassyCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, currentEmLevel: value }))
-                        }
-                        label={"Current Embassy Level"}
-                        placeholder={"Select Current Embassy Level"}
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentBaLevel"
+                        toKey="targetBaLevel"
+                        options={barracks}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Barracks Level"}
+                        placeholder={"Select Barracks Level"}
                     />
+                </Box>
 
-                    <CustomSelect
-                        value={formValues.targetEmLevel}
-                        options={embassyCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, targetEmLevel: value }))
-                        }
-                        label={"Target Embassy Level"}
-                        placeholder={"Select Target Embassy Level"}
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentStLevel"
+                        toKey="targetStLevel"
+                        options={stable}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Stables Level"}
+                        placeholder={"Select Stables Level"}
                     />
-                </HStack>
+                </Box>
 
-                <HStack>
-                    <CustomSelect
-                        value={formValues.currentBaLevel}
-                        options={barracksCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, currentBaLevel: value }))
-                        }
-                        label={"Current Barracks Level"}
-                        placeholder={"Select Current Barracks Level"}
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentRaLevel"
+                        toKey="targetRaLevel"
+                        options={range}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Range Level"}
+                        placeholder={"Select Range Level"}
                     />
-
-                    <CustomSelect
-                        value={formValues.targetBaLevel}
-                        options={barracksCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, targetBaLevel: value }))
-                        }
-                        label={"Target Barracks Level"}
-                        placeholder={"Select Target Barracks Level"}
-                    />
-                </HStack>
-
-                <HStack>
-                    <CustomSelect
-                        value={formValues.currentStLevel}
-                        options={stablesCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, currentStLevel: value }))
-                        }
-                        label={"Current Stables Level"}
-                        placeholder={"Select Current Stables Level"}
-                    />
-
-                    <CustomSelect
-                        value={formValues.targetStLevel}
-                        options={stablesCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, targetStLevel: value }))
-                        }
-                        label={"Target Stables Level"}
-                        placeholder={"Select Target Stables Level"}
-                    />
-                </HStack>
-
-                <HStack>
-                    <CustomSelect
-                        value={formValues.currentRaLevel}
-                        options={rangeCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, currentRaLevel: value }))
-                        }
-                        label={"Current Range Level"}
-                        placeholder={"Select Current Range Level"}
-                    />
-
-                    <CustomSelect
-                        value={formValues.targetRaLevel}
-                        options={rangeCollection}
-                        onChange={(value) =>
-                            setFormValues((prev) => ({ ...prev, targetRaLevel: value }))
-                        }
-                        label={"Target Range Level"}
-                        placeholder={"Select Target Range Level"}
-                    />
-                </HStack>
+                </Box>
             </Stack>
         </Box>
     );
