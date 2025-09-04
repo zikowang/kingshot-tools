@@ -9,7 +9,7 @@ export const goldenGlaives: Event = {
     shortName: "Golden Glaives",
     image: "/img/100x100/events/kingshot-golden-glaives-event-icon.png",
     color: "#e48423",
-    days: [8, 9],
+    days: [8, 9, 21, 22],
     rewards: [truegold, speedups, resources],
-    optionalTodo: ["Finish Intel Missions", "Defeat Golden Glaives"],
+    todo: ["Finish Intel Missions", "Defeat Golden Glaives"],
 };

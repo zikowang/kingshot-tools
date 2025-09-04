@@ -122,23 +122,33 @@ const EventInformationPopover = ({
                         <Popover.Body>
                             <Popover.Title fontWeight="medium">
                                 <HStack>
-                                    <Image src={event.image} alt={event.name} width={8} />
-                                    {`${event.name}`}
+                                    <Image src={event.image} alt={event.name} width={12} />
+                                    <VStack alignItems="flex-start">
+                                        <Text
+                                            fontSize={20}
+                                            fontWeight="bold"
+                                        >{`${event.name}`}</Text>
+                                        {date && dayDiffText ? (
+                                            <Text>
+                                                {` ${dayDiffText} (${date.toLocaleDateString(
+                                                    undefined,
+                                                    {
+                                                        weekday: "long",
+                                                        month: "2-digit",
+                                                        day: "2-digit",
+                                                        year: "numeric",
+                                                    }
+                                                )})`}
+                                            </Text>
+                                        ) : null}
+                                    </VStack>
                                 </HStack>
                             </Popover.Title>
-                            {date && dayDiffText ? (
-                                <Text my="4">
-                                    {` ${dayDiffText} (${date.toLocaleDateString(undefined, {
-                                        weekday: "long",
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        year: "numeric",
-                                    })})`}
-                                </Text>
-                            ) : null}
                             {event.rewards && event.rewards.length > 0 && (
                                 <>
-                                    <Text my={2}>Rewards:</Text>
+                                    <Text fontWeight="bold" my={2}>
+                                        Rewards
+                                    </Text>
                                     <List.Root ps={4}>
                                         {event.rewards.map((reward) => (
                                             <ListItem key={reward.name}>
@@ -152,7 +162,9 @@ const EventInformationPopover = ({
                             )}
                             {event.todo && event.todo.length > 0 && (
                                 <>
-                                    <Text my={2}>Todos:</Text>
+                                    <Text fontWeight="bold" my={2}>
+                                        Todos
+                                    </Text>
                                     <List.Root ps={4}>
                                         {event.todo.map((todo) => (
                                             <ListItem key={`${event.id}-${todo}`}>
@@ -166,7 +178,9 @@ const EventInformationPopover = ({
                             )}
                             {event.optionalTodo && event.optionalTodo.length > 0 && (
                                 <>
-                                    <Text my={2}>Optional Todos:</Text>
+                                    <Text fontWeight="bold" my={2}>
+                                        Optional Todos
+                                    </Text>
                                     <List.Root ps={4}>
                                         {event.optionalTodo.map((optionalTodo) => (
                                             <ListItem key={`${event.id}-${optionalTodo}`}>
