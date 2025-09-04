@@ -43,7 +43,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                 <HStack>
                     <Image src="/img/100x100/resources/kingshot-bread.png" alt="Bread" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             notation: "compact",
                             minimumFractionDigits: 2,
                             style: "decimal",
@@ -57,7 +57,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                 <HStack>
                     <Image src="/img/100x100/resources/kingshot-wood.png" alt="Wood" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             notation: "compact",
                             minimumFractionDigits: 2,
                             style: "decimal",
@@ -71,7 +71,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                 <HStack justifyContent="center">
                     <Image src="/img/100x100/resources/kingshot-stone.png" alt="Stone" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             notation: "compact",
                             minimumFractionDigits: 2,
                             style: "decimal",
@@ -85,7 +85,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                 <HStack justifyContent="center">
                     <Image src="/img/100x100/resources/kingshot-iron.png" alt="Iron" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             notation: "compact",
                             minimumFractionDigits: 2,
                             style: "decimal",
@@ -103,7 +103,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                         height={6}
                     />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             notation: "compact",
                             style: "decimal",
                         }).format(result.truegold)}

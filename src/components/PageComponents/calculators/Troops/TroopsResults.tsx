@@ -23,7 +23,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack gap={2} justifyContent="space-between" width="100%">
                     <Text>Troops:</Text>{" "}
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.quantity)}
                     </Text>
@@ -42,7 +42,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack>
                     <Image src="/img/100x100/resources/kingshot-bread.png" alt="Bread" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.bread)}
                     </Text>
@@ -54,7 +54,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack>
                     <Image src="/img/100x100/resources/kingshot-wood.png" alt="Wood" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.wood)}
                     </Text>
@@ -66,7 +66,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack justifyContent="center">
                     <Image src="/img/100x100/resources/kingshot-stone.png" alt="Stone" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.stone)}
                     </Text>
@@ -78,7 +78,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack justifyContent="center">
                     <Image src="/img/100x100/resources/kingshot-iron.png" alt="Iron" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.iron)}
                     </Text>
@@ -89,7 +89,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <Text>Power:</Text>
                 <HStack justifyContent="center">
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.power)}
                     </Text>
@@ -107,7 +107,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                         height={6}
                     />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.kvkPoints)}
                     </Text>
@@ -123,7 +123,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                         height={6}
                     />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat("de-DE", {
+                        {new Intl.NumberFormat(undefined, {
                             style: "decimal",
                         }).format(result.strongestGovernorPoints)}
                     </Text>
