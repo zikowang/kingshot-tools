@@ -12,6 +12,7 @@ import {
     Separator,
     Text,
 } from "@chakra-ui/react";
+import React from "react";
 
 function getResultTimeText(seconds: number) {
     const days = Math.floor(seconds / 86400);
@@ -127,7 +128,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                             <Drawer.Body>
                                 <Grid gridTemplateColumns="repeat(3, 1fr)" gap={2}>
                                     {result.buildingList.map((building) => (
-                                        <>
+                                        <React.Fragment key={building.id}>
                                             <Text>{building.name}</Text>
 
                                             <HStack justifyContent="center" alignItems="center">
@@ -224,7 +225,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                             </HStack>
 
                                             <Separator gridColumnStart={1} gridColumnEnd={4} />
-                                        </>
+                                        </React.Fragment>
                                     ))}
                                 </Grid>
                             </Drawer.Body>

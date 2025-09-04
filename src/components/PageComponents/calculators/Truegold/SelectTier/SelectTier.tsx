@@ -5,7 +5,32 @@ import type { TruegoldFormValues } from "@/types/forms";
 import { ChevronRightIcon } from "@chakra-ui/icons/ChevronRight";
 
 import { Button, Dialog, Grid } from "@chakra-ui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+function getVariant(
+    isStart: boolean,
+    isEnd: boolean,
+    isBetween: boolean
+): "solid" | "subtle" | "surface" | "outline" | "ghost" | "plain" | undefined {
+    if (isStart) return "solid";
+    if (isEnd) return "solid";
+    if (isBetween) return "subtle";
+    return "ghost";
+}
+
+function getColor(isStart: boolean, isEnd: boolean, isBetween: boolean) {
+    if (isStart) return "green";
+    if (isEnd) return "orange";
+    if (isBetween) return "orange";
+    return "transparent";
+}
+
+function getSelectButtonColorAndVariant(isStart: boolean, isEnd: boolean, isBetween: boolean) {
+    const variant = getVariant(isStart, isEnd, isBetween);
+    const color = getColor(isStart, isEnd, isBetween);
+
+    return { variant, color };
+}
 
 const SelectTier = ({
     label,
@@ -70,9 +95,15 @@ const SelectTier = ({
             >
                 <Dialog.Trigger asChild>
                     <Button width="100%" variant="outline">
-                        {fromItem?.name}
-                        <ChevronRightIcon />
-                        {toItem?.name}
+                        {fromItem === toItem ? (
+                            <>{fromItem?.name}</>
+                        ) : (
+                            <>
+                                {fromItem?.name}
+                                <ChevronRightIcon />
+                                {toItem?.name}
+                            </>
+                        )}
                     </Button>
                 </Dialog.Trigger>
                 <Dialog.Backdrop />
@@ -90,30 +121,29 @@ const SelectTier = ({
                                 gap={1}
                             >
                                 {options.map((item) => {
+                                    const isDisabled =
+                                        newValue.from === newValue.to &&
+                                        String(item.level) < newValue.from;
                                     const isStart = newValue.from === String(item.level);
                                     const isEnd = newValue.to === String(item.level);
                                     const isBetween =
-                                        newValue.to &&
+                                        !!newValue.to &&
                                         newValue.from < String(item.level) &&
                                         newValue.to > String(item.level);
 
-                                    const variant = useMemo(() => {
-                                        if (isStart) return "solid";
-                                        if (isEnd) return "solid";
-                                        if (isBetween) return "subtle";
-                                        return "ghost";
-                                    }, [isStart, isEnd, isBetween]);
+                                    const { variant, color } = getSelectButtonColorAndVariant(
+                                        isStart,
+                                        isEnd,
+                                        isBetween
+                                    );
 
                                     return (
                                         <Button
                                             key={item.id}
                                             variant={variant}
-                                            colorPalette={
-                                                isStart || isEnd || isBetween
-                                                    ? "orange"
-                                                    : "transparent"
-                                            }
+                                            colorPalette={color}
                                             onClick={() => handleClick(item)}
+                                            disabled={isDisabled}
                                             height="100%"
                                         >
                                             {item.id.replace("-", " ").toUpperCase()}

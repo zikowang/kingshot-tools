@@ -25,16 +25,16 @@ const defaultFormValues: TruegoldFormValues = {
     targetTcLevel: "35",
 
     currentEmLevel: "30",
-    targetEmLevel: "35",
+    targetEmLevel: "30",
 
     currentBaLevel: "30",
-    targetBaLevel: "35",
+    targetBaLevel: "30",
 
     currentStLevel: "30",
-    targetStLevel: "35",
+    targetStLevel: "30",
 
     currentRaLevel: "30",
-    targetRaLevel: "35",
+    targetRaLevel: "30",
 
     saulBuff: "0",
 
