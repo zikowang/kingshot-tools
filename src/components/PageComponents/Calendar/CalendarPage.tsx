@@ -6,11 +6,13 @@ import ReactLayout from "@/layouts/ReactLayout";
 import type { Event } from "@/types/events";
 import {
     Box,
+    Button,
+    CloseButton,
+    Drawer,
     HStack,
     Image,
     List,
     ListItem,
-    Popover,
     Portal,
     Table,
     Text,
@@ -99,8 +101,8 @@ const EventInformationPopover = ({
     dayDiffText?: string;
 }) => {
     return (
-        <Popover.Root>
-            <Popover.Trigger asChild>
+        <Drawer.Root size="sm" placement={{ mdDown: "bottom", md: "end" }}>
+            <Drawer.Trigger asChild>
                 <Box
                     display="flex"
                     justifyContent="center"
@@ -114,36 +116,33 @@ const EventInformationPopover = ({
                 >
                     <Image src={event.image} alt={event.name} width={8} />
                 </Box>
-            </Popover.Trigger>
+            </Drawer.Trigger>
             <Portal>
-                <Popover.Positioner>
-                    <Popover.Content>
-                        <Popover.Arrow />
-                        <Popover.Body>
-                            <Popover.Title fontWeight="medium">
-                                <HStack>
-                                    <Image src={event.image} alt={event.name} width={12} />
-                                    <VStack alignItems="flex-start">
-                                        <Text
-                                            fontSize={20}
-                                            fontWeight="bold"
-                                        >{`${event.name}`}</Text>
-                                        {date && dayDiffText ? (
-                                            <Text>
-                                                {` ${dayDiffText} (${date.toLocaleDateString(
-                                                    undefined,
-                                                    {
-                                                        weekday: "long",
-                                                        month: "2-digit",
-                                                        day: "2-digit",
-                                                        year: "numeric",
-                                                    }
-                                                )})`}
-                                            </Text>
-                                        ) : null}
-                                    </VStack>
-                                </HStack>
-                            </Popover.Title>
+                <Drawer.Backdrop />
+                <Drawer.Positioner>
+                    <Drawer.Content mx={{ mdDown: "auto", md: "unset" }}>
+                        <Drawer.Header>
+                            <HStack>
+                                <Image src={event.image} alt={event.name} width={12} />
+                                <VStack alignItems="flex-start">
+                                    <Text fontSize={20} fontWeight="bold">{`${event.name}`}</Text>
+                                    {date && dayDiffText ? (
+                                        <Text>
+                                            {` ${dayDiffText} (${date.toLocaleDateString(
+                                                undefined,
+                                                {
+                                                    weekday: "long",
+                                                    month: "2-digit",
+                                                    day: "2-digit",
+                                                    year: "numeric",
+                                                }
+                                            )})`}
+                                        </Text>
+                                    ) : null}
+                                </VStack>
+                            </HStack>
+                        </Drawer.Header>
+                        <Drawer.Body>
                             {event.rewards && event.rewards.length > 0 && (
                                 <>
                                     <Text fontWeight="bold" my={2}>
@@ -192,11 +191,21 @@ const EventInformationPopover = ({
                                     </List.Root>
                                 </>
                             )}
-                        </Popover.Body>
-                    </Popover.Content>
-                </Popover.Positioner>
+                        </Drawer.Body>
+                        <Drawer.Footer>
+                            <Drawer.ActionTrigger asChild>
+                                <Button variant="outline" colorPalette="red">
+                                    Close
+                                </Button>
+                            </Drawer.ActionTrigger>
+                        </Drawer.Footer>
+                        <Drawer.CloseTrigger asChild>
+                            <CloseButton size="sm" />
+                        </Drawer.CloseTrigger>
+                    </Drawer.Content>
+                </Drawer.Positioner>
             </Portal>
-        </Popover.Root>
+        </Drawer.Root>
     );
 };
 
