@@ -5,7 +5,7 @@ import type { TruegoldFormValues } from "@/types/forms";
 import { ChevronRightIcon } from "@chakra-ui/icons/ChevronRight";
 
 import { Button, CloseButton, Dialog, Grid, Portal } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 function getVariant(
     isStart: boolean,
@@ -49,8 +49,7 @@ const SelectTier = ({
     options: BuildingStage[];
     onChange: (value: Partial<TruegoldFormValues>) => void;
 }) => {
-    const isFirstClick = useRef(true);
-
+    const [isFirstClick, setIsFirstClick] = useState(true);
     const [open, setOpen] = useState(false);
     const [newValue, setNewValue] = useState<{ from: string; to: string | null }>({
         from: formValues[fromKey],
@@ -62,22 +61,22 @@ const SelectTier = ({
 
     const handleOnOpenChange = (open: boolean = true) => {
         if (!open) {
-            isFirstClick.current = true;
+            setIsFirstClick(true);
         }
 
         setOpen(open);
     };
 
     const handleClick = (item: BuildingStage) => {
-        if (isFirstClick.current) {
+        if (isFirstClick) {
             setNewValue({ from: String(item.level), to: String(item.level) });
-            isFirstClick.current = false;
+            setIsFirstClick(false);
 
             return;
         }
 
         setNewValue((prev) => ({ ...prev, to: String(item.level) }));
-        isFirstClick.current = true;
+        setIsFirstClick(true);
 
         handleOnOpenChange(false);
     };
@@ -123,8 +122,7 @@ const SelectTier = ({
                                 >
                                     {options.map((item) => {
                                         const isDisabled =
-                                            newValue.from === newValue.to &&
-                                            String(item.level) < newValue.from;
+                                            !isFirstClick && String(item.level) < newValue.from;
                                         const isStart = newValue.from === String(item.level);
                                         const isEnd = newValue.to === String(item.level);
                                         const isBetween =
