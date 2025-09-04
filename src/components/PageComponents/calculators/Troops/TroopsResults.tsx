@@ -1,16 +1,8 @@
 /** @format */
 
+import { getResultTimeText } from "@/lib/utils";
 import type { TroopCalculatorResult } from "@/types/result";
 import { HStack, Image, Separator, Text } from "@chakra-ui/react";
-
-function getResultTimeText(seconds: number) {
-    const days = Math.floor(seconds / 86400);
-    const hrs = Math.floor((seconds % 86400) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    return `${days}d ${hrs}h ${mins}m ${secs}s`;
-}
 
 const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
     if (!result.showResult) {
@@ -43,6 +35,8 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                     <Image src="/img/100x100/resources/kingshot-bread.png" alt="Bread" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat(undefined, {
+                            notation: "compact",
+                            minimumFractionDigits: 2,
                             style: "decimal",
                         }).format(result.bread)}
                     </Text>
@@ -55,6 +49,8 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                     <Image src="/img/100x100/resources/kingshot-wood.png" alt="Wood" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat(undefined, {
+                            notation: "compact",
+                            minimumFractionDigits: 2,
                             style: "decimal",
                         }).format(result.wood)}
                     </Text>
@@ -67,6 +63,8 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                     <Image src="/img/100x100/resources/kingshot-stone.png" alt="Stone" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat(undefined, {
+                            notation: "compact",
+                            minimumFractionDigits: 2,
                             style: "decimal",
                         }).format(result.stone)}
                     </Text>
@@ -79,6 +77,8 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                     <Image src="/img/100x100/resources/kingshot-iron.png" alt="Iron" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat(undefined, {
+                            notation: "compact",
+                            minimumFractionDigits: 2,
                             style: "decimal",
                         }).format(result.iron)}
                     </Text>

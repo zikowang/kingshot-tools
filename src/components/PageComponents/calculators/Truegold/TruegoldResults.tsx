@@ -1,5 +1,6 @@
 /** @format */
 
+import { getResultTimeText } from "@/lib/utils";
 import type { TruegoldCalculatorResult } from "@/types/result";
 import {
     Button,
@@ -13,15 +14,6 @@ import {
     Text,
 } from "@chakra-ui/react";
 import React from "react";
-
-function getResultTimeText(seconds: number) {
-    const days = Math.floor(seconds / 86400);
-    const hrs = Math.floor((seconds % 86400) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    return `${days}d ${hrs}h ${mins}m ${secs}s`;
-}
 
 const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
     if (!result.showResult) {
