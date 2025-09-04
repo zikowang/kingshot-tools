@@ -1,9 +1,10 @@
 /** @format */
 
 import ReactLayout from "@/layouts/ReactLayout";
+import type { TroopCalculatorResult } from "@/types/result";
 import { Box, Stack, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
-import TroopsForm, { type TroopCalculatorResult } from "./TroopsForm";
+import TroopsForm from "./TroopsForm";
 import TroopsResults from "./TroopsResults";
 
 const defaultResultValue: TroopCalculatorResult = {

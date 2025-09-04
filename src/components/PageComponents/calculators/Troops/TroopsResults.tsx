@@ -1,7 +1,7 @@
 /** @format */
 
+import type { TroopCalculatorResult } from "@/types/result";
 import { HStack, Image, Separator, Text } from "@chakra-ui/react";
-import type { TroopCalculatorResult } from "./TroopsForm";
 
 function getResultTimeText(seconds: number) {
     const days = Math.floor(seconds / 86400);
@@ -40,7 +40,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             <HStack gap={2} justifyContent="space-between" width="100%">
                 <Text>Bread:</Text>
                 <HStack>
-                    <Image src="/img/resources/kingshot-bread.png" alt="Bread" height={6} />
+                    <Image src="/img/100x100/resources/kingshot-bread.png" alt="Bread" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
@@ -52,7 +52,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             <HStack gap={2} justifyContent="space-between" width="100%">
                 <Text>Wood:</Text>
                 <HStack>
-                    <Image src="/img/resources/kingshot-wood.png" alt="Wood" height={6} />
+                    <Image src="/img/100x100/resources/kingshot-wood.png" alt="Wood" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
@@ -64,7 +64,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             <HStack gap={2} justifyContent="space-between" width="100%">
                 <Text>Stone:</Text>
                 <HStack justifyContent="center">
-                    <Image src="/img/resources/kingshot-stone.png" alt="Stone" height={6} />
+                    <Image src="/img/100x100/resources/kingshot-stone.png" alt="Stone" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",
@@ -76,7 +76,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
             <HStack gap={2} justifyContent="space-between" width="100%">
                 <Text>Iron:</Text>
                 <HStack justifyContent="center">
-                    <Image src="/img/resources/kingshot-iron.png" alt="Iron" height={6} />
+                    <Image src="/img/100x100/resources/kingshot-iron.png" alt="Iron" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat("de-DE", {
                             style: "decimal",

@@ -16,8 +16,12 @@ export type TruegoldFormValues = {
     currentRaLevel: string;
     targetRaLevel: string;
 
+    saulBuff: string;
+
     buildingSpeed: string;
     kingdomBuffSpeed: string;
     positionBuffSpeed: string;
+    petBuffSpeed: string;
+
     doubleTime: string;
 };

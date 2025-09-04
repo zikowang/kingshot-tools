@@ -3,6 +3,7 @@
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import { tierList } from "@/data/troops/sharedTroops";
 import trainingData from "@/data/troops/train";
+import type { TroopCalculatorResult } from "@/types/result";
 import type { Tier } from "@/types/tier";
 import {
     Box,
@@ -73,22 +74,6 @@ const tierCollection = createListCollection({
         .filter((t) => !HIDDEN_TIER_LIST.includes(t.name))
         .map((t) => ({ label: t.name.toUpperCase(), value: t.name })),
 });
-
-export type TroopCalculatorResult = {
-    showResult: boolean;
-    calculationType: "amount-of-troops" | "amount-of-time";
-    quantity: number;
-    time: number;
-    bread: number;
-    wood: number;
-    stone: number;
-    iron: number;
-
-    power: number;
-
-    kvkPoints: number;
-    strongestGovernorPoints: number;
-};
 
 const TroopsForm = ({
     setResult,
@@ -515,7 +500,7 @@ const TroopsForm = ({
                                             >
                                                 <li>
                                                     Tap on your Power on the top left (next to your
-                                                    profile picture
+                                                    profile picture)
                                                 </li>
                                                 <li>Find "Training Speed" in the list</li>
                                             </Box>

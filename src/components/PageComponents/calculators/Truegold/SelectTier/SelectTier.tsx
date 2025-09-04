@@ -116,7 +116,7 @@ const SelectTier = ({
                                             onClick={() => handleClick(item)}
                                             height="100%"
                                         >
-                                            {item.id.toUpperCase()}
+                                            {item.id.replace("-", " ").toUpperCase()}
                                         </Button>
                                     );
                                 })}
