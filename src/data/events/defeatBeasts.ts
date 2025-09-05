@@ -15,7 +15,7 @@ export const defeatBeasts: Event = {
     shortName: "Defeat Beasts",
     image: "/img/100x100/events/kingshot-defeat-beasts-event-icon.png",
     color: "#528ec7",
-    days: [9, 10],
+    days: [9, 10, 23, 24],
     rewards: [gems, mythicConquestSkillManual, mythicExpeditionSkillManual, speedups, resources],
     optionalTodo: ["Hunt Beasts", "Hunt Terrors"],
 };
