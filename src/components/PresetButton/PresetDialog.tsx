@@ -60,8 +60,8 @@ const PresetDialog = ({
                         </Dialog.Header>
                         <Dialog.Body>
                             <p>
-                                A preset is saved locally in your browser. It will not be available
-                                if you switch browsers or devices.
+                                A presets are saved locally in your browser. They will not be
+                                available if you switch browsers or devices.
                             </p>
                         </Dialog.Body>
                         <Dialog.Footer justifyContent="space-between">

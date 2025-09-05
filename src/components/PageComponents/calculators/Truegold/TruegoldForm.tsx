@@ -1,8 +1,10 @@
 /** @format */
 
 import PresetButton from "@/components/PresetButton/PresetButton";
+import { toaster } from "@/components/ui/toaster";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import { allBuildings, barracks, embassy, range, stable, townCenter } from "@/data/buildings";
+import { getTruegoldPreset } from "@/lib/localStorage";
 import type { BuildingStage } from "@/types/building";
 import type { TruegoldFormValues } from "@/types/forms";
 import type { TruegoldCalculatorResult } from "@/types/result";
@@ -125,21 +127,36 @@ const TruegoldForm = ({
 }: {
     setResult: Dispatch<React.SetStateAction<TruegoldCalculatorResult>>;
 }) => {
+    let toasterTimeout: NodeJS.Timeout | null = null;
+
     const [formValues, setFormValues] = useState(() => {
         const params = new URLSearchParams(window.location.search);
-        const initialValues = { ...defaultFormValues };
+        let initialValues = { ...defaultFormValues };
 
-        Object.keys(initialValues).forEach((key) => {
-            const value = params.get(key);
+        if (params.size === 0) {
+            const preset = getTruegoldPreset();
 
-            if (key in initialValues && value !== null) {
-                if (Array.isArray(defaultFormValues[key as keyof typeof defaultFormValues])) {
-                    initialValues[key as keyof typeof initialValues] = value.split(",") as any;
-                } else {
-                    initialValues[key as keyof typeof initialValues] = value as any;
-                }
+            if (preset) {
+                initialValues = { ...initialValues, ...preset };
+                toasterTimeout = setTimeout(() => {
+                    toaster.success({
+                        description: "Preset loaded",
+                    });
+                }, 300);
             }
-        });
+        } else {
+            Object.keys(initialValues).forEach((key) => {
+                const value = params.get(key);
+
+                if (key in initialValues && value !== null) {
+                    if (Array.isArray(defaultFormValues[key as keyof typeof defaultFormValues])) {
+                        initialValues[key as keyof typeof initialValues] = value.split(",") as any;
+                    } else {
+                        initialValues[key as keyof typeof initialValues] = value as any;
+                    }
+                }
+            });
+        }
 
         return initialValues;
     });

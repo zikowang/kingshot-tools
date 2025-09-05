@@ -16,10 +16,7 @@ const PresetButton = ({
         | Dispatch<React.SetStateAction<TruegoldFormValues>>;
     type: "troop" | "truegold";
 }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSaveOpen, setIsSaveOpen] = useState(false);
-    const [isLoadOpen, setIsLoadOpen] = useState(false);
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
     const handleOpenSave = () => {
         setIsSaveOpen(true);
