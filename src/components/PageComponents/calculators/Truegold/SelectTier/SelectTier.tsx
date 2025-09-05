@@ -5,7 +5,7 @@ import type { TruegoldFormValues } from "@/types/forms";
 import { ChevronRightIcon } from "@chakra-ui/icons/ChevronRight";
 import { InfoOutlineIcon } from "@chakra-ui/icons/InfoOutline";
 
-import { Alert, Button, CloseButton, Dialog, Grid, Portal } from "@chakra-ui/react";
+import { Alert, Button, CloseButton, Drawer, Grid, Portal } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 function getVariant(
@@ -96,12 +96,13 @@ const SelectTier = ({
 
     return (
         <>
-            <Dialog.Root
-                size={{ mdDown: "full", md: "lg" }}
+            <Drawer.Root
+                size={{ smDown: "lg", md: "md", lg: "lg" }}
+                placement={{ mdDown: "bottom", md: "end" }}
                 open={open}
                 onOpenChange={(e) => handleOnOpenChange(e.open)}
             >
-                <Dialog.Trigger asChild>
+                <Drawer.Trigger asChild>
                     <Button width="100%" variant="outline">
                         {fromItem === toItem ? (
                             <>{fromItem?.name}</>
@@ -113,16 +114,16 @@ const SelectTier = ({
                             </>
                         )}
                     </Button>
-                </Dialog.Trigger>
+                </Drawer.Trigger>
                 <Portal>
-                    <Dialog.Backdrop />
-                    <Dialog.Positioner>
-                        <Dialog.Content>
-                            <Dialog.CloseTrigger />
-                            <Dialog.Header flexDirection="column" alignItems="flex-start">
-                                <Dialog.Title>{label}</Dialog.Title>
-                            </Dialog.Header>
-                            <Dialog.Body>
+                    <Drawer.Backdrop />
+                    <Drawer.Positioner>
+                        <Drawer.Content>
+                            <Drawer.CloseTrigger />
+                            <Drawer.Header flexDirection="column" alignItems="flex-start">
+                                <Drawer.Title>{label}</Drawer.Title>
+                            </Drawer.Header>
+                            <Drawer.Body>
                                 <Grid
                                     width="100%"
                                     gridTemplateColumns={"repeat(5, 1fr)"}
@@ -151,7 +152,10 @@ const SelectTier = ({
                                                 onClick={() => handleClick(item)}
                                                 height="100%"
                                             >
-                                                {item.id.replace("-", " ").toUpperCase()}
+                                                {item.id
+                                                    .replace("-", " ")
+                                                    .split(" ")[1]
+                                                    .toUpperCase()}
                                             </Button>
                                         );
                                     })}
@@ -165,20 +169,20 @@ const SelectTier = ({
                                         start of the range.
                                     </Alert.Description>
                                 </Alert.Root>
-                            </Dialog.Body>
+                            </Drawer.Body>
 
-                            <Dialog.Footer>
-                                <Dialog.ActionTrigger asChild>
+                            <Drawer.Footer>
+                                <Drawer.ActionTrigger asChild>
                                     <Button variant="outline">Close</Button>
-                                </Dialog.ActionTrigger>
-                            </Dialog.Footer>
-                            <Dialog.CloseTrigger asChild>
+                                </Drawer.ActionTrigger>
+                            </Drawer.Footer>
+                            <Drawer.CloseTrigger asChild>
                                 <CloseButton size="sm" />
-                            </Dialog.CloseTrigger>
-                        </Dialog.Content>
-                    </Dialog.Positioner>
+                            </Drawer.CloseTrigger>
+                        </Drawer.Content>
+                    </Drawer.Positioner>
                 </Portal>
-            </Dialog.Root>
+            </Drawer.Root>
         </>
     );
 };
