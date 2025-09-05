@@ -1,5 +1,6 @@
 /** @format */
 
+import PresetButton from "@/components/PresetButton/PresetButton";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import { allBuildings, barracks, embassy, range, stable, townCenter } from "@/data/buildings";
 import type { BuildingStage } from "@/types/building";
@@ -494,6 +495,14 @@ const TruegoldForm = ({
                         Chief Minister Buff ({POSITION_BUFF}%)
                     </Switch.Label>
                 </Switch.Root>
+
+                <Box display="flex" justifyContent="flex-end" my={4}>
+                    <PresetButton
+                        type="truegold"
+                        formValues={formValues}
+                        setFormValues={setFormValues}
+                    />
+                </Box>
             </Stack>
         </Box>
     );

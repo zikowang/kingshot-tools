@@ -1,5 +1,6 @@
 /** @format */
 
+import { Toaster } from "@/components/ui/toaster";
 import ReactLayout from "@/layouts/ReactLayout";
 import type { TroopCalculatorResult } from "@/types/result";
 import { Box, Stack, Text, VStack } from "@chakra-ui/react";
@@ -41,6 +42,8 @@ const TroopsPage = () => {
                     <TroopsResults result={result} />
                 </VStack>
             </Stack>
+
+            <Toaster />
         </ReactLayout>
     );
 };

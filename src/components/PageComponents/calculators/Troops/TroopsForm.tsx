@@ -1,8 +1,10 @@
 /** @format */
 
+import PresetButton from "@/components/PresetButton/PresetButton";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import { tierList } from "@/data/troops/sharedTroops";
 import trainingData from "@/data/troops/train";
+import type { TroopsFormValues } from "@/types/forms";
 import type { TroopCalculatorResult } from "@/types/result";
 import type { Tier } from "@/types/tier";
 import {
@@ -35,23 +37,7 @@ const POSITION_BUFF = "50";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
 const HIDDEN_TIER_LIST = ["t11", "tg4", "tg5"];
 
-const defaultFormValues: {
-    calculationType: string;
-    trainType: string;
-    troopType: string;
-    rootTier: string[];
-    targetTier: string[];
-    quantity: string;
-
-    speedupDays: string;
-    speedupHours: string;
-    speedupMinutes: string;
-    speedupSeconds: string;
-
-    troopTrainingSpeed: string;
-    kingdomBuffSpeed: string;
-    positionBuffSpeed: string;
-} = {
+const defaultFormValues: TroopsFormValues = {
     calculationType: DEFAULT_CALCULATION_TYPE,
     trainType: "train",
     troopType: "infantry",
@@ -80,7 +66,7 @@ const TroopsForm = ({
 }: {
     setResult: Dispatch<React.SetStateAction<TroopCalculatorResult>>;
 }) => {
-    const [formValues, setFormValues] = useState(() => {
+    const [formValues, setFormValues] = useState<TroopsFormValues>(() => {
         const params = new URLSearchParams(window.location.search);
         const initialValues = { ...defaultFormValues };
 
@@ -643,7 +629,7 @@ const TroopsForm = ({
                 )}
             </Stack>
 
-            <Box display="flex" justifyContent="flex-start" my={4}>
+            <Box display="flex" justifyContent="space-between" my={4}>
                 <Button
                     type="button"
                     onClick={onReset}
@@ -653,6 +639,8 @@ const TroopsForm = ({
                 >
                     Reset
                 </Button>
+
+                <PresetButton type="troop" formValues={formValues} setFormValues={setFormValues} />
             </Box>
         </Box>
     );
