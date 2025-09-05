@@ -1,5 +1,6 @@
 /** @format */
 
+import { Toaster } from "@/components/ui/toaster";
 import ReactLayout from "@/layouts/ReactLayout";
 import type { TruegoldCalculatorResult } from "@/types/result";
 import { Box, Stack, Text, VStack } from "@chakra-ui/react";
@@ -38,6 +39,8 @@ const TruegoldPage = () => {
                     <TruegoldResults result={result} />
                 </VStack>
             </Stack>
+
+            <Toaster />
         </ReactLayout>
     );
 };
