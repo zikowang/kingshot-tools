@@ -3,8 +3,9 @@
 import type { BuildingStage } from "@/types/building";
 import type { TruegoldFormValues } from "@/types/forms";
 import { ChevronRightIcon } from "@chakra-ui/icons/ChevronRight";
+import { InfoOutlineIcon } from "@chakra-ui/icons/InfoOutline";
 
-import { Button, CloseButton, Dialog, Grid, Portal } from "@chakra-ui/react";
+import { Alert, Button, CloseButton, Dialog, Grid, Portal } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 function getVariant(
@@ -70,15 +71,23 @@ const SelectTier = ({
     const handleClick = (item: BuildingStage) => {
         if (isFirstClick) {
             setNewValue({ from: String(item.level), to: String(item.level) });
+
             setIsFirstClick(false);
 
             return;
         }
 
-        setNewValue((prev) => ({ ...prev, to: String(item.level) }));
-        setIsFirstClick(true);
+        setNewValue((prev) => {
+            if (String(item.level) < prev.from) {
+                setIsFirstClick(false);
 
-        handleOnOpenChange(false);
+                return { from: String(item.level), to: String(item.level) };
+            }
+
+            setIsFirstClick(true);
+
+            return { ...prev, to: String(item.level) };
+        });
     };
 
     useEffect(() => {
@@ -110,7 +119,7 @@ const SelectTier = ({
                     <Dialog.Positioner>
                         <Dialog.Content>
                             <Dialog.CloseTrigger />
-                            <Dialog.Header>
+                            <Dialog.Header flexDirection="column" alignItems="flex-start">
                                 <Dialog.Title>{label}</Dialog.Title>
                             </Dialog.Header>
                             <Dialog.Body>
@@ -121,8 +130,6 @@ const SelectTier = ({
                                     gap={1}
                                 >
                                     {options.map((item) => {
-                                        const isDisabled =
-                                            !isFirstClick && String(item.level) < newValue.from;
                                         const isStart = newValue.from === String(item.level);
                                         const isEnd = newValue.to === String(item.level);
                                         const isBetween =
@@ -142,7 +149,6 @@ const SelectTier = ({
                                                 variant={variant}
                                                 colorPalette={color}
                                                 onClick={() => handleClick(item)}
-                                                disabled={isDisabled}
                                                 height="100%"
                                             >
                                                 {item.id.replace("-", " ").toUpperCase()}
@@ -150,7 +156,17 @@ const SelectTier = ({
                                         );
                                     })}
                                 </Grid>
+
+                                <Alert.Root size="sm" status="info" mt={4}>
+                                    <Alert.Indicator as={InfoOutlineIcon} />
+                                    <Alert.Title>Info</Alert.Title>
+                                    <Alert.Description>
+                                        Use it to select a range. Your first click will set the
+                                        start of the range.
+                                    </Alert.Description>
+                                </Alert.Root>
                             </Dialog.Body>
+
                             <Dialog.Footer>
                                 <Dialog.ActionTrigger asChild>
                                     <Button variant="outline">Close</Button>
