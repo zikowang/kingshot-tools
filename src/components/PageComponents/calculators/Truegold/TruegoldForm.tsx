@@ -45,6 +45,7 @@ const defaultFormValues: TruegoldFormValues = {
     kingdomBuffSpeed: "0",
     positionBuffSpeed: "0",
     petBuffSpeed: "0",
+    kvkBonusSpeed: "0",
 
     doubleTime: "0",
 };
@@ -52,6 +53,7 @@ const defaultFormValues: TruegoldFormValues = {
 const KING_SKILL = "10";
 const POSITION_BUFF = "10";
 const DOUBLE_TIME_BUFF = "20";
+const KVK_BONUS = "5";
 
 function getRequirementsRecursive(current: BuildingStage[], target: BuildingStage[]) {
     let requirementsIds: string[] = [];
@@ -162,24 +164,41 @@ const TruegoldForm = ({
     });
 
     useEffect(() => {
-        const currentTc = townCenter.find((t) => t.level === parseInt(formValues.currentTcLevel));
-        const targetTc = townCenter.find((t) => t.level === parseInt(formValues.targetTcLevel));
-        const currentEm = embassy.find((e) => e.level === parseInt(formValues.currentEmLevel));
-        const targetEm = embassy.find((e) => e.level === parseInt(formValues.targetEmLevel));
-        const currentBa = barracks.find((b) => b.level === parseInt(formValues.currentBaLevel));
-        const targetBa = barracks.find((b) => b.level === parseInt(formValues.targetBaLevel));
-        const currentSt = stable.find((s) => s.level === parseInt(formValues.currentStLevel));
-        const targetSt = stable.find((s) => s.level === parseInt(formValues.targetStLevel));
-        const currentRa = range.find((r) => r.level === parseInt(formValues.currentRaLevel));
-        const targetRa = range.find((r) => r.level === parseInt(formValues.targetRaLevel));
+        const currentTc = townCenter.find(
+            (t) => t.level === parseInt(formValues.currentTcLevel || "30")
+        );
+        const targetTc = townCenter.find(
+            (t) => t.level === parseInt(formValues.targetTcLevel || "30")
+        );
+        const currentEm = embassy.find(
+            (e) => e.level === parseInt(formValues.currentEmLevel || "30")
+        );
+        const targetEm = embassy.find(
+            (e) => e.level === parseInt(formValues.targetEmLevel || "30")
+        );
+        const currentBa = barracks.find(
+            (b) => b.level === parseInt(formValues.currentBaLevel || "30")
+        );
+        const targetBa = barracks.find(
+            (b) => b.level === parseInt(formValues.targetBaLevel || "30")
+        );
+        const currentSt = stable.find(
+            (s) => s.level === parseInt(formValues.currentStLevel || "30")
+        );
+        const targetSt = stable.find((s) => s.level === parseInt(formValues.targetStLevel || "30"));
+        const currentRa = range.find(
+            (r) => r.level === parseInt(formValues.currentRaLevel || "30")
+        );
+        const targetRa = range.find((r) => r.level === parseInt(formValues.targetRaLevel || "30"));
 
         const saulBuff = parseFloat(formValues.saulBuff);
 
-        const buildingSpeed = parseFloat(formValues.buildingSpeed);
-        const kingdomBuffSpeed = parseFloat(formValues.kingdomBuffSpeed);
-        const positionBuffSpeed = parseFloat(formValues.positionBuffSpeed);
-        const doubleTimeBuffSpeed = parseFloat(formValues.doubleTime);
-        const petBuffSpeed = parseFloat(formValues.petBuffSpeed);
+        const buildingSpeed = parseFloat(formValues.buildingSpeed || "0");
+        const kingdomBuffSpeed = parseFloat(formValues.kingdomBuffSpeed || "0");
+        const positionBuffSpeed = parseFloat(formValues.positionBuffSpeed || "0");
+        const doubleTimeBuffSpeed = parseFloat(formValues.doubleTime || "0");
+        const petBuffSpeed = parseFloat(formValues.petBuffSpeed || "0");
+        const kvkBonusSpeed = parseFloat(formValues.kvkBonusSpeed || "0");
 
         // gather Buildings to be build
         if (
@@ -212,7 +231,8 @@ const TruegoldForm = ({
                     buildingSpeed / 100 +
                     kingdomBuffSpeed / 100 +
                     positionBuffSpeed / 100 +
-                    petBuffSpeed / 100)
+                    petBuffSpeed / 100 +
+                    kvkBonusSpeed / 100)
             ).toFixed(3)
         );
         resultBuildings = resultBuildings.map((building) => {
@@ -510,6 +530,26 @@ const TruegoldForm = ({
                     <Switch.Control />
                     <Switch.Label _hover={{ cursor: "pointer" }}>
                         Chief Minister Buff ({POSITION_BUFF}%)
+                    </Switch.Label>
+                </Switch.Root>
+
+                <Switch.Root
+                    checked={formValues.kvkBonusSpeed !== "0"}
+                    onCheckedChange={(e) =>
+                        setFormValues((prev) => ({
+                            ...prev,
+                            kvkBonusSpeed: e.checked ? KVK_BONUS : "0",
+                        }))
+                    }
+                    colorPalette="blue"
+                    opacity={0.5}
+                    _checked={{ opacity: 1 }}
+                    _hover={{ opacity: 1 }}
+                >
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                    <Switch.Label _hover={{ cursor: "pointer" }}>
+                        Kingdom of Power Bonus ({KVK_BONUS}%)
                     </Switch.Label>
                 </Switch.Root>
 

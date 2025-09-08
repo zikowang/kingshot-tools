@@ -36,6 +36,7 @@ import {
 
 const KING_SKILL = "30";
 const POSITION_BUFF = "50";
+const KVK_BONUS = "25";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
 const HIDDEN_TIER_LIST = ["t11", "tg4", "tg5"];
 
@@ -55,6 +56,7 @@ const defaultFormValues: TroopsFormValues = {
     troopTrainingSpeed: "0",
     kingdomBuffSpeed: "0",
     positionBuffSpeed: "0",
+    kvkBonusSpeed: "0",
 };
 
 const tierCollection = createListCollection({
@@ -127,8 +129,13 @@ const TroopsForm = ({
         const troopTrainingSpeed = parseFloat(formValues.troopTrainingSpeed || "0");
         const kingdomBuffSpeed = parseInt(formValues.kingdomBuffSpeed || "0", 10);
         const positionBuffSpeed = parseInt(formValues.positionBuffSpeed || "0", 10);
+        const kvkBonusSpeed = parseInt(formValues.kvkBonusSpeed || "0", 10);
         const sumSpeedBuff =
-            1 + troopTrainingSpeed / 100 + kingdomBuffSpeed / 100 + positionBuffSpeed / 100;
+            1 +
+            troopTrainingSpeed / 100 +
+            kingdomBuffSpeed / 100 +
+            positionBuffSpeed / 100 +
+            kvkBonusSpeed / 100;
 
         const rootTrain = trainingData[troopType].find((t) => t.tierName === rootTier);
         const targetTrain = trainingData[troopType].find((t) => t.tierName === targetTier);
@@ -154,10 +161,10 @@ const TroopsForm = ({
             : targetTrain.power;
 
         if (calculationType === "amount-of-troops") {
-            const speedupDays = parseInt(formValues.speedupDays, 10);
-            const speedupHours = parseInt(formValues.speedupHours, 10);
-            const speedupMinutes = parseInt(formValues.speedupMinutes, 10);
-            const speedupSeconds = parseInt(formValues.speedupSeconds, 10);
+            const speedupDays = parseInt(formValues.speedupDays || "0", 10);
+            const speedupHours = parseInt(formValues.speedupHours || "0", 10);
+            const speedupMinutes = parseInt(formValues.speedupMinutes || "0", 10);
+            const speedupSeconds = parseInt(formValues.speedupSeconds || "0", 10);
 
             const totalSpeedupInSeconds =
                 speedupDays * 86400 + speedupHours * 3600 + speedupMinutes * 60 + speedupSeconds;
@@ -584,6 +591,26 @@ const TroopsForm = ({
                     <Switch.Control />
                     <Switch.Label _hover={{ cursor: "pointer" }}>
                         Noble Advisor Buff ({POSITION_BUFF}%)
+                    </Switch.Label>
+                </Switch.Root>
+
+                <Switch.Root
+                    checked={formValues.kvkBonusSpeed !== "0"}
+                    onCheckedChange={(e) =>
+                        setFormValues((prev) => ({
+                            ...prev,
+                            kvkBonusSpeed: e.checked ? KVK_BONUS : "0",
+                        }))
+                    }
+                    colorPalette="blue"
+                    opacity={0.5}
+                    _checked={{ opacity: 1 }}
+                    _hover={{ opacity: 1 }}
+                >
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                    <Switch.Label _hover={{ cursor: "pointer" }}>
+                        Kingdom of Power Bonus ({KVK_BONUS}%)
                     </Switch.Label>
                 </Switch.Root>
 

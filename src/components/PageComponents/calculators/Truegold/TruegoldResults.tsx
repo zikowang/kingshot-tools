@@ -1,6 +1,6 @@
 /** @format */
 
-import { getResultTimeText } from "@/lib/utils";
+import { getResultMinutesText, getResultTimeText } from "@/lib/utils";
 import type { TruegoldCalculatorResult } from "@/types/result";
 import {
     Button,
@@ -12,6 +12,7 @@ import {
     Portal,
     Separator,
     Text,
+    VStack,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -23,11 +24,14 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
     return (
         <>
             {/* Summary result */}
-            <HStack gap={2} justifyContent="space-between" width="100%">
-                <Text>Time:</Text>{" "}
-                <Text fontSize="lg" fontWeight="bold">
-                    {getResultTimeText(result.time)}
-                </Text>
+            <HStack gap={2} justifyContent="space-between" alignItems="flex-start" width="100%">
+                <Text>Time:</Text>
+                <VStack alignItems={"flex-end"} gap={0}>
+                    <Text fontSize="lg" fontWeight="bold">
+                        {getResultTimeText(result.time)}
+                    </Text>
+                    <Text fontSize="sm">({getResultMinutesText(result.time)})</Text>
+                </VStack>
             </HStack>
 
             <HStack gap={2} justifyContent="space-between" width="100%">

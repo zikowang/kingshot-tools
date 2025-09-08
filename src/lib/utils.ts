@@ -28,3 +28,14 @@ export function getResultTimeText(seconds: number) {
 
     return `${days} ${hrs} ${mins} ${secs}`;
 }
+
+export function getResultMinutesText(seconds: number) {
+    const mins = new Intl.NumberFormat(undefined, {
+        style: "unit",
+        unit: "minute",
+        unitDisplay: "narrow",
+        minimumFractionDigits: 0,
+    }).format(Math.floor(seconds / 60));
+
+    return mins;
+}

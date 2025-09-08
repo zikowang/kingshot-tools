@@ -1,8 +1,8 @@
 /** @format */
 
-import { getResultTimeText } from "@/lib/utils";
+import { getResultMinutesText, getResultTimeText } from "@/lib/utils";
 import type { TroopCalculatorResult } from "@/types/result";
-import { HStack, Image, Separator, Text } from "@chakra-ui/react";
+import { HStack, Image, Separator, Text, VStack } from "@chakra-ui/react";
 
 const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
     if (!result.showResult) {
@@ -13,7 +13,7 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
         <>
             {result.calculationType === "amount-of-troops" && (
                 <HStack gap={2} justifyContent="space-between" width="100%">
-                    <Text>Troops:</Text>{" "}
+                    <Text>Troops:</Text>
                     <Text fontSize="lg" fontWeight="bold">
                         {new Intl.NumberFormat(undefined, {
                             style: "decimal",
@@ -22,11 +22,14 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 </HStack>
             )}
 
-            <HStack gap={2} justifyContent="space-between" width="100%">
-                <Text>Time:</Text>{" "}
-                <Text fontSize="lg" fontWeight="bold">
-                    {getResultTimeText(result.time)}
-                </Text>
+            <HStack gap={2} justifyContent="space-between" alignItems="flex-start" width="100%">
+                <Text>Time:</Text>
+                <VStack alignItems={"flex-end"} gap={0}>
+                    <Text fontSize="lg" fontWeight="bold">
+                        {getResultTimeText(result.time)}
+                    </Text>
+                    <Text fontSize="sm">({getResultMinutesText(result.time)})</Text>
+                </VStack>
             </HStack>
 
             <HStack gap={2} justifyContent="space-between" width="100%">

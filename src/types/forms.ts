@@ -16,6 +16,7 @@ export type TroopsFormValues = {
     troopTrainingSpeed: string;
     kingdomBuffSpeed: string;
     positionBuffSpeed: string;
+    kvkBonusSpeed: string;
 };
 
 export type TruegoldFormValues = {
@@ -40,6 +41,7 @@ export type TruegoldFormValues = {
     kingdomBuffSpeed: string;
     positionBuffSpeed: string;
     petBuffSpeed: string;
+    kvkBonusSpeed: string;
 
     doubleTime: string;
 };
