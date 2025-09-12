@@ -240,9 +240,9 @@ const RallyTimePage = () => {
 
                 <Separator size="lg" width="100%" />
 
-                <HStack gap={8} my={8}>
+                <VStack gap={8} alignItems="flex-start">
                     <Stat.Root>
-                        <Stat.Label>Hit time</Stat.Label>
+                        <Stat.Label>Hit Time</Stat.Label>
                         <Stat.ValueText>
                             {result.hitTime.toLocaleTimeString(undefined, {
                                 hour: "2-digit",
@@ -253,33 +253,36 @@ const RallyTimePage = () => {
                         </Stat.ValueText>
                     </Stat.Root>
 
-                    <VStack width="100%" alignItems="flex-start">
-                        {result.rallyStarters.map((starter, index) => (
-                            <HStack key={index} gap={2}>
-                                <Text>
-                                    {starter.rallyStartTime.toLocaleTimeString(undefined, {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        second: "2-digit",
-                                        hour12: false,
-                                    })}
-                                </Text>
-                                <Text>{starter.name}</Text>
-                            </HStack>
-                        ))}
-                    </VStack>
-                    <Button
-                        type="button"
-                        tabIndex={-1}
-                        onClick={onCopyToClipboard}
-                        colorPalette={"blue"}
-                        variant="outline"
-                        size="md"
-                        disabled={rallyStarters.length === 1}
-                    >
-                        <LuClipboardCopy /> Copy
-                    </Button>
-                </HStack>
+                    <HStack gap={8} alignItems="flex-start">
+                        <VStack width="100%" alignItems="flex-start">
+                            {result.rallyStarters.map((starter, index) => (
+                                <HStack key={index} gap={2}>
+                                    <Text>
+                                        {starter.rallyStartTime.toLocaleTimeString(undefined, {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            second: "2-digit",
+                                            hour12: false,
+                                        })}
+                                    </Text>
+                                    <Text>{starter.name}</Text>
+                                </HStack>
+                            ))}
+                        </VStack>
+
+                        <Button
+                            type="button"
+                            tabIndex={-1}
+                            onClick={onCopyToClipboard}
+                            colorPalette={"blue"}
+                            variant="outline"
+                            size="md"
+                            disabled={rallyStarters.length === 1}
+                        >
+                            <LuClipboardCopy /> Copy
+                        </Button>
+                    </HStack>
+                </VStack>
 
                 <Separator size="lg" width="100%" />
 
