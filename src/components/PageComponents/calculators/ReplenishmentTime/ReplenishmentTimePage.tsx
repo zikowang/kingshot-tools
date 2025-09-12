@@ -3,6 +3,8 @@
 import ReactLayout from "@/layouts/ReactLayout";
 import { Box, Button, Group, HStack, NumberInput, Stat, Text, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { LuClock } from "react-icons/lu";
+
 import { getUTC } from "../../Calendar/CalendarPage";
 
 const ReplenishmentTimePage = () => {
@@ -35,7 +37,7 @@ const ReplenishmentTimePage = () => {
                             colorPalette="green"
                             size="md"
                         >
-                            Now
+                            <LuClock /> Now
                         </Button>
                         <Text pl={4} fontSize={20}>
                             {now.toLocaleTimeString(undefined, {
@@ -52,14 +54,25 @@ const ReplenishmentTimePage = () => {
                     <Group attached justifyContent={"flex-start"} alignItems="flex-end" gap={4}>
                         <NumberInput.Root
                             value={String(minutes)}
-                            onValueChange={(e) =>
-                                setMinutes(Number(e.value) >= 0 ? Number(e.value) : 0)
-                            }
+                            onValueChange={(e) => {
+                                const numericValue = Number(e.value);
+
+                                if (isNaN(numericValue)) {
+                                    setMinutes(0);
+                                    return;
+                                }
+
+                                if (numericValue < 0) {
+                                    setMinutes(60);
+                                    return;
+                                }
+
+                                setMinutes(Math.abs(numericValue) % 60);
+                            }}
                             onFocus={(e) =>
                                 e.target instanceof HTMLInputElement && e.target.select()
                             }
                             required
-                            min={0}
                         >
                             <NumberInput.Label>Minutes</NumberInput.Label>
                             <NumberInput.Scrubber />
@@ -68,14 +81,25 @@ const ReplenishmentTimePage = () => {
 
                         <NumberInput.Root
                             value={String(seconds)}
-                            onValueChange={(e) =>
-                                setSeconds(Number(e.value) >= 0 ? Number(e.value) : 0)
-                            }
+                            onValueChange={(e) => {
+                                const numericValue = Number(e.value);
+
+                                if (isNaN(numericValue)) {
+                                    setSeconds(0);
+                                    return;
+                                }
+
+                                if (numericValue < 0) {
+                                    setSeconds(60);
+                                    return;
+                                }
+
+                                setSeconds(Math.abs(numericValue) % 60);
+                            }}
                             onFocus={(e) =>
                                 e.target instanceof HTMLInputElement && e.target.select()
                             }
                             required
-                            min={0}
                             step={1}
                         >
                             <NumberInput.Label>Seconds</NumberInput.Label>

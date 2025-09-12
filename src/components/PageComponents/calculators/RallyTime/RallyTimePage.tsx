@@ -16,7 +16,7 @@ import {
     Text,
     VStack,
 } from "@chakra-ui/react";
-import { LuClipboardCopy, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
+import { LuClipboardCopy, LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
 
 import { Fragment, useEffect, useState } from "react";
 import { getUTC } from "../../Calendar/CalendarPage";
@@ -154,7 +154,7 @@ const RallyTimePage = () => {
                         colorPalette="green"
                         size="md"
                     >
-                        Quick Set
+                        <LuClock /> Quick Set
                     </Button>
                     <NumberInput.Root
                         value={String(rallyHit.hour)}
