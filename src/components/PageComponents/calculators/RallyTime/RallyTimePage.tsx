@@ -33,9 +33,11 @@ type RallyTimerResult = {
     rallyStarters: RallyStarterResult[];
 };
 
+const QUICK_SET_MINUTES = 7;
+
 function getHitTimeData(value?: Date) {
     const now = getUTC(value ?? new Date());
-    const defaultSet = new Date(now.getTime() + 7 * 60000); // 5 minutes later
+    const defaultSet = new Date(now.getTime() + QUICK_SET_MINUTES * 60000); // 7 minutes later
     const hour = defaultSet.getHours();
     const minute = defaultSet.getMinutes();
     const second = defaultSet.getSeconds();
@@ -232,6 +234,9 @@ const RallyTimePage = () => {
                         <NumberInput.Input />
                     </NumberInput.Root>
                 </HStack>
+                <Text fontSize={12} color="gray.400">
+                    The "Quick Set" button will add {QUICK_SET_MINUTES} minutes to the current time
+                </Text>
 
                 <Separator size="lg" width="100%" />
 
