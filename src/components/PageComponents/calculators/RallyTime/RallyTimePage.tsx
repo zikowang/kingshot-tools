@@ -158,12 +158,23 @@ const RallyTimePage = () => {
                     </Button>
                     <NumberInput.Root
                         value={String(rallyHit.hour)}
-                        onValueChange={(e) =>
-                            handleUpdateRallyHit("hour", Number(e.value) >= 0 ? Number(e.value) : 0)
-                        }
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                handleUpdateRallyHit("hour", 0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                handleUpdateRallyHit("hour", 24);
+                                return;
+                            }
+
+                            handleUpdateRallyHit("hour", Math.abs(numericValue) % 24);
+                        }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         required
-                        min={0}
                     >
                         <NumberInput.Label>Hour</NumberInput.Label>
                         <NumberInput.Scrubber />
@@ -172,15 +183,23 @@ const RallyTimePage = () => {
 
                     <NumberInput.Root
                         value={String(rallyHit.minute)}
-                        onValueChange={(e) =>
-                            handleUpdateRallyHit(
-                                "minute",
-                                Number(e.value) >= 0 ? Number(e.value) : 0
-                            )
-                        }
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                handleUpdateRallyHit("minute", 0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                handleUpdateRallyHit("minute", 60);
+                                return;
+                            }
+
+                            handleUpdateRallyHit("minute", Math.abs(numericValue) % 60);
+                        }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         required
-                        min={0}
                     >
                         <NumberInput.Label>Minute</NumberInput.Label>
                         <NumberInput.Scrubber />
@@ -189,15 +208,23 @@ const RallyTimePage = () => {
 
                     <NumberInput.Root
                         value={String(rallyHit.second)}
-                        onValueChange={(e) =>
-                            handleUpdateRallyHit(
-                                "second",
-                                Number(e.value) >= 0 ? Number(e.value) : 0
-                            )
-                        }
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                handleUpdateRallyHit("second", 0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                handleUpdateRallyHit("second", 60);
+                                return;
+                            }
+
+                            handleUpdateRallyHit("second", Math.abs(numericValue) % 60);
+                        }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         required
-                        min={0}
                         step={1}
                     >
                         <NumberInput.Label>Second</NumberInput.Label>
