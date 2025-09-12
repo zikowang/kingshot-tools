@@ -30,7 +30,7 @@ const UTC_START_OF_TODAY = getUTC(new Date(`${LOCAL_NOW.toISOString().split("T")
 
 const firstColumnWidth = { base: "100px", md: "200px" };
 
-function getUTC(date: Date) {
+export function getUTC(date: Date) {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 }
 

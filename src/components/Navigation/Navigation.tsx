@@ -6,12 +6,16 @@ import { LuChevronDown } from "react-icons/lu";
 
 const calculators = [
     {
-        label: "Troop Calculator",
+        label: "Troops",
         href: "/calculators/troop",
     },
     {
-        label: "Truegold Calculator",
+        label: "Truegold",
         href: "/calculators/truegold",
+    },
+    {
+        label: "Time",
+        href: "/calculators/time",
     },
 ];
 
