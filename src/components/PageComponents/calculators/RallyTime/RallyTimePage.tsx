@@ -2,8 +2,11 @@
 
 import ReactLayout from "@/layouts/ReactLayout";
 import {
+    Box,
     Button,
     Field,
+    Grid,
+    GridItem,
     HStack,
     Input,
     NumberInput,
@@ -14,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { LuClipboardCopy, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { getUTC } from "../../Calendar/CalendarPage";
 
 type RallyStarterResult = {
@@ -243,77 +246,91 @@ const RallyTimePage = () => {
 
                 <Separator size="lg" width="100%" />
 
-                <VStack gap={4}>
-                    {rallyStarters.map((starter, index) => (
-                        <HStack key={index} gap={2} alignItems="flex-end">
-                            <Field.Root>
-                                <Field.Label>Name Starter {index + 1}</Field.Label>
-                                <Input
-                                    value={starter.name}
-                                    placeholder={`Name Starter ${index + 1}`}
-                                    onChange={(e) => {
-                                        const newName = e.target.value;
-                                        setRallyStarters((prev) => {
-                                            const updatedStarters = [...prev];
-                                            updatedStarters[index] = {
-                                                ...updatedStarters[index],
-                                                name: newName,
-                                            };
-                                            return updatedStarters;
-                                        });
-                                    }}
-                                    onFocus={(e) =>
-                                        e.target instanceof HTMLInputElement && e.target.select()
-                                    }
-                                />
-                            </Field.Root>
+                <Box maxWidth="600px" width="100%">
+                    <Grid
+                        gap={4}
+                        gridTemplateColumns={"1fr 1fr auto"}
+                        width="100%"
+                        alignItems={"flex-end"}
+                    >
+                        <GridItem fontSize={14}>Name</GridItem>
+                        <GridItem fontSize={14}>March Time (seconds)</GridItem>
+                        <GridItem></GridItem>
+                        {rallyStarters.map((starter, index) => (
+                            <Fragment key={index}>
+                                <GridItem>
+                                    <Field.Root>
+                                        <Input
+                                            value={starter.name}
+                                            placeholder={`Name Starter ${index + 1}`}
+                                            onChange={(e) => {
+                                                const newName = e.target.value;
+                                                setRallyStarters((prev) => {
+                                                    const updatedStarters = [...prev];
+                                                    updatedStarters[index] = {
+                                                        ...updatedStarters[index],
+                                                        name: newName,
+                                                    };
+                                                    return updatedStarters;
+                                                });
+                                            }}
+                                            onFocus={(e) =>
+                                                e.target instanceof HTMLInputElement &&
+                                                e.target.select()
+                                            }
+                                        />
+                                    </Field.Root>
+                                </GridItem>
 
-                            <NumberInput.Root
-                                value={String(starter.marchTimeSec)}
-                                onValueChange={(e) =>
-                                    setRallyStarters((prev) => {
-                                        const updatedStarters = [...prev];
-                                        updatedStarters[index] = {
-                                            ...updatedStarters[index],
-                                            marchTimeSec:
-                                                Number(e.value) >= 0 ? Number(e.value) : 0,
-                                        };
-                                        return updatedStarters;
-                                    })
-                                }
-                                onFocus={(e) =>
-                                    e.target instanceof HTMLInputElement && e.target.select()
-                                }
-                                required
-                                min={0}
-                                step={1}
-                                width="100%"
-                            >
-                                <NumberInput.Label>
-                                    March Time Starter {index + 1} (s)
-                                </NumberInput.Label>
-                                <NumberInput.Scrubber />
-                                <NumberInput.Input />
-                            </NumberInput.Root>
+                                <GridItem>
+                                    <NumberInput.Root
+                                        value={String(starter.marchTimeSec)}
+                                        onValueChange={(e) =>
+                                            setRallyStarters((prev) => {
+                                                const updatedStarters = [...prev];
+                                                updatedStarters[index] = {
+                                                    ...updatedStarters[index],
+                                                    marchTimeSec:
+                                                        Number(e.value) >= 0 ? Number(e.value) : 0,
+                                                };
+                                                return updatedStarters;
+                                            })
+                                        }
+                                        onFocus={(e) =>
+                                            e.target instanceof HTMLInputElement &&
+                                            e.target.select()
+                                        }
+                                        required
+                                        min={0}
+                                        step={1}
+                                        width="100%"
+                                    >
+                                        <NumberInput.Scrubber />
+                                        <NumberInput.Input />
+                                    </NumberInput.Root>
+                                </GridItem>
 
-                            <Button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() =>
-                                    setRallyStarters((prev) => [
-                                        ...prev.filter((_, i) => i !== index),
-                                    ])
-                                }
-                                colorPalette={"red"}
-                                variant="ghost"
-                                size="md"
-                                disabled={rallyStarters.length === 1}
-                            >
-                                <LuUserRoundMinus />
-                            </Button>
-                        </HStack>
-                    ))}
-                </VStack>
+                                <GridItem>
+                                    <Button
+                                        type="button"
+                                        tabIndex={-1}
+                                        onClick={() =>
+                                            setRallyStarters((prev) => [
+                                                ...prev.filter((_, i) => i !== index),
+                                            ])
+                                        }
+                                        colorPalette={"red"}
+                                        variant="ghost"
+                                        size="md"
+                                        disabled={rallyStarters.length === 1}
+                                    >
+                                        <LuUserRoundMinus />
+                                    </Button>
+                                </GridItem>
+                            </Fragment>
+                        ))}
+                    </Grid>
+                </Box>
 
                 <Button
                     type="button"
