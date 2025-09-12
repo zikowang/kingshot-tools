@@ -12,6 +12,7 @@ import {
     NumberInput,
     Separator,
     Stat,
+    Switch,
     Text,
     VStack,
 } from "@chakra-ui/react";
@@ -24,6 +25,7 @@ type RallyStarterResult = {
     name: string;
     marchTimeSec: number;
     rallyStartTime: Date;
+    active: boolean;
 };
 
 type RallyTimerResult = {
@@ -45,6 +47,7 @@ const defaultRallyStarter: RallyStarterResult = {
     name: "Starter 1",
     marchTimeSec: 60,
     rallyStartTime: new Date(),
+    active: true,
 };
 
 function loadPreset() {
@@ -119,10 +122,14 @@ const RallyTimePage = () => {
     };
 
     useEffect(() => {
-        const updatedStarters = rallyStarters.map((starter) => {
-            const rallyStartTime = new Date(rallyHit.hit.getTime() - starter.marchTimeSec * 1000);
-            return { ...starter, rallyStartTime };
-        });
+        const updatedStarters = rallyStarters
+            .filter((starter) => starter.active)
+            .map((starter) => {
+                const rallyStartTime = new Date(
+                    rallyHit.hit.getTime() - starter.marchTimeSec * 1000
+                );
+                return { ...starter, rallyStartTime };
+            });
 
         setResult({
             hitTime: rallyHit.hit,
@@ -140,7 +147,6 @@ const RallyTimePage = () => {
 
             <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
                 <HStack justifyContent={"flex-start"} alignItems="flex-end">
-                    {/* <Group attached justifyContent={"flex-start"} alignItems="flex-end" gap={4}> */}
                     <Button
                         type="button"
                         onClick={handleQuickSetTime}
@@ -198,7 +204,6 @@ const RallyTimePage = () => {
                         <NumberInput.Scrubber />
                         <NumberInput.Input />
                     </NumberInput.Root>
-                    {/* </Group> */}
                 </HStack>
 
                 <Separator size="lg" width="100%" />
@@ -249,15 +254,37 @@ const RallyTimePage = () => {
                 <Box maxWidth="600px" width="100%">
                     <Grid
                         gap={4}
-                        gridTemplateColumns={"1fr 1fr auto"}
+                        gridTemplateColumns={"auto 1fr 1fr auto"}
                         width="100%"
-                        alignItems={"flex-end"}
+                        alignItems={"center"}
                     >
+                        <GridItem></GridItem>
                         <GridItem fontSize={14}>Rally Starter</GridItem>
                         <GridItem fontSize={14}>Rally March Time (seconds)</GridItem>
                         <GridItem></GridItem>
                         {rallyStarters.map((starter, index) => (
                             <Fragment key={index}>
+                                <Switch.Root
+                                    colorPalette={"green"}
+                                    checked={starter.active ?? true}
+                                    onCheckedChange={(e) => {
+                                        const newActive = e.checked;
+                                        setRallyStarters((prev) => {
+                                            const updatedStarters = [...prev];
+                                            updatedStarters[index] = {
+                                                ...updatedStarters[index],
+                                                active: newActive,
+                                            };
+                                            return updatedStarters;
+                                        });
+                                    }}
+                                >
+                                    <Switch.HiddenInput />
+                                    <Switch.Control>
+                                        <Switch.Thumb />
+                                    </Switch.Control>
+                                    <Switch.Label />
+                                </Switch.Root>
                                 <GridItem>
                                     <Field.Root>
                                         <Input
