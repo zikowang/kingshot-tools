@@ -1,0 +1,11 @@
+---
+import '@/styles/global.css';
+
+
+import RallyTimePage from '@/components/PageComponents/calculators/RallyTime/RallyTimePage';
+import DefaultLayout from '@/layouts/default-layout.astro';
+---
+
+<DefaultLayout title="Rally Timer">
+  <RallyTimePage client:only="react" />
+</DefaultLayout>

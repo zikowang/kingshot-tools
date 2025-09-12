@@ -5,7 +5,7 @@ import { Box, Button, Group, HStack, NumberInput, Stat, Text, VStack } from "@ch
 import { useEffect, useState } from "react";
 import { getUTC } from "../../Calendar/CalendarPage";
 
-const TimePage = () => {
+const ReplenishmentTimePage = () => {
     const [result, setResult] = useState(getUTC(new Date()));
     const [now, setNow] = useState(getUTC(new Date()));
     const [minutes, setMinutes] = useState(0);
@@ -22,7 +22,7 @@ const TimePage = () => {
     return (
         <ReactLayout>
             <Text textStyle="3xl" fontWeight="bold">
-                Time Calculator
+                Replenishment Timer
             </Text>
 
             <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
@@ -101,4 +101,4 @@ const TimePage = () => {
     );
 };
 
-export default TimePage;
+export default ReplenishmentTimePage;

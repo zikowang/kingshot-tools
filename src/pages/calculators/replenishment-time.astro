@@ -1,0 +1,10 @@
+---
+import '@/styles/global.css';
+
+import ReplenishmentTimePage from '@/components/PageComponents/calculators/ReplenishmentTime/ReplenishmentTimePage';
+import DefaultLayout from '@/layouts/default-layout.astro';
+---
+
+<DefaultLayout title="Replenishment Timer">
+  <ReplenishmentTimePage client:only="react" />
+</DefaultLayout>

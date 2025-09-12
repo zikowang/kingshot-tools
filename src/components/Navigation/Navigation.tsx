@@ -14,8 +14,12 @@ const calculators = [
         href: "/calculators/truegold",
     },
     {
-        label: "Time",
-        href: "/calculators/time",
+        label: "Replenishment Time",
+        href: "/calculators/replenishment-time",
+    },
+    {
+        label: "Rally Time",
+        href: "/calculators/rally-time",
     },
 ];
 
