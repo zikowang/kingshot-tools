@@ -8,6 +8,7 @@ import { buccaneerBounty } from "./buccaneerBounty";
 import { callOfSovereign } from "./callOfSovereign";
 import { castleBattle } from "./castleBattle";
 import { cesaresFury } from "./cesaresFury";
+import { champagneFair } from "./champagneFair";
 import { defeatBeasts } from "./defeatBeasts";
 import { desertTrial } from "./desertTrial";
 import { eternitysReach } from "./eternitysReach";
@@ -49,7 +50,7 @@ export const allEvents = [
     // championsWay,
 
     // * add back as soon as next event is scheduled
-    // champagneFair,
+    champagneFair,
     mysticDivination,
     fishingTournament,
     buccaneerBounty,
