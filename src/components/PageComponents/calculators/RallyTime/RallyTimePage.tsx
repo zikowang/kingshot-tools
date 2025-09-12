@@ -169,13 +169,14 @@ const RallyTimePage = () => {
                             }
 
                             if (numericValue < 0) {
-                                handleUpdateRallyHit("hour", 24);
+                                handleUpdateRallyHit("hour", 23);
                                 return;
                             }
 
                             handleUpdateRallyHit("hour", Math.abs(numericValue) % 24);
                         }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
                         required
                     >
                         <NumberInput.Label>Hour</NumberInput.Label>
@@ -194,13 +195,14 @@ const RallyTimePage = () => {
                             }
 
                             if (numericValue < 0) {
-                                handleUpdateRallyHit("minute", 60);
+                                handleUpdateRallyHit("minute", 59);
                                 return;
                             }
 
                             handleUpdateRallyHit("minute", Math.abs(numericValue) % 60);
                         }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
                         required
                     >
                         <NumberInput.Label>Minute</NumberInput.Label>
@@ -219,15 +221,15 @@ const RallyTimePage = () => {
                             }
 
                             if (numericValue < 0) {
-                                handleUpdateRallyHit("second", 60);
+                                handleUpdateRallyHit("second", 59);
                                 return;
                             }
 
                             handleUpdateRallyHit("second", Math.abs(numericValue) % 60);
                         }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
                         required
-                        step={1}
                     >
                         <NumberInput.Label>Second</NumberInput.Label>
                         <NumberInput.Scrubber />

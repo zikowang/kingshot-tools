@@ -51,62 +51,57 @@ const ReplenishmentTimePage = () => {
                 </Box>
 
                 <HStack>
-                    <Group attached justifyContent={"flex-start"} alignItems="flex-end" gap={4}>
-                        <NumberInput.Root
-                            value={String(minutes)}
-                            onValueChange={(e) => {
-                                const numericValue = Number(e.value);
+                    <NumberInput.Root
+                        value={String(minutes)}
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
 
-                                if (isNaN(numericValue)) {
-                                    setMinutes(0);
-                                    return;
-                                }
-
-                                if (numericValue < 0) {
-                                    setMinutes(60);
-                                    return;
-                                }
-
-                                setMinutes(Math.abs(numericValue) % 60);
-                            }}
-                            onFocus={(e) =>
-                                e.target instanceof HTMLInputElement && e.target.select()
+                            if (isNaN(numericValue)) {
+                                setMinutes(0);
+                                return;
                             }
-                            required
-                        >
-                            <NumberInput.Label>Minutes</NumberInput.Label>
-                            <NumberInput.Scrubber />
-                            <NumberInput.Input />
-                        </NumberInput.Root>
 
-                        <NumberInput.Root
-                            value={String(seconds)}
-                            onValueChange={(e) => {
-                                const numericValue = Number(e.value);
-
-                                if (isNaN(numericValue)) {
-                                    setSeconds(0);
-                                    return;
-                                }
-
-                                if (numericValue < 0) {
-                                    setSeconds(60);
-                                    return;
-                                }
-
-                                setSeconds(Math.abs(numericValue) % 60);
-                            }}
-                            onFocus={(e) =>
-                                e.target instanceof HTMLInputElement && e.target.select()
+                            if (numericValue < 0) {
+                                setMinutes(59);
+                                return;
                             }
-                            required
-                            step={1}
-                        >
-                            <NumberInput.Label>Seconds</NumberInput.Label>
-                            <NumberInput.Scrubber />
-                            <NumberInput.Input />
-                        </NumberInput.Root>
-                    </Group>
+
+                            setMinutes(Math.abs(numericValue) % 60);
+                        }}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
+                        required
+                    >
+                        <NumberInput.Label>Minutes</NumberInput.Label>
+                        <NumberInput.Scrubber />
+                        <NumberInput.Input />
+                    </NumberInput.Root>
+
+                    <NumberInput.Root
+                        value={String(seconds)}
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                setSeconds(0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                setSeconds(59);
+                                return;
+                            }
+
+                            setSeconds(Math.abs(numericValue) % 60);
+                        }}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
+                        required
+                    >
+                        <NumberInput.Label>Seconds</NumberInput.Label>
+                        <NumberInput.Scrubber />
+                        <NumberInput.Input />
+                    </NumberInput.Root>
                 </HStack>
 
                 <Stat.Root>
