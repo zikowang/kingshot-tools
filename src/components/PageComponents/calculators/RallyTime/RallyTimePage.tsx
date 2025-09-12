@@ -253,8 +253,8 @@ const RallyTimePage = () => {
                         width="100%"
                         alignItems={"flex-end"}
                     >
-                        <GridItem fontSize={14}>Name</GridItem>
-                        <GridItem fontSize={14}>March Time (seconds)</GridItem>
+                        <GridItem fontSize={14}>Rally Starter</GridItem>
+                        <GridItem fontSize={14}>Rally March Time (seconds)</GridItem>
                         <GridItem></GridItem>
                         {rallyStarters.map((starter, index) => (
                             <Fragment key={index}>
