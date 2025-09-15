@@ -381,6 +381,10 @@ const CalendarPage = () => {
     const intervalDay = getIntervalDay();
 
     useEffect(() => {
+        if (intervalDay <= 3) {
+            return;
+        }
+
         if (calendarRef.current) {
             const scrollTo = (intervalDay - 1) * 50 + 25;
 
