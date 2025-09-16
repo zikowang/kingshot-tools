@@ -277,7 +277,7 @@ const townCenterBuild = [
                     truegold: 238,
                 },
                 power: 2_384_500,
-                requirements: ["em-tg2-4", "ba-tg2"],
+                requirements: ["tc-tg2-4", "em-tg2", "ba-tg2"],
             },
             {
                 id: "tc-tg3-1",
@@ -293,7 +293,7 @@ const townCenterBuild = [
                     truegold: 280,
                 },
                 power: 0,
-                requirements: ["tc-tg2", "em-tg3", "ra-tg3"],
+                requirements: ["tc-tg3", "em-tg3", "ra-tg3"],
             },
             {
                 id: "tc-tg3-2",
