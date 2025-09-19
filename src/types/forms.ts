@@ -35,6 +35,15 @@ export type TruegoldFormValues = {
     currentRaLevel: string;
     targetRaLevel: string;
 
+    currentInLevel: string;
+    targetInLevel: string;
+
+    currentAcLevel: string;
+    targetAcLevel: string;
+
+    currentCcLevel: string;
+    targetCcLevel: string;
+
     saulBuff: string;
 
     buildingSpeed: string;

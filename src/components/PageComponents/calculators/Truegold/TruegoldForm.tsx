@@ -3,7 +3,16 @@
 import PresetButton from "@/components/PresetButton/PresetButton";
 import { toaster } from "@/components/ui/toaster";
 import { ToggleTip } from "@/components/ui/toggle-tip";
-import { allBuildings, barracks, embassy, range, stable, townCenter } from "@/data/buildings";
+import {
+    allBuildings,
+    barracks,
+    commandCenter,
+    embassy,
+    infirmary,
+    range,
+    stable,
+    townCenter,
+} from "@/data/buildings";
 import { getTruegoldPreset } from "@/lib/localStorage";
 import type { BuildingStage } from "@/types/building";
 import type { TruegoldFormValues } from "@/types/forms";
@@ -39,6 +48,15 @@ const defaultFormValues: TruegoldFormValues = {
     currentRaLevel: "30",
     targetRaLevel: "30",
 
+    currentInLevel: "30",
+    targetInLevel: "30",
+
+    currentAcLevel: "30",
+    targetAcLevel: "30",
+
+    currentCcLevel: "30",
+    targetCcLevel: "30",
+
     saulBuff: "0",
 
     buildingSpeed: "0",
@@ -55,22 +73,41 @@ const POSITION_BUFF = "10";
 const DOUBLE_TIME_BUFF = "20";
 const KVK_BONUS = "5";
 
+const allBuildingsMap = allBuildings.reduce(
+    (map, obj) => {
+        map.set(obj.id, obj);
+
+        return map;
+    },
+    new Map() as Map<string, BuildingStage>
+);
+
 function getRequirementsRecursive(current: BuildingStage[], target: BuildingStage[]) {
     let requirementsIds: string[] = [];
 
     // recursive function to find all requirements
     const findRequirements = (currentBuilding: BuildingStage) => {
-        const building = allBuildings.find((b) => b.id === currentBuilding.id);
-        if (building) {
-            requirementsIds = Array.from(new Set([...requirementsIds, ...building.requirements]));
+        console.log("recursive", currentBuilding.id);
+        const building = allBuildingsMap.get(currentBuilding.id);
+
+        if (!building) {
+            return;
+        }
+
+        for (const buildingRequirement of building.requirements) {
+            if (requirementsIds.includes(buildingRequirement)) {
+                continue;
+            }
+
+            requirementsIds = Array.from(new Set([...requirementsIds, buildingRequirement]));
             building.requirements.forEach((entry) => {
-                findRequirements(allBuildings.find((b) => b.id === entry)!);
+                findRequirements(allBuildingsMap.get(entry)!);
             });
         }
     };
 
     target.forEach((entry) => {
-        findRequirements(allBuildings.find((b) => b.id === entry.id)!);
+        findRequirements(allBuildingsMap.get(entry.id)!);
     });
 
     requirementsIds = Array.from(new Set([...requirementsIds, ...target.map((t) => t.id)]));
@@ -118,6 +155,22 @@ function getRequirementsRecursive(current: BuildingStage[], target: BuildingStag
                 if (!currentSt) return true;
 
                 return building.level > currentSt.level;
+            }
+
+            if (type === "in") {
+                const currentIn = current.find((c) => c.type === "in");
+
+                if (!currentIn) return true;
+
+                return building.level > currentIn.level;
+            }
+
+            if (type === "cc") {
+                const currentCc = current.find((c) => c.type === "cc");
+
+                if (!currentCc) return true;
+
+                return building.level > currentCc.level;
             }
         });
 
@@ -190,6 +243,18 @@ const TruegoldForm = ({
             (r) => r.level === parseInt(formValues.currentRaLevel || "30")
         );
         const targetRa = range.find((r) => r.level === parseInt(formValues.targetRaLevel || "30"));
+        const currentIn = infirmary.find(
+            (i) => i.level === parseInt(formValues.currentInLevel || "30")
+        );
+        const targetIn = infirmary.find(
+            (i) => i.level === parseInt(formValues.targetInLevel || "30")
+        );
+        const currentCc = commandCenter.find(
+            (i) => i.level === parseInt(formValues.currentCcLevel || "30")
+        );
+        const targetCc = commandCenter.find(
+            (i) => i.level === parseInt(formValues.targetCcLevel || "30")
+        );
 
         const saulBuff = parseFloat(formValues.saulBuff);
 
@@ -211,7 +276,11 @@ const TruegoldForm = ({
             !currentSt ||
             !targetSt ||
             !currentRa ||
-            !targetRa
+            !targetRa ||
+            !currentIn ||
+            !targetIn ||
+            !currentCc ||
+            !targetCc
         ) {
             console.error("Data Error");
 
@@ -219,8 +288,8 @@ const TruegoldForm = ({
         }
 
         let resultBuildings = getRequirementsRecursive(
-            [currentTc, currentEm, currentBa, currentSt, currentRa],
-            [targetTc, targetEm, targetBa, targetSt, targetRa]
+            [currentTc, currentEm, currentBa, currentSt, currentRa, currentIn, currentCc],
+            [targetTc, targetEm, targetBa, targetSt, targetRa, targetIn, targetCc]
         );
 
         // update build time with buffs
@@ -346,6 +415,30 @@ const TruegoldForm = ({
                         onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
                         label={"Range Level"}
                         placeholder={"Select Range Level"}
+                    />
+                </Box>
+
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentInLevel"
+                        toKey="targetInLevel"
+                        options={infirmary}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Infirmary Level"}
+                        placeholder={"Select Infirmary Level"}
+                    />
+                </Box>
+
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentCcLevel"
+                        toKey="targetCcLevel"
+                        options={commandCenter}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"Command Center Level"}
+                        placeholder={"Select Command Center Level"}
                     />
                 </Box>
 

@@ -379,7 +379,7 @@ const townCenterBuild = [
                     truegold: 335,
                 },
                 power: 0,
-                requirements: ["tc-tg3", "em-tg4", "st-tg4"],
+                requirements: ["tc-tg4", "em-tg4", "st-tg4"],
             },
             {
                 id: "tc-tg4-2",
@@ -446,7 +446,7 @@ const townCenterBuild = [
                     wood: 84_000_000,
                     stone: 16_000_000,
                     iron: 4_200_000,
-                    truegold: 280,
+                    truegold: 335,
                 },
                 power: 3_016_500,
                 requirements: ["tc-tg4-4", "em-tg4", "st-tg4"],
