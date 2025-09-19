@@ -11,29 +11,21 @@ import {
     Input,
     NumberInput,
     Separator,
-    Stat,
     Switch,
     Text,
     VStack,
 } from "@chakra-ui/react";
-import { LuClipboardCopy, LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
+import { LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
 
 import { Fragment, useEffect, useState } from "react";
 import { getUTC } from "../../Calendar/CalendarPage";
-
-type RallyStarterResult = {
-    name: string;
-    marchTimeSec: number;
-    rallyStartTime: Date;
-    active: boolean;
-};
-
-type RallyTimerResult = {
-    hitTime: Date;
-    rallyStarters: RallyStarterResult[];
-};
+import RallyTimeResult, {
+    type RallyStarterResult,
+    type RallyTimerResult,
+} from "./RallyTimerResult";
 
 const QUICK_SET_MINUTES = 7;
+const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 function getHitTimeData(value?: Date) {
     const now = getUTC(value ?? new Date());
@@ -100,35 +92,12 @@ const RallyTimePage = () => {
         });
     };
 
-    const onCopyToClipboard = () => {
-        const rallyHitText = `${result.hitTime.toLocaleTimeString(undefined, {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-        })} UTC - Rally Hit`;
-
-        const starterText = result.rallyStarters
-            .map(
-                (starter) =>
-                    `${starter.rallyStartTime.toLocaleTimeString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: false,
-                    })} UTC - ${starter.name}`
-            )
-            .join("\n");
-
-        navigator.clipboard.writeText(`${rallyHitText}\n\n${starterText}`);
-    };
-
     useEffect(() => {
         const updatedStarters = rallyStarters
             .filter((starter) => starter.active)
             .map((starter) => {
                 const rallyStartTime = new Date(
-                    rallyHit.hit.getTime() - starter.marchTimeSec * 1000
+                    rallyHit.hit.getTime() - starter.marchTimeSec * 1000 - DEFAULT_RALLY_TIME
                 );
                 return { ...starter, rallyStartTime };
             });
@@ -242,49 +211,7 @@ const RallyTimePage = () => {
 
                 <Separator size="lg" width="100%" />
 
-                <VStack gap={8} alignItems="flex-start">
-                    <Stat.Root>
-                        <Stat.Label>Hit Time</Stat.Label>
-                        <Stat.ValueText>
-                            {result.hitTime.toLocaleTimeString(undefined, {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                second: "2-digit",
-                                hour12: false,
-                            })}
-                        </Stat.ValueText>
-                    </Stat.Root>
-
-                    <HStack gap={8} alignItems="flex-start">
-                        <VStack width="100%" alignItems="flex-start">
-                            {result.rallyStarters.map((starter, index) => (
-                                <HStack key={index} gap={2}>
-                                    <Text>
-                                        {starter.rallyStartTime.toLocaleTimeString(undefined, {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            second: "2-digit",
-                                            hour12: false,
-                                        })}
-                                    </Text>
-                                    <Text>{starter.name}</Text>
-                                </HStack>
-                            ))}
-                        </VStack>
-
-                        <Button
-                            type="button"
-                            tabIndex={-1}
-                            onClick={onCopyToClipboard}
-                            colorPalette={"blue"}
-                            variant="outline"
-                            size="md"
-                            disabled={rallyStarters.length === 1}
-                        >
-                            <LuClipboardCopy /> Copy
-                        </Button>
-                    </HStack>
-                </VStack>
+                <RallyTimeResult result={result} rallyStarters={rallyStarters} />
 
                 <Separator size="lg" width="100%" />
 
