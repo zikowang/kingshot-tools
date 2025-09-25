@@ -3,6 +3,7 @@
 import type { Event } from "@/types/events";
 import { gems, governorStamina, mythicGeneralHeroShard } from "../items";
 
+// Not accurate since it's like every 6 weeks or so
 export const buccaneerBounty: Event = {
     id: "buccaneer-bounty",
     name: "Buccaneer Bounty",

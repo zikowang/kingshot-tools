@@ -16,7 +16,7 @@ export const champagneFair: Event = {
     name: "Champagne Fair",
     shortName: "Champagne Fair",
     image: "/img/100x100/events/kingshot-champagne-fair-event-icon.png",
-    color: "#e48423",
+    color: "#528ec7",
     days: [1, 2],
     rewards: [
         widget,

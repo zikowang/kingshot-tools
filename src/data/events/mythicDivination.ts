@@ -8,7 +8,7 @@ export const mysticDivination: Event = {
     name: "Mystic Divination",
     shortName: "Mystic Divination",
     image: "/img/100x100/events/kingshot-mystic-divination-event-icon.png",
-    color: "#8b76c6",
+    color: "#528ec7",
     days: [19, 20],
     rewards: [gems, truegold, forgeHammer, speedups],
     todo: ["Play the luck event"],

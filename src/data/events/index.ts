@@ -22,6 +22,7 @@ import { mysticDivination } from "./mythicDivination";
 import { officerProject } from "./officerProject";
 import { strongestGovernor } from "./strongestGovernor";
 import { swordlandShowdown } from "./swordlandShowdown";
+import { triAllianceClash } from "./triAllianceClash";
 import { vikingsVengeance } from "./vikingsVengeance";
 
 export const allEvents = [
@@ -36,9 +37,10 @@ export const allEvents = [
     // allianceChampionship,
     allianceBrawl,
     merchantEmpire,
-    swordlandShowdown,
-    allOut,
     allianceMobilization,
+    swordlandShowdown,
+    triAllianceClash,
+    allOut,
 
     hallOfHeroes,
     goldenGlaives,
