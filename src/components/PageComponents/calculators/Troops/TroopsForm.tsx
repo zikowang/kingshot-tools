@@ -160,6 +160,10 @@ const TroopsForm = ({
             ? targetTrain.power - (rootTrain?.power || 0)
             : targetTrain.power;
 
+        const promotionPointGainKvK =
+            targetTrain.points.kvk - (rootTrain?.points?.kvk || targetTrain.points.kvk);
+        const promotionPointGainStrongestGovernor =
+            targetTrain.points.sg - (rootTrain?.points?.sg || targetTrain.points.sg);
         if (calculationType === "amount-of-troops") {
             const speedupDays = parseInt(formValues.speedupDays || "0", 10);
             const speedupHours = parseInt(formValues.speedupHours || "0", 10);
@@ -173,8 +177,12 @@ const TroopsForm = ({
                 updatedEffectiveSpeedupInSeconds / calculationBaseTime
             );
             const effectiveTime = totalSpeedupInSeconds;
-            const kvkPoints = resultQuantity * targetTrain.points.kvk;
-            const strongestGovernorPoints = resultQuantity * targetTrain.points.sg;
+            const kvkPoints = isPromotion
+                ? resultQuantity * promotionPointGainKvK
+                : resultQuantity * targetTrain.points.kvk;
+            const strongestGovernorPoints = isPromotion
+                ? resultQuantity * promotionPointGainStrongestGovernor
+                : resultQuantity * targetTrain.points.sg;
 
             const resultCost = {
                 bread: isPromotion
@@ -223,8 +231,12 @@ const TroopsForm = ({
                 ? (targetCost.iron - (rootTrain?.cost?.iron || 0)) * quantity
                 : targetCost.iron * quantity,
         };
-        const kvkPoints = quantity * targetTrain.points.kvk;
-        const strongestGovernorPoints = quantity * targetTrain.points.sg;
+        const kvkPoints = isPromotion
+            ? quantity * promotionPointGainKvK
+            : quantity * targetTrain.points.kvk;
+        const strongestGovernorPoints = isPromotion
+            ? quantity * promotionPointGainStrongestGovernor
+            : quantity * targetTrain.points.sg;
 
         setResult({
             showResult: true,
