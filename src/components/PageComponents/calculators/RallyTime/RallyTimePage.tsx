@@ -1,28 +1,12 @@
 /** @format */
 
 import ReactLayout from "@/layouts/ReactLayout";
-import {
-    Box,
-    Button,
-    Field,
-    Grid,
-    GridItem,
-    HStack,
-    Input,
-    NumberInput,
-    Separator,
-    Switch,
-    Text,
-    VStack,
-} from "@chakra-ui/react";
-import { LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
+import { Text } from "@chakra-ui/react";
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getUTC } from "../../Calendar/CalendarPage";
-import RallyTimeResult, {
-    type RallyStarterResult,
-    type RallyTimerResult,
-} from "./RallyTimerResult";
+import RallyTimeForm from "./RallyTimeForm";
+import { type RallyStarterResult, type RallyTimerResult } from "./RallyTimerResult";
 
 const QUICK_SET_MINUTES = 7;
 const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -34,7 +18,7 @@ function getHitTimeData(value?: Date) {
     const minute = defaultSet.getMinutes();
     const second = defaultSet.getSeconds();
 
-    return { hit: defaultSet, hour, minute, second };
+    return { datetime: defaultSet, hour, minute, second };
 }
 
 const defaultRallyStarter: RallyStarterResult = {
@@ -51,7 +35,20 @@ function loadPreset() {
         return null;
     }
 
-    return preset as RallyStarterResult[];
+    try {
+        const fixedPreset = preset.map((item: any, index: number) => ({
+            ...item,
+            name: item.name || `Starter ${index + 1}`,
+            marchTimeSec: Number(item.marchTimeSec) >= 0 ? Number(item.marchTimeSec) : 60,
+            rallyStartTime: item.rallyStartTime ? new Date(item.rallyStartTime) : new Date(),
+            active: typeof item.active === "boolean" ? item.active : true,
+        }));
+
+        return fixedPreset as RallyStarterResult[];
+    } catch (e) {
+        console.error("Failed to load preset:", e);
+        return null;
+    }
 }
 
 function savePreset(starters: RallyStarterResult[]) {
@@ -60,55 +57,39 @@ function savePreset(starters: RallyStarterResult[]) {
 
 const RallyTimePage = () => {
     const [result, setResult] = useState<RallyTimerResult>(() => {
-        const { hit } = getHitTimeData();
+        const hitTime = getHitTimeData();
+        const loadedStarters = loadPreset();
+        const rallyStarters = loadedStarters?.length
+            ? loadedStarters.map((starter) => {
+                  const rallyStartTime = new Date(
+                      hitTime.datetime.getTime() - starter.marchTimeSec * 1000 - DEFAULT_RALLY_TIME
+                  );
+                  return { ...starter, rallyStartTime };
+              })
+            : [defaultRallyStarter];
 
         return {
-            hitTime: hit,
-            rallyStarters: [defaultRallyStarter],
+            hitTime,
+            rallyStarters,
         };
     });
 
-    const [rallyHit, setRallyHit] = useState(() => getHitTimeData());
-    const [rallyStarters, setRallyStarters] = useState<RallyStarterResult[]>(
-        () => loadPreset() || [defaultRallyStarter]
-    );
-
-    const handleQuickSetTime = () => {
-        const updatedRallyHit = getHitTimeData();
-        setRallyHit(updatedRallyHit);
-    };
-
-    const handleUpdateRallyHit = (key: "hour" | "minute" | "second", value: number) => {
-        setRallyHit((prev) => {
-            const newHitTime = new Date(prev.hit);
-            if (key === "hour") {
-                newHitTime.setUTCHours(value);
-            } else if (key === "minute") {
-                newHitTime.setUTCMinutes(value);
-            } else if (key === "second") {
-                newHitTime.setUTCSeconds(value);
-            }
-            return { ...prev, hit: newHitTime, [key]: value };
+    const updateResult = (newResult: RallyTimerResult) => {
+        const updatedStarters = newResult.rallyStarters.map((starter) => {
+            const rallyStartTime = new Date(
+                newResult.hitTime.datetime.getTime() -
+                    starter.marchTimeSec * 1000 -
+                    DEFAULT_RALLY_TIME
+            );
+            return { ...starter, rallyStartTime };
         });
+
+        setResult({ ...newResult, rallyStarters: updatedStarters });
     };
 
     useEffect(() => {
-        const updatedStarters = rallyStarters
-            .filter((starter) => starter.active)
-            .map((starter) => {
-                const rallyStartTime = new Date(
-                    rallyHit.hit.getTime() - starter.marchTimeSec * 1000 - DEFAULT_RALLY_TIME
-                );
-                return { ...starter, rallyStartTime };
-            });
-
-        setResult({
-            hitTime: rallyHit.hit,
-            rallyStarters: updatedStarters,
-        });
-
-        savePreset(rallyStarters);
-    }, [rallyHit, rallyStarters]);
+        savePreset(result.rallyStarters);
+    }, [result]);
 
     return (
         <ReactLayout>
@@ -116,233 +97,7 @@ const RallyTimePage = () => {
                 Rally Timer
             </Text>
 
-            <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
-                <HStack justifyContent={"flex-start"} alignItems="flex-end">
-                    <Button
-                        type="button"
-                        onClick={handleQuickSetTime}
-                        variant="solid"
-                        colorPalette="green"
-                        size="md"
-                    >
-                        <LuClock /> Quick Set
-                    </Button>
-                    <NumberInput.Root
-                        value={String(rallyHit.hour)}
-                        onValueChange={(e) => {
-                            const numericValue = Number(e.value);
-
-                            if (isNaN(numericValue)) {
-                                handleUpdateRallyHit("hour", 0);
-                                return;
-                            }
-
-                            if (numericValue < 0) {
-                                handleUpdateRallyHit("hour", 23);
-                                return;
-                            }
-
-                            handleUpdateRallyHit("hour", Math.abs(numericValue) % 24);
-                        }}
-                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                        width="100px"
-                        required
-                    >
-                        <NumberInput.Label>Hour</NumberInput.Label>
-                        <NumberInput.Scrubber />
-                        <NumberInput.Input />
-                    </NumberInput.Root>
-
-                    <NumberInput.Root
-                        value={String(rallyHit.minute)}
-                        onValueChange={(e) => {
-                            const numericValue = Number(e.value);
-
-                            if (isNaN(numericValue)) {
-                                handleUpdateRallyHit("minute", 0);
-                                return;
-                            }
-
-                            if (numericValue < 0) {
-                                handleUpdateRallyHit("minute", 59);
-                                return;
-                            }
-
-                            handleUpdateRallyHit("minute", Math.abs(numericValue) % 60);
-                        }}
-                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                        width="100px"
-                        required
-                    >
-                        <NumberInput.Label>Minute</NumberInput.Label>
-                        <NumberInput.Scrubber />
-                        <NumberInput.Input />
-                    </NumberInput.Root>
-
-                    <NumberInput.Root
-                        value={String(rallyHit.second)}
-                        onValueChange={(e) => {
-                            const numericValue = Number(e.value);
-
-                            if (isNaN(numericValue)) {
-                                handleUpdateRallyHit("second", 0);
-                                return;
-                            }
-
-                            if (numericValue < 0) {
-                                handleUpdateRallyHit("second", 59);
-                                return;
-                            }
-
-                            handleUpdateRallyHit("second", Math.abs(numericValue) % 60);
-                        }}
-                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                        width="100px"
-                        required
-                    >
-                        <NumberInput.Label>Second</NumberInput.Label>
-                        <NumberInput.Scrubber />
-                        <NumberInput.Input />
-                    </NumberInput.Root>
-                </HStack>
-                <Text fontSize={12} color="gray.400">
-                    The "Quick Set" button will add {QUICK_SET_MINUTES} minutes to the current time
-                </Text>
-
-                <Separator size="lg" width="100%" />
-
-                <RallyTimeResult result={result} rallyStarters={rallyStarters} />
-
-                <Separator size="lg" width="100%" />
-
-                <Box maxWidth="600px" width="100%">
-                    <Grid
-                        gap={4}
-                        gridTemplateColumns={"auto 1fr 1fr auto"}
-                        width="100%"
-                        alignItems={"center"}
-                    >
-                        <GridItem></GridItem>
-                        <GridItem fontSize={14}>Rally Starter</GridItem>
-                        <GridItem fontSize={14}>Rally March Time (seconds)</GridItem>
-                        <GridItem></GridItem>
-                        {rallyStarters.map((starter, index) => (
-                            <Fragment key={index}>
-                                <Switch.Root
-                                    colorPalette={"green"}
-                                    checked={starter.active ?? true}
-                                    onCheckedChange={(e) => {
-                                        const newActive = e.checked;
-                                        setRallyStarters((prev) => {
-                                            const updatedStarters = [...prev];
-                                            updatedStarters[index] = {
-                                                ...updatedStarters[index],
-                                                active: newActive,
-                                            };
-                                            return updatedStarters;
-                                        });
-                                    }}
-                                >
-                                    <Switch.HiddenInput />
-                                    <Switch.Control>
-                                        <Switch.Thumb />
-                                    </Switch.Control>
-                                    <Switch.Label />
-                                </Switch.Root>
-                                <GridItem>
-                                    <Field.Root>
-                                        <Input
-                                            value={starter.name}
-                                            placeholder={`Name Starter ${index + 1}`}
-                                            onChange={(e) => {
-                                                const newName = e.target.value;
-                                                setRallyStarters((prev) => {
-                                                    const updatedStarters = [...prev];
-                                                    updatedStarters[index] = {
-                                                        ...updatedStarters[index],
-                                                        name: newName,
-                                                    };
-                                                    return updatedStarters;
-                                                });
-                                            }}
-                                            onFocus={(e) =>
-                                                e.target instanceof HTMLInputElement &&
-                                                e.target.select()
-                                            }
-                                        />
-                                    </Field.Root>
-                                </GridItem>
-
-                                <GridItem>
-                                    <NumberInput.Root
-                                        value={String(starter.marchTimeSec)}
-                                        onValueChange={(e) =>
-                                            setRallyStarters((prev) => {
-                                                const updatedStarters = [...prev];
-                                                updatedStarters[index] = {
-                                                    ...updatedStarters[index],
-                                                    marchTimeSec:
-                                                        Number(e.value) >= 0 ? Number(e.value) : 0,
-                                                };
-                                                return updatedStarters;
-                                            })
-                                        }
-                                        onFocus={(e) =>
-                                            e.target instanceof HTMLInputElement &&
-                                            e.target.select()
-                                        }
-                                        required
-                                        min={0}
-                                        step={1}
-                                        width="100%"
-                                    >
-                                        <NumberInput.Scrubber />
-                                        <NumberInput.Input />
-                                    </NumberInput.Root>
-                                </GridItem>
-
-                                <GridItem>
-                                    <Button
-                                        type="button"
-                                        tabIndex={-1}
-                                        onClick={() =>
-                                            setRallyStarters((prev) => [
-                                                ...prev.filter((_, i) => i !== index),
-                                            ])
-                                        }
-                                        colorPalette={"red"}
-                                        variant="ghost"
-                                        size="md"
-                                        disabled={rallyStarters.length === 1}
-                                    >
-                                        <LuUserRoundMinus />
-                                    </Button>
-                                </GridItem>
-                            </Fragment>
-                        ))}
-                    </Grid>
-                </Box>
-
-                <Button
-                    type="button"
-                    tabIndex={-1}
-                    onClick={() =>
-                        setRallyStarters((prev) => {
-                            const newStarter: RallyStarterResult = {
-                                ...defaultRallyStarter,
-                                name: `Starter ${prev.length + 1}`,
-                            };
-
-                            return [...prev, newStarter];
-                        })
-                    }
-                    colorPalette={"green"}
-                    variant="ghost"
-                    size="md"
-                >
-                    <LuUserPlus /> Add Starter
-                </Button>
-            </VStack>
+            <RallyTimeForm data={result} updateData={updateResult} />
         </ReactLayout>
     );
 };

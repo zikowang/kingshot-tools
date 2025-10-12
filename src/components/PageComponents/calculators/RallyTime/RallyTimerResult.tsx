@@ -12,19 +12,18 @@ export type RallyStarterResult = {
 };
 
 export type RallyTimerResult = {
-    hitTime: Date;
+    hitTime: {
+        datetime: Date;
+        hour: number;
+        minute: number;
+        second: number;
+    };
     rallyStarters: RallyStarterResult[];
 };
 
-const RallyTimeResult = ({
-    result,
-    rallyStarters,
-}: {
-    result: RallyTimerResult;
-    rallyStarters: RallyStarterResult[];
-}) => {
+const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
     const onCopyToClipboard = () => {
-        const rallyHitText = `${result.hitTime.toLocaleTimeString(undefined, {
+        const rallyHitText = `${result.hitTime.datetime.toLocaleTimeString(undefined, {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
@@ -32,6 +31,7 @@ const RallyTimeResult = ({
         })} UTC - Rally Hit`;
 
         const starterText = result.rallyStarters
+            .filter((starter) => starter.active)
             .map(
                 (starter) =>
                     `${starter.rallyStartTime.toLocaleTimeString(undefined, {
@@ -51,7 +51,7 @@ const RallyTimeResult = ({
             <Stat.Root>
                 <Stat.Label>Hit Time</Stat.Label>
                 <Stat.ValueText>
-                    {result.hitTime.toLocaleTimeString(undefined, {
+                    {result.hitTime.datetime.toLocaleTimeString(undefined, {
                         hour: "2-digit",
                         minute: "2-digit",
                         second: "2-digit",
@@ -70,26 +70,32 @@ const RallyTimeResult = ({
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {result.rallyStarters.map((starter, index) => (
-                            <Table.Row key={index}>
-                                <Table.Cell>
-                                    <Text fontWeight="bold">
-                                        {starter.rallyStartTime.toLocaleTimeString(undefined, {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            second: "2-digit",
-                                            hour12: false,
-                                        })}
-                                    </Text>
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Text fontWeight="bold">{starter.name}</Text>
-                                </Table.Cell>
-                                <Table.Cell textAlign="end">
-                                    <ReallyCountdown targetTime={starter.rallyStartTime} />
-                                </Table.Cell>
-                            </Table.Row>
-                        ))}
+                        {result.rallyStarters.map((starter, index) => {
+                            if (!starter.active) {
+                                return null;
+                            }
+
+                            return (
+                                <Table.Row key={index}>
+                                    <Table.Cell>
+                                        <Text fontWeight="bold">
+                                            {starter.rallyStartTime.toLocaleTimeString(undefined, {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                second: "2-digit",
+                                                hour12: false,
+                                            })}
+                                        </Text>
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Text fontWeight="bold">{starter.name}</Text>
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="end">
+                                        <ReallyCountdown targetTime={starter.rallyStartTime} />
+                                    </Table.Cell>
+                                </Table.Row>
+                            );
+                        })}
                     </Table.Body>
                 </Table.Root>
 
@@ -100,7 +106,7 @@ const RallyTimeResult = ({
                     colorPalette={"blue"}
                     variant="outline"
                     size="md"
-                    disabled={rallyStarters.length === 1}
+                    disabled={result.rallyStarters.length < 1}
                 >
                     <LuClipboardCopy /> Copy
                 </Button>
