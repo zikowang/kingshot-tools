@@ -10,7 +10,7 @@ export const buccaneerBounty: Event = {
     shortName: "Buccaneer Bounty",
     image: "/img/100x100/events/kingshot-buccaneer-bounty-event-icon.png",
     color: "grey",
-    days: [10, 11, 12, 13, 14, 15, 16],
+    days: [5, 6, 7, 8, 9, 10, 11],
     rewards: [gems, mythicGeneralHeroShard, governorStamina],
     todo: [
         "Hunt Beasts",
