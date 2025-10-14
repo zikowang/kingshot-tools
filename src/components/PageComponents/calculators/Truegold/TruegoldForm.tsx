@@ -12,6 +12,7 @@ import {
     range,
     stable,
     townCenter,
+    warAcademy,
 } from "@/data/buildings";
 import { getTruegoldPreset } from "@/lib/localStorage";
 import type { BuildingStage } from "@/types/building";
@@ -57,6 +58,9 @@ const defaultFormValues: TruegoldFormValues = {
     currentCcLevel: "30",
     targetCcLevel: "30",
 
+    currentWaLevel: "35",
+    targetWaLevel: "35",
+
     saulBuff: "0",
 
     buildingSpeed: "0",
@@ -73,6 +77,29 @@ const POSITION_BUFF = "10";
 const DOUBLE_TIME_BUFF = "20";
 const KVK_BONUS = "5";
 
+function getMinBuildingLevel(level: string, type: string) {
+    switch (true) {
+        case type === "tc":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "em":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "ba":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "st":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "ra":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "in":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "cc":
+            return parseInt(level) < 30 ? "30" : level;
+        case type === "wa":
+            return parseInt(level) < 35 ? "35" : level;
+        default:
+            return "30";
+    }
+}
+
 const allBuildingsMap = allBuildings.reduce(
     (map, obj) => {
         map.set(obj.id, obj);
@@ -87,7 +114,7 @@ function getRequirementsRecursive(current: BuildingStage[], target: BuildingStag
 
     // recursive function to find all requirements
     const findRequirements = (currentBuilding: BuildingStage) => {
-        console.log("recursive", currentBuilding.id);
+        // console.log("recursive", currentBuilding.id);
         const building = allBuildingsMap.get(currentBuilding.id);
 
         if (!building) {
@@ -172,6 +199,14 @@ function getRequirementsRecursive(current: BuildingStage[], target: BuildingStag
 
                 return building.level > currentCc.level;
             }
+
+            if (type === "wa") {
+                const currentWa = current.find((c) => c.type === "wa");
+
+                if (!currentWa) return true;
+
+                return building.level > currentWa.level;
+            }
         });
 
     return requiredBuildings;
@@ -218,42 +253,60 @@ const TruegoldForm = ({
 
     useEffect(() => {
         const currentTc = townCenter.find(
-            (t) => t.level === parseInt(formValues.currentTcLevel || "30")
+            (t) =>
+                t.level === parseInt(getMinBuildingLevel(formValues.currentTcLevel, "tc") || "30")
         );
         const targetTc = townCenter.find(
-            (t) => t.level === parseInt(formValues.targetTcLevel || "30")
+            (t) => t.level === parseInt(getMinBuildingLevel(formValues.targetTcLevel, "tc") || "30")
         );
         const currentEm = embassy.find(
-            (e) => e.level === parseInt(formValues.currentEmLevel || "30")
+            (e) =>
+                e.level === parseInt(getMinBuildingLevel(formValues.currentEmLevel, "em") || "30")
         );
         const targetEm = embassy.find(
-            (e) => e.level === parseInt(formValues.targetEmLevel || "30")
+            (e) => e.level === parseInt(getMinBuildingLevel(formValues.targetEmLevel, "em") || "30")
         );
         const currentBa = barracks.find(
-            (b) => b.level === parseInt(formValues.currentBaLevel || "30")
+            (b) =>
+                b.level === parseInt(getMinBuildingLevel(formValues.currentBaLevel, "ba") || "30")
         );
         const targetBa = barracks.find(
-            (b) => b.level === parseInt(formValues.targetBaLevel || "30")
+            (b) => b.level === parseInt(getMinBuildingLevel(formValues.targetBaLevel, "ba") || "30")
         );
         const currentSt = stable.find(
-            (s) => s.level === parseInt(formValues.currentStLevel || "30")
+            (s) =>
+                s.level === parseInt(getMinBuildingLevel(formValues.currentStLevel, "st") || "30")
         );
-        const targetSt = stable.find((s) => s.level === parseInt(formValues.targetStLevel || "30"));
+        const targetSt = stable.find(
+            (s) => s.level === parseInt(getMinBuildingLevel(formValues.targetStLevel, "st") || "30")
+        );
         const currentRa = range.find(
-            (r) => r.level === parseInt(formValues.currentRaLevel || "30")
+            (r) =>
+                r.level === parseInt(getMinBuildingLevel(formValues.currentRaLevel, "ra") || "30")
         );
-        const targetRa = range.find((r) => r.level === parseInt(formValues.targetRaLevel || "30"));
+        const targetRa = range.find(
+            (r) => r.level === parseInt(getMinBuildingLevel(formValues.targetRaLevel, "ra") || "30")
+        );
         const currentIn = infirmary.find(
-            (i) => i.level === parseInt(formValues.currentInLevel || "30")
+            (i) =>
+                i.level === parseInt(getMinBuildingLevel(formValues.currentInLevel, "in") || "30")
         );
         const targetIn = infirmary.find(
-            (i) => i.level === parseInt(formValues.targetInLevel || "30")
+            (i) => i.level === parseInt(getMinBuildingLevel(formValues.targetInLevel, "in") || "30")
         );
         const currentCc = commandCenter.find(
-            (i) => i.level === parseInt(formValues.currentCcLevel || "30")
+            (i) =>
+                i.level === parseInt(getMinBuildingLevel(formValues.currentCcLevel, "cc") || "30")
         );
         const targetCc = commandCenter.find(
-            (i) => i.level === parseInt(formValues.targetCcLevel || "30")
+            (i) => i.level === parseInt(getMinBuildingLevel(formValues.targetCcLevel, "cc") || "30")
+        );
+        const currentWa = warAcademy.find(
+            (i) =>
+                i.level === parseInt(getMinBuildingLevel(formValues.currentWaLevel, "wa") || "35")
+        );
+        const targetWa = warAcademy.find(
+            (i) => i.level === parseInt(getMinBuildingLevel(formValues.targetWaLevel, "wa") || "35")
         );
 
         const saulBuff = parseFloat(formValues.saulBuff);
@@ -280,7 +333,9 @@ const TruegoldForm = ({
             !currentIn ||
             !targetIn ||
             !currentCc ||
-            !targetCc
+            !targetCc ||
+            !currentWa ||
+            !targetWa
         ) {
             console.error("Data Error");
 
@@ -288,8 +343,17 @@ const TruegoldForm = ({
         }
 
         let resultBuildings = getRequirementsRecursive(
-            [currentTc, currentEm, currentBa, currentSt, currentRa, currentIn, currentCc],
-            [targetTc, targetEm, targetBa, targetSt, targetRa, targetIn, targetCc]
+            [
+                currentTc,
+                currentEm,
+                currentBa,
+                currentSt,
+                currentRa,
+                currentIn,
+                currentCc,
+                currentWa,
+            ],
+            [targetTc, targetEm, targetBa, targetSt, targetRa, targetIn, targetCc, targetWa]
         );
 
         // update build time with buffs
@@ -439,6 +503,18 @@ const TruegoldForm = ({
                         onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
                         label={"Command Center Level"}
                         placeholder={"Select Command Center Level"}
+                    />
+                </Box>
+
+                <Box width="100%">
+                    <SelectTier
+                        formValues={formValues}
+                        fromKey="currentWaLevel"
+                        toKey="targetWaLevel"
+                        options={warAcademy}
+                        onChange={(value) => setFormValues((prev) => ({ ...prev, ...value }))}
+                        label={"War Academy Level"}
+                        placeholder={"Select War Academy Level"}
                     />
                 </Box>
 

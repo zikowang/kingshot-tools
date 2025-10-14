@@ -44,6 +44,9 @@ export type TruegoldFormValues = {
     currentCcLevel: string;
     targetCcLevel: string;
 
+    currentWaLevel: string;
+    targetWaLevel: string;
+
     saulBuff: string;
 
     buildingSpeed: string;

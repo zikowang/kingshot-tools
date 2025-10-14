@@ -8,6 +8,7 @@ import infirmaryBuild from "./infirmary";
 import rangeBuild from "./range";
 import stableBuild from "./stable";
 import townCenterBuild from "./townCenter";
+import warAcademyBuild from "./warAcademy";
 
 export const townCenter: BuildingStage[] = townCenterBuild
     .map((entry) => {
@@ -58,6 +59,13 @@ export const commandCenter: BuildingStage[] = commandCenterBuild
     .flat()
     .toSorted((a, b) => a.level - b.level);
 
+export const warAcademy: BuildingStage[] = warAcademyBuild
+    .map((entry) => {
+        return entry.stages.map((stage) => stage);
+    })
+    .flat()
+    .toSorted((a, b) => a.level - b.level);
+
 export const allBuildings = [
     ...townCenter,
     ...embassy,
@@ -66,4 +74,5 @@ export const allBuildings = [
     ...range,
     ...infirmary,
     ...commandCenter,
+    ...warAcademy,
 ];
