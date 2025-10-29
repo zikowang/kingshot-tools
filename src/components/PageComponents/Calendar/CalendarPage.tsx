@@ -34,6 +34,19 @@ export function getUTC(date: Date) {
     return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 }
 
+export function getIsWinterTime() {
+    const test = Array.from({ length: 12 }, (_, i) => {
+        return new Date(`2025-${String(i + 1).padStart(2, "0")}-01`).getTimezoneOffset();
+    });
+    const min = Math.min(...test);
+    const max = Math.max(...test);
+    const hasDTS = min !== max;
+    const currentOffset = LOCAL_NOW.getTimezoneOffset();
+    const result = hasDTS && currentOffset === max;
+
+    return result;
+}
+
 function getServerDay() {
     const result = Math.floor(
         (UTC_START_OF_TODAY.getTime() - SERVER_START_DATE.getTime()) / (1000 * 60 * 60 * 24)
@@ -43,11 +56,12 @@ function getServerDay() {
 }
 
 function getIntervalDay() {
+    const isWinterTime = getIsWinterTime();
     const daysSinceServerStart = Math.ceil(
         (UTC_START_OF_TODAY.getTime() - FIRST_DAY_AFTER_FIRST_KVK.getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    const result = (daysSinceServerStart % INTERVAL_SIZE) + 1;
+    const result = (daysSinceServerStart % INTERVAL_SIZE) + (isWinterTime ? 0 : 1);
 
     return result;
 }
