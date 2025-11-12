@@ -8,6 +8,8 @@ import { getUTC } from "../../Calendar/CalendarPage";
 import RallyTimeForm from "./RallyTimeForm";
 import { type RallyStarterResult, type RallyTimerResult } from "./RallyTimerResult";
 
+const { MODE } = import.meta.env;
+const KINGDOMS = ["298", "351"];
 const QUICK_SET_MINUTES = 7;
 const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
@@ -74,6 +76,17 @@ const RallyTimePage = () => {
         };
     });
 
+    // # AUTHORIZATION CHECK
+    const validAuth = KINGDOMS.map((kingdom) => {
+        return Array.from({ length: 7 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            return btoa(`${kingdom}-${date.toISOString().split("T")[0]}`);
+        });
+    }).flat();
+    const searchParam = new URLSearchParams(window.location.search);
+    const isValidAuth = validAuth.includes(searchParam.get("auth") || "") || MODE === "development";
+
     const updateResult = (newResult: RallyTimerResult) => {
         const updatedStarters = newResult.rallyStarters.map((starter) => {
             const rallyStartTime = new Date(
@@ -93,11 +106,15 @@ const RallyTimePage = () => {
 
     return (
         <ReactLayout>
-            <Text textStyle="3xl" fontWeight="bold">
-                Rally Timer
-            </Text>
+            {isValidAuth ? (
+                <>
+                    <Text textStyle="3xl" fontWeight="bold">
+                        Rally Timer
+                    </Text>
 
-            <RallyTimeForm data={result} updateData={updateResult} />
+                    <RallyTimeForm data={result} updateData={updateResult} />
+                </>
+            ) : null}
         </ReactLayout>
     );
 };
