@@ -17,10 +17,10 @@ const calculators = [
         label: "Replenishment Time",
         href: "/calculators/replenishment-time",
     },
-    {
-        label: "Rally Time",
-        href: "/calculators/rally-time",
-    },
+    // {
+    //     label: "Rally Time",
+    //     href: "/calculators/rally-time",
+    // },
 ];
 
 const Navigation = () => {
