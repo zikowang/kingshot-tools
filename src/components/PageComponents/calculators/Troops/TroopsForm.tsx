@@ -38,7 +38,7 @@ const KING_SKILL = "30";
 const POSITION_BUFF = "50";
 const KVK_BONUS = "25";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
-const HIDDEN_TIER_LIST = ["t11", "tg4", "tg5"];
+const HIDDEN_TIER_LIST = ["t11"];
 
 const defaultFormValues: TroopsFormValues = {
     calculationType: DEFAULT_CALCULATION_TYPE,
@@ -125,7 +125,7 @@ const TroopsForm = ({
         const troopType = formValues.troopType as "infantry" | "cavalry" | "archer";
         const rootTier = formValues.rootTier[0] as Tier["name"];
         const targetTier = formValues.targetTier[0] as Tier["name"];
-        const quantity = parseInt(formValues.quantity, 10);
+        const quantity = parseInt(formValues.quantity || "0", 10);
         const troopTrainingSpeed = parseFloat(formValues.troopTrainingSpeed || "0");
         const kingdomBuffSpeed = parseInt(formValues.kingdomBuffSpeed || "0", 10);
         const positionBuffSpeed = parseInt(formValues.positionBuffSpeed || "0", 10);
@@ -467,10 +467,14 @@ const TroopsForm = ({
                     <NumberInput.Root
                         value={formValues.quantity}
                         onValueChange={(e) =>
-                            setFormValues((prev) => ({ ...prev, quantity: e.value }))
+                            setFormValues((prev) => ({
+                                ...prev,
+                                quantity: e.value,
+                            }))
                         }
                         required
                         min={1}
+                        max={1_000_000_000}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         onBlur={(e) => {
                             if (e.target instanceof HTMLInputElement) {
@@ -481,6 +485,17 @@ const TroopsForm = ({
                                     ...prev,
                                     quantity: value.toString(),
                                 }));
+                            }
+                        }}
+                        onKeyDown={(e) => {
+                            if (
+                                e.key === "e" ||
+                                e.key === "E" ||
+                                e.key === "+" ||
+                                e.key === "-" ||
+                                e.key === "."
+                            ) {
+                                e.preventDefault();
                             }
                         }}
                     >

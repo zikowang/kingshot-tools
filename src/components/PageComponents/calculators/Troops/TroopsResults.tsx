@@ -37,11 +37,16 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack>
                     <Image src="/img/100x100/resources/kingshot-bread.png" alt="Bread" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat(undefined, {
-                            notation: "compact",
-                            minimumFractionDigits: 2,
-                            style: "decimal",
-                        }).format(result.bread)}
+                        {result.bread >= 1_000_000
+                            ? new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                  style: "decimal",
+                              }).format(result.bread)
+                            : new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                              }).format(result.bread)}
                     </Text>
                 </HStack>
             </HStack>
@@ -51,11 +56,16 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack>
                     <Image src="/img/100x100/resources/kingshot-wood.png" alt="Wood" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat(undefined, {
-                            notation: "compact",
-                            minimumFractionDigits: 2,
-                            style: "decimal",
-                        }).format(result.wood)}
+                        {result.wood >= 1_000_000
+                            ? new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                  style: "decimal",
+                              }).format(result.wood)
+                            : new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                              }).format(result.wood)}
                     </Text>
                 </HStack>
             </HStack>
@@ -65,11 +75,16 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack justifyContent="center">
                     <Image src="/img/100x100/resources/kingshot-stone.png" alt="Stone" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat(undefined, {
-                            notation: "compact",
-                            minimumFractionDigits: 2,
-                            style: "decimal",
-                        }).format(result.stone)}
+                        {result.stone >= 1_000_000
+                            ? new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                  style: "decimal",
+                              }).format(result.stone)
+                            : new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                              }).format(result.stone)}
                     </Text>
                 </HStack>
             </HStack>
@@ -79,11 +94,16 @@ const TroopsResults = ({ result }: { result: TroopCalculatorResult }) => {
                 <HStack justifyContent="center">
                     <Image src="/img/100x100/resources/kingshot-iron.png" alt="Iron" height={6} />
                     <Text fontSize="lg" fontWeight="bold">
-                        {new Intl.NumberFormat(undefined, {
-                            notation: "compact",
-                            minimumFractionDigits: 2,
-                            style: "decimal",
-                        }).format(result.iron)}
+                        {result.iron >= 1_000_000
+                            ? new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                  style: "decimal",
+                              }).format(result.iron)
+                            : new Intl.NumberFormat(undefined, {
+                                  notation: "compact",
+                              }).format(result.iron)}
                     </Text>
                 </HStack>
             </HStack>
