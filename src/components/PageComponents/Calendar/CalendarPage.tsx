@@ -63,7 +63,7 @@ function getIntervalDay() {
 
     const result = (daysSinceServerStart % INTERVAL_SIZE) + (isWinterTime ? 0 : 1);
 
-    return result;
+    return result || INTERVAL_SIZE;
 }
 
 function getKvKRotationNumber(currentWeekNumber: number) {
@@ -297,34 +297,6 @@ const CalendarRow = ({ event }: { event: Event }) => {
                             date={date}
                         />
                     </CalendarCell>
-                );
-            })}
-        </Table.Row>
-    );
-};
-
-const CalendarWeeksHeader = () => {
-    return (
-        <Table.Row bg="bg.subtle">
-            <Table.ColumnHeader data-sticky="end" left={0} top={0} minW={firstColumnWidth} />
-
-            {INTERVAL_DAYS.map((day) => {
-                if (day % 7 !== 1) {
-                    return null;
-                }
-
-                const week = (day - 1) / 7 + 1;
-                const kvkRotationNumber = getKvKRotationNumber(week);
-
-                return (
-                    <Table.ColumnHeader
-                        key={`calendar-header-week-${day}`}
-                        colSpan={7}
-                        height={12}
-                        bgColor={week % 2 === 0 ? "gray" : "darkgray"}
-                    >
-                        {`KvK ${kvkRotationNumber} (Week ${week})`}
-                    </Table.ColumnHeader>
                 );
             })}
         </Table.Row>

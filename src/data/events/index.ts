@@ -4,11 +4,10 @@ import { allianceBrawl } from "./allianceBrawl";
 import { allianceMobilization } from "./allianceMobilization";
 import { allOut } from "./allOut";
 import { armamentCompetition } from "./armamentCompetition";
-import { buccaneerBounty } from "./buccaneerBounty";
 import { callOfSovereign } from "./callOfSovereign";
 import { castleBattle } from "./castleBattle";
-import { cesaresFury } from "./cesaresFury";
 import { champagneFair } from "./champagneFair";
+import { championsWay } from "./championsWay";
 import { defeatBeasts } from "./defeatBeasts";
 import { desertTrial } from "./desertTrial";
 import { eternitysReach } from "./eternitysReach";
@@ -47,15 +46,15 @@ export const allEvents = [
     callOfSovereign,
     eternitysReach,
     vikingsVengeance,
-    cesaresFury,
+    // cesaresFury,
     // * add back as soon as next event is scheduled
-    // championsWay,
+    championsWay,
 
     // * add back as soon as next event is scheduled
     champagneFair,
     mysticDivination,
     fishingTournament,
-    buccaneerBounty,
+    // buccaneerBounty,
 
     desertTrial,
     armamentCompetition,
