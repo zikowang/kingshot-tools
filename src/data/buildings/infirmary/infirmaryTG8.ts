@@ -8,9 +8,9 @@ const infirmaryTG8Build: Building[] = [
         name: "Infirmary TG 6",
         stages: [
             {
-                id: "in-tg6-4",
+                id: "in-tg6",
                 type: "em",
-                name: "Infirmary TG 6-4",
+                name: "Infirmary TG 6",
                 level: 60,
                 buildTime: 181440,
                 cost: {
