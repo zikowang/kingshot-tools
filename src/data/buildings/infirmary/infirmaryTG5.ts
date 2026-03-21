@@ -2,7 +2,7 @@
 
 import type { Building } from "@/types/building";
 
-const infirmaryBuild: Building[] = [
+const infirmaryTG5Build: Building[] = [
     {
         id: "in-30",
         name: "Infirmary 30",
@@ -453,8 +453,76 @@ const infirmaryBuild: Building[] = [
                 power: 0,
                 requirements: ["in-tg4-4", "tc-tg5"],
             },
+            {
+                id: "in-tg5-1",
+                type: "em",
+                name: "Infirmary TG 5-1",
+                level: 56,
+                buildTime: 181440,
+                cost: {
+                    bread: 24_000_000,
+                    wood: 24_000_000,
+                    stone: 4_800_000,
+                    iron: 1_200_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["in-tg5", "tc-tg6"],
+            },
+            {
+                id: "in-tg5-2",
+                type: "em",
+                name: "Infirmary TG 5-2",
+                level: 57,
+                buildTime: 181440,
+                cost: {
+                    bread: 24_000_000,
+                    wood: 24_000_000,
+                    stone: 4_800_000,
+                    iron: 1_200_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["in-tg5-1", "tc-tg6"],
+            },
+            {
+                id: "in-tg5-3",
+                type: "em",
+                name: "Infirmary TG 5-3",
+                level: 58,
+                buildTime: 181440,
+                cost: {
+                    bread: 24_000_000,
+                    wood: 24_000_000,
+                    stone: 4_800_000,
+                    iron: 1_200_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["in-tg5-2", "tc-tg6"],
+            },
+            {
+                id: "in-tg5-4",
+                type: "em",
+                name: "Infirmary TG 5-4",
+                level: 59,
+                buildTime: 181440,
+                cost: {
+                    bread: 24_000_000,
+                    wood: 24_000_000,
+                    stone: 4_800_000,
+                    iron: 1_200_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["in-tg5-3", "tc-tg6"],
+            },
         ],
     },
 ];
 
-export default infirmaryBuild;
+export default infirmaryTG5Build;

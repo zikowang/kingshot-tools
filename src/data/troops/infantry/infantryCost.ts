@@ -65,10 +65,10 @@ const infantryCost: Record<Tier["name"], Cost> = {
         iron: 102,
     },
     t11: {
-        bread: 5000,
-        wood: 4000,
-        stone: 900,
-        iron: 250,
+        bread: 6970,
+        wood: 5228,
+        stone: 1220,
+        iron: 253,
     },
     tg1: {
         bread: 2788,

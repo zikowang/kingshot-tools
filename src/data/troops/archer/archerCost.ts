@@ -65,10 +65,10 @@ const archerCost: Record<Tier["name"], Cost> = {
         iron: 140,
     },
     t11: {
-        bread: 5000,
-        wood: 4000,
-        stone: 900,
-        iron: 250,
+        bread: 4357,
+        wood: 6448,
+        stone: 1081,
+        iron: 349,
     },
     tg1: {
         bread: 1740,

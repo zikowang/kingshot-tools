@@ -127,7 +127,7 @@ const SelectTier = ({
                                 <Grid
                                     width="100%"
                                     gridTemplateColumns={"repeat(5, 1fr)"}
-                                    gridTemplateRows={"repeat(6, 50px)"}
+                                    gridTemplateRows={`repeat(${Math.ceil(options.length / 5)}, 50px)`}
                                     gap={1}
                                 >
                                     {options.map((item) => {

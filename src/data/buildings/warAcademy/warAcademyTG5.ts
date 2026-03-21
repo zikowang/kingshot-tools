@@ -1,6 +1,6 @@
 /** @format */
 
-const warAcademyBuild = [
+const warAcademyTG5Build = [
     {
         id: "wa-tg1",
         name: "War Academy TG 1",
@@ -121,7 +121,7 @@ const warAcademyBuild = [
                     truegold: 107,
                 },
                 power: 0,
-                requirements: ["wa-tg2", "tc-tg2"],
+                requirements: ["wa-tg2", "tc-tg3"],
             },
             {
                 id: "wa-tg2-2",
@@ -365,8 +365,76 @@ const warAcademyBuild = [
                 power: 3_016_500,
                 requirements: ["wa-tg4-4", "tc-tg5"],
             },
+            {
+                id: "wa-tg5-1",
+                type: "wa",
+                name: "War Academy TG 5-1",
+                level: 56,
+                buildTime: 259200,
+                cost: {
+                    bread: 48_000_000,
+                    wood: 48_000_000,
+                    stone: 9_600_000,
+                    iron: 2_400_000,
+                    truegold: 90,
+                    tempered: 4,
+                },
+                power: 3_016_500,
+                requirements: ["wa-tg5", "tc-tg6"],
+            },
+            {
+                id: "wa-tg5-2",
+                type: "wa",
+                name: "War Academy TG 5-2",
+                level: 57,
+                buildTime: 259200,
+                cost: {
+                    bread: 48_000_000,
+                    wood: 48_000_000,
+                    stone: 9_600_000,
+                    iron: 2_400_000,
+                    truegold: 90,
+                    tempered: 4,
+                },
+                power: 3_016_500,
+                requirements: ["wa-tg5-1", "tc-tg6"],
+            },
+            {
+                id: "wa-tg5-3",
+                type: "wa",
+                name: "War Academy TG 5-3",
+                level: 58,
+                buildTime: 259200,
+                cost: {
+                    bread: 48_000_000,
+                    wood: 48_000_000,
+                    stone: 9_600_000,
+                    iron: 2_400_000,
+                    truegold: 90,
+                    tempered: 4,
+                },
+                power: 3_016_500,
+                requirements: ["wa-tg5-2", "tc-tg6"],
+            },
+            {
+                id: "wa-tg5-4",
+                type: "wa",
+                name: "War Academy TG 5-4",
+                level: 59,
+                buildTime: 259200,
+                cost: {
+                    bread: 48_000_000,
+                    wood: 48_000_000,
+                    stone: 9_600_000,
+                    iron: 2_400_000,
+                    truegold: 90,
+                    tempered: 4,
+                },
+                power: 3_016_500,
+                requirements: ["wa-tg5-3", "tc-tg6"],
+            },
         ],
     },
 ];
 
-export default warAcademyBuild;
+export default warAcademyTG5Build;

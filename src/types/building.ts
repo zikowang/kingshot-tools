@@ -12,6 +12,7 @@ export type BuildingStage = {
         stone: number;
         iron: number;
         truegold: number;
+        tempered?: number;
     };
     power: number;
     requirements: string[];

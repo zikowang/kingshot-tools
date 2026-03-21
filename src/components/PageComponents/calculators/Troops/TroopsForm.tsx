@@ -38,7 +38,7 @@ const KING_SKILL = "30";
 const POSITION_BUFF = "50";
 const KVK_BONUS = "25";
 const DEFAULT_CALCULATION_TYPE = "amount-of-time";
-const HIDDEN_TIER_LIST = ["t11"];
+const HIDDEN_TIER_LIST = ["tg1", "tg2", "tg3", "tg4", "tg5"];
 
 const defaultFormValues: TroopsFormValues = {
     calculationType: DEFAULT_CALCULATION_TYPE,

@@ -1,6 +1,6 @@
 /** @format */
 
-const commandCenterBuild = [
+const commandCenterTG5Build = [
     {
         id: "cc-30",
         name: "Command Center 30",
@@ -35,7 +35,7 @@ const commandCenterBuild = [
                     truegold: 26,
                 },
                 power: 0,
-                requirements: [],
+                requirements: ["cc-30", "em-tg1", "tc-tg1"],
             },
             {
                 id: "cc-30-2",
@@ -51,7 +51,7 @@ const commandCenterBuild = [
                     truegold: 26,
                 },
                 power: 0,
-                requirements: ["cc-30-1"],
+                requirements: ["cc-30-1", "em-tg1", "tc-tg1"],
             },
             {
                 id: "cc-30-3",
@@ -67,7 +67,7 @@ const commandCenterBuild = [
                     truegold: 26,
                 },
                 power: 0,
-                requirements: ["cc-30-2"],
+                requirements: ["cc-30-2", "em-tg1", "tc-tg1"],
             },
             {
                 id: "cc-30-4",
@@ -83,7 +83,7 @@ const commandCenterBuild = [
                     truegold: 26,
                 },
                 power: 0,
-                requirements: ["cc-30-3"],
+                requirements: ["cc-30-3", "em-tg1", "tc-tg1"],
             },
         ],
     },
@@ -105,7 +105,7 @@ const commandCenterBuild = [
                     truegold: 26,
                 },
                 power: 0,
-                requirements: ["cc-30-4"],
+                requirements: ["cc-30-4", "em-tg1", "tc-tg1"],
             },
             {
                 id: "cc-tg1-1",
@@ -121,7 +121,7 @@ const commandCenterBuild = [
                     truegold: 31,
                 },
                 power: 0,
-                requirements: ["cc-tg1", "em-tg1"],
+                requirements: ["cc-tg1", "em-tg2", "tc-tg2"],
             },
             {
                 id: "cc-tg1-2",
@@ -137,7 +137,7 @@ const commandCenterBuild = [
                     truegold: 31,
                 },
                 power: 0,
-                requirements: ["cc-tg1-1", "em-tg1"],
+                requirements: ["cc-tg1-1", "em-tg2", "tc-tg2"],
             },
             {
                 id: "cc-tg1-3",
@@ -153,7 +153,7 @@ const commandCenterBuild = [
                     truegold: 31,
                 },
                 power: 0,
-                requirements: ["cc-tg1-2", "em-tg1"],
+                requirements: ["cc-tg1-2", "em-tg2", "tc-tg2"],
             },
             {
                 id: "cc-tg1-4",
@@ -169,7 +169,7 @@ const commandCenterBuild = [
                     truegold: 31,
                 },
                 power: 0,
-                requirements: ["cc-tg1-3", "em-tg1"],
+                requirements: ["cc-tg1-3", "em-tg2", "tc-tg2"],
             },
         ],
     },
@@ -191,7 +191,7 @@ const commandCenterBuild = [
                     truegold: 31,
                 },
                 power: 2097500,
-                requirements: ["cc-tg1-4", "em-tg1"],
+                requirements: ["cc-tg1-4", "em-tg2", "tc-tg2"],
             },
             {
                 id: "cc-tg2-1",
@@ -207,7 +207,7 @@ const commandCenterBuild = [
                     truegold: 47,
                 },
                 power: 0,
-                requirements: ["cc-tg2", "em-tg2"],
+                requirements: ["cc-tg2", "em-tg3", "tc-tg3"],
             },
             {
                 id: "cc-tg2-2",
@@ -223,7 +223,7 @@ const commandCenterBuild = [
                     truegold: 47,
                 },
                 power: 0,
-                requirements: ["cc-tg2-1", "em-tg2"],
+                requirements: ["cc-tg2-1", "em-tg3", "tc-tg3"],
             },
             {
                 id: "cc-tg2-3",
@@ -239,7 +239,7 @@ const commandCenterBuild = [
                     truegold: 47,
                 },
                 power: 0,
-                requirements: ["cc-tg2-2", "em-tg2"],
+                requirements: ["cc-tg2-2", "em-tg3", "tc-tg3"],
             },
             {
                 id: "cc-tg2-4",
@@ -255,7 +255,7 @@ const commandCenterBuild = [
                     truegold: 47,
                 },
                 power: 0,
-                requirements: ["cc-tg2-3", "em-tg2"],
+                requirements: ["cc-tg2-3", "em-tg3", "tc-tg3"],
             },
         ],
     },
@@ -277,7 +277,7 @@ const commandCenterBuild = [
                     truegold: 47,
                 },
                 power: 2_384_500,
-                requirements: ["cc-tg2-4", "em-tg2"],
+                requirements: ["cc-tg2-4", "em-tg3", "tc-tg3"],
             },
             {
                 id: "cc-tg3-1",
@@ -293,7 +293,7 @@ const commandCenterBuild = [
                     truegold: 56,
                 },
                 power: 0,
-                requirements: ["cc-tg3", "em-tg3"],
+                requirements: ["cc-tg3", "em-tg4", "tc-tg4"],
             },
             {
                 id: "cc-tg3-2",
@@ -309,7 +309,7 @@ const commandCenterBuild = [
                     truegold: 56,
                 },
                 power: 0,
-                requirements: ["cc-tg3-1", "em-tg3"],
+                requirements: ["cc-tg3-1", "em-tg4", "tc-tg4"],
             },
             {
                 id: "cc-tg3-3",
@@ -325,7 +325,7 @@ const commandCenterBuild = [
                     truegold: 56,
                 },
                 power: 0,
-                requirements: ["cc-tg3-2", "em-tg3"],
+                requirements: ["cc-tg3-2", "em-tg4", "tc-tg4"],
             },
             {
                 id: "cc-tg3-4",
@@ -341,7 +341,7 @@ const commandCenterBuild = [
                     truegold: 56,
                 },
                 power: 0,
-                requirements: ["cc-tg3-3", "em-tg3"],
+                requirements: ["cc-tg3-3", "em-tg4", "tc-tg4"],
             },
         ],
     },
@@ -363,7 +363,7 @@ const commandCenterBuild = [
                     truegold: 56,
                 },
                 power: 2_700_500,
-                requirements: ["cc-tg3-4", "em-tg3"],
+                requirements: ["cc-tg3-4", "em-tg4", "tc-tg4"],
             },
             {
                 id: "cc-tg4-1",
@@ -379,7 +379,7 @@ const commandCenterBuild = [
                     truegold: 67,
                 },
                 power: 0,
-                requirements: ["cc-tg4", "em-tg4"],
+                requirements: ["cc-tg4", "em-tg5", "tc-tg5"],
             },
             {
                 id: "cc-tg4-2",
@@ -395,7 +395,7 @@ const commandCenterBuild = [
                     truegold: 67,
                 },
                 power: 0,
-                requirements: ["cc-tg4-1", "em-tg4"],
+                requirements: ["cc-tg4-1", "em-tg5", "tc-tg5"],
             },
             {
                 id: "cc-tg4-3",
@@ -411,7 +411,7 @@ const commandCenterBuild = [
                     truegold: 67,
                 },
                 power: 0,
-                requirements: ["cc-tg4-2", "em-tg4"],
+                requirements: ["cc-tg4-2", "em-tg5", "tc-tg5"],
             },
             {
                 id: "cc-tg4-4",
@@ -427,7 +427,7 @@ const commandCenterBuild = [
                     truegold: 67,
                 },
                 power: 0,
-                requirements: ["cc-tg4-3", "em-tg4"],
+                requirements: ["cc-tg4-3", "em-tg5", "tc-tg5"],
             },
         ],
     },
@@ -449,10 +449,78 @@ const commandCenterBuild = [
                     truegold: 67,
                 },
                 power: 0,
-                requirements: ["cc-tg4-4", "em-tg4"],
+                requirements: ["cc-tg4-4", "em-tg5", "tc-tg5"],
+            },
+            {
+                id: "cc-tg5-1",
+                type: "cc",
+                name: "Command Center TG 5-1",
+                level: 56,
+                buildTime: 155520,
+                cost: {
+                    bread: 29_000_000,
+                    wood: 29_000_000,
+                    stone: 5_800_000,
+                    iron: 1_400_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["cc-tg5", "em-tg6", "tc-tg6"],
+            },
+            {
+                id: "cc-tg5-2",
+                type: "cc",
+                name: "Command Center TG 5-2",
+                level: 57,
+                buildTime: 155520,
+                cost: {
+                    bread: 29_000_000,
+                    wood: 29_000_000,
+                    stone: 5_800_000,
+                    iron: 1_400_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["cc-tg5-1", "em-tg6", "tc-tg6"],
+            },
+            {
+                id: "cc-tg5-3",
+                type: "cc",
+                name: "Command Center TG 5-3",
+                level: 58,
+                buildTime: 155520,
+                cost: {
+                    bread: 29_000_000,
+                    wood: 29_000_000,
+                    stone: 5_800_000,
+                    iron: 1_400_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["cc-tg5-2", "em-tg6", "tc-tg6"],
+            },
+            {
+                id: "cc-tg5-4",
+                type: "cc",
+                name: "Command Center TG 5-4",
+                level: 59,
+                buildTime: 155520,
+                cost: {
+                    bread: 29_000_000,
+                    wood: 29_000_000,
+                    stone: 5_800_000,
+                    iron: 1_400_000,
+                    truegold: 40,
+                    tempered: 2,
+                },
+                power: 0,
+                requirements: ["cc-tg5-3", "em-tg6", "tc-tg6"],
             },
         ],
     },
 ];
 
-export default commandCenterBuild;
+export default commandCenterTG5Build;

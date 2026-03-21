@@ -400,6 +400,10 @@ const TruegoldForm = ({
             stone: resultBuildings.reduce((acc, building) => acc + building.cost.stone, 0),
             iron: resultBuildings.reduce((acc, building) => acc + building.cost.iron, 0),
             truegold: resultBuildings.reduce((acc, building) => acc + building.cost.truegold, 0),
+            tempered: resultBuildings.reduce(
+                (acc, building) => acc + (building.cost.tempered || 0),
+                0
+            ),
 
             buildingList: resultBuildings,
         });

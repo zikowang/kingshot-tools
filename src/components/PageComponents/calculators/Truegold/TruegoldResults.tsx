@@ -127,6 +127,25 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                 </HStack>
             </HStack>
 
+            {result.tempered > 0 && (
+                <HStack gap={2} justifyContent="space-between" width="100%">
+                    <Text>Tempered Truegold:</Text>
+                    <HStack justifyContent="center">
+                        <Image
+                            src="/img/100x100/resources/kingshot-tempered-truegold.png"
+                            alt="Truegold"
+                            height={6}
+                        />
+                        <Text fontSize="lg" fontWeight="bold">
+                            {new Intl.NumberFormat(undefined, {
+                                notation: "compact",
+                                style: "decimal",
+                            }).format(result.tempered)}
+                        </Text>
+                    </HStack>
+                </HStack>
+            )}
+
             {/* Building list details */}
             <Drawer.Root size="md" placement={{ mdDown: "bottom", md: "end" }}>
                 <Drawer.Trigger asChild>

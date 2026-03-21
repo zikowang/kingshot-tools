@@ -32,6 +32,7 @@ export type TruegoldCalculatorResult = {
     stone: number;
     iron: number;
     truegold: number;
+    tempered: number;
 
     buildingList: BuildingStage[];
 };
