@@ -9,7 +9,7 @@ const infirmaryTG5Build: Building[] = [
         stages: [
             {
                 id: "in-30",
-                type: "em",
+                type: "in",
                 name: "Infirmary 30",
                 level: 30,
                 buildTime: 0,
@@ -25,7 +25,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-30-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary 30-1",
                 level: 31,
                 buildTime: 84_660,
@@ -41,7 +41,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-30-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary 30-2",
                 level: 32,
                 buildTime: 84_660,
@@ -57,7 +57,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-30-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary 30-3",
                 level: 33,
                 buildTime: 84_660,
@@ -73,7 +73,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-30-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary 30-4",
                 level: 34,
                 buildTime: 84_660,
@@ -95,7 +95,7 @@ const infirmaryTG5Build: Building[] = [
         stages: [
             {
                 id: "in-tg1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 1",
                 level: 35,
                 buildTime: 84_660,
@@ -111,7 +111,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg1-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 1-1",
                 level: 36,
                 buildTime: 108_840,
@@ -127,7 +127,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg1-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 1-2",
                 level: 37,
                 buildTime: 108_840,
@@ -143,7 +143,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg1-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 1-3",
                 level: 38,
                 buildTime: 108_840,
@@ -159,7 +159,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg1-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 1-4",
                 level: 39,
                 buildTime: 108_840,
@@ -181,7 +181,7 @@ const infirmaryTG5Build: Building[] = [
         stages: [
             {
                 id: "in-tg2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 2",
                 level: 40,
                 buildTime: 108_840,
@@ -197,7 +197,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg2-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 2-1",
                 level: 41,
                 buildTime: 133_020,
@@ -213,7 +213,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg2-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 2-2",
                 level: 42,
                 buildTime: 133_020,
@@ -229,7 +229,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg2-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 2-3",
                 level: 43,
                 buildTime: 133_020,
@@ -245,7 +245,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg2-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 2-4",
                 level: 44,
                 buildTime: 133_020,
@@ -267,7 +267,7 @@ const infirmaryTG5Build: Building[] = [
         stages: [
             {
                 id: "in-tg3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 3",
                 level: 45,
                 buildTime: 133_020,
@@ -283,7 +283,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg3-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 3-1",
                 level: 46,
                 buildTime: 145_140,
@@ -299,7 +299,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg3-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 3-2",
                 level: 47,
                 buildTime: 145_140,
@@ -315,7 +315,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg3-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 3-3",
                 level: 48,
                 buildTime: 145_140,
@@ -331,7 +331,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg3-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 3-4",
                 level: 49,
                 buildTime: 145_140,
@@ -353,7 +353,7 @@ const infirmaryTG5Build: Building[] = [
         stages: [
             {
                 id: "in-tg4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 4",
                 level: 50,
                 buildTime: 145_140,
@@ -369,7 +369,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg4-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 4-1",
                 level: 51,
                 buildTime: 169_320,
@@ -385,7 +385,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg4-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 4-2",
                 level: 52,
                 buildTime: 169_320,
@@ -401,7 +401,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg4-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 4-3",
                 level: 53,
                 buildTime: 169_320,
@@ -417,7 +417,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg4-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 4-4",
                 level: 54,
                 buildTime: 169_320,
@@ -439,7 +439,7 @@ const infirmaryTG5Build: Building[] = [
         stages: [
             {
                 id: "in-tg5",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 5",
                 level: 55,
                 buildTime: 169_320,
@@ -455,7 +455,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg5-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 5-1",
                 level: 56,
                 buildTime: 181440,
@@ -472,7 +472,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg5-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 5-2",
                 level: 57,
                 buildTime: 181440,
@@ -489,7 +489,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg5-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 5-3",
                 level: 58,
                 buildTime: 181440,
@@ -506,7 +506,7 @@ const infirmaryTG5Build: Building[] = [
             },
             {
                 id: "in-tg5-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 5-4",
                 level: 59,
                 buildTime: 181440,

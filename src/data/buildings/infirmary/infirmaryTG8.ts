@@ -9,7 +9,7 @@ const infirmaryTG8Build: Building[] = [
         stages: [
             {
                 id: "in-tg6",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 6",
                 level: 60,
                 buildTime: 181440,
@@ -26,7 +26,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg6-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 6-1",
                 level: 61,
                 buildTime: 217680,
@@ -43,7 +43,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg6-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 6-2",
                 level: 62,
                 buildTime: 217680,
@@ -60,7 +60,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg6-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 6-3",
                 level: 63,
                 buildTime: 217680,
@@ -77,7 +77,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg6-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 6-4",
                 level: 64,
                 buildTime: 217680,
@@ -100,7 +100,7 @@ const infirmaryTG8Build: Building[] = [
         stages: [
             {
                 id: "in-tg7",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 7",
                 level: 65,
                 buildTime: 217680,
@@ -117,7 +117,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg7-1",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 7-1",
                 level: 66,
                 buildTime: 241920,
@@ -134,7 +134,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg7-2",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 7-2",
                 level: 67,
                 buildTime: 241920,
@@ -151,7 +151,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg7-3",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 7-3",
                 level: 68,
                 buildTime: 241920,
@@ -168,7 +168,7 @@ const infirmaryTG8Build: Building[] = [
             },
             {
                 id: "in-tg7-4",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 7-4",
                 level: 69,
                 buildTime: 241920,
@@ -191,7 +191,7 @@ const infirmaryTG8Build: Building[] = [
         stages: [
             {
                 id: "in-tg8",
-                type: "em",
+                type: "in",
                 name: "Infirmary TG 8",
                 level: 70,
                 buildTime: 241920,

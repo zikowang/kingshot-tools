@@ -117,6 +117,8 @@ function getRequirementsRecursive(current: BuildingStage[], target: BuildingStag
         // console.log("recursive", currentBuilding.id);
         const building = allBuildingsMap.get(currentBuilding.id);
 
+        console.log(currentBuilding);
+
         if (!building) {
             return;
         }
