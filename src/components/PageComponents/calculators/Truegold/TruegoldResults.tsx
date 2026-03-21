@@ -147,7 +147,7 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
             )}
 
             {/* Building list details */}
-            <Drawer.Root size="md" placement={{ mdDown: "bottom", md: "end" }}>
+            <Drawer.Root size="lg" placement={{ mdDown: "bottom", md: "end" }}>
                 <Drawer.Trigger asChild>
                     <Button variant="outline" size="sm" ml="auto" colorPalette="blue" mt={4}>
                         Open Details
@@ -161,24 +161,10 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                 <Drawer.Title>Building Details</Drawer.Title>
                             </Drawer.Header>
                             <Drawer.Body>
-                                <Grid gridTemplateColumns="2fr 1fr 2fr" gap={2}>
+                                <Grid gridTemplateColumns="2fr 3fr" gap={2}>
                                     {result.buildingList.map((building) => (
                                         <React.Fragment key={building.id}>
                                             <Text fontWeight="bold">{building.name}</Text>
-
-                                            <HStack justifyContent="center" alignItems="center">
-                                                <Image
-                                                    src="/img/100x100/resources/kingshot-truegold.png"
-                                                    alt="Truegold"
-                                                    height={5}
-                                                />
-                                                <Text>
-                                                    {new Intl.NumberFormat(undefined, {
-                                                        notation: "compact",
-                                                        style: "decimal",
-                                                    }).format(building.cost.truegold)}
-                                                </Text>
-                                            </HStack>
 
                                             <Text ml="auto">
                                                 {getResultTimeText(building.buildTime)}
@@ -189,6 +175,35 @@ const TruegoldResults = ({ result }: { result: TruegoldCalculatorResult }) => {
                                                 gridColumnStart={1}
                                                 gridColumnEnd={4}
                                             >
+                                                <HStack justifyContent="center" alignItems="center">
+                                                    {!!building.cost.tempered && (
+                                                        <>
+                                                            <Image
+                                                                src="/img/100x100/resources/kingshot-tempered-truegold.png"
+                                                                alt="Truegold"
+                                                                height={5}
+                                                            />
+                                                            <Text>
+                                                                {new Intl.NumberFormat(undefined, {
+                                                                    notation: "compact",
+                                                                    style: "decimal",
+                                                                }).format(building.cost.tempered)}
+                                                            </Text>
+                                                        </>
+                                                    )}
+
+                                                    <Image
+                                                        src="/img/100x100/resources/kingshot-truegold.png"
+                                                        alt="Truegold"
+                                                        height={5}
+                                                    />
+                                                    <Text>
+                                                        {new Intl.NumberFormat(undefined, {
+                                                            notation: "compact",
+                                                            style: "decimal",
+                                                        }).format(building.cost.truegold)}
+                                                    </Text>
+                                                </HStack>
                                                 <HStack
                                                     justifyContent="flex-start"
                                                     alignItems="center"
