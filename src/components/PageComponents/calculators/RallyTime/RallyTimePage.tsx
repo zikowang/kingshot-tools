@@ -94,6 +94,7 @@ const RallyTimePage = () => {
 
         return {
             hitTime,
+            selectedQuickSetMinutes: QUICK_SET_MINUTES,
             rallyStarters,
         };
     });

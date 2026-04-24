@@ -26,9 +26,9 @@ import RallyTimeResult, {
 } from "./RallyTimerResult";
 
 const QUICK_SET_OPTIONS = [
-    { label: "6:00 minutes", minutes: 6 },
-    { label: "6:30 minutes", minutes: 6.5 },
-    { label: "7:00 minutes", minutes: 7 },
+    { label: "6:00", minutes: 6 },
+    { label: "6:30", minutes: 6.5 },
+    { label: "7:00", minutes: 7 },
 ] as const;
 const COUNTER_RALLY_OFFSET_OPTIONS = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60] as const;
 const DEFAULT_QUICK_SET_MINUTES = 7;
@@ -73,6 +73,7 @@ const RallyTimeForm = ({
         updateData({
             ...data,
             hitTime: updatedRallyHit,
+            selectedQuickSetMinutes: minutesToAdd,
         });
     };
 
@@ -97,6 +98,7 @@ const RallyTimeForm = ({
         updateData({
             ...data,
             hitTime: updatedRallyHit,
+            selectedQuickSetMinutes: null,
         });
     };
 
@@ -109,99 +111,108 @@ const RallyTimeForm = ({
 
     return (
         <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
-            <HStack justifyContent={"flex-start"} alignItems="flex-end" flexWrap="wrap">
+            <VStack justifyContent="flex-start" alignItems="flex-start" flexWrap="wrap">
+                <HStack gap={2} flexWrap="wrap">
+                    <NumberInput.Root
+                        value={String(data.hitTime.hour)}
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                handleUpdateRallyHit("hour", 0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                handleUpdateRallyHit("hour", 23);
+                                return;
+                            }
+
+                            handleUpdateRallyHit("hour", Math.abs(numericValue) % 24);
+                        }}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
+                        required
+                    >
+                        <NumberInput.Label>Hour</NumberInput.Label>
+                        <NumberInput.Scrubber />
+                        <NumberInput.Input />
+                    </NumberInput.Root>
+
+                    <NumberInput.Root
+                        value={String(data.hitTime.minute)}
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                handleUpdateRallyHit("minute", 0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                handleUpdateRallyHit("minute", 59);
+                                return;
+                            }
+
+                            handleUpdateRallyHit("minute", Math.abs(numericValue) % 60);
+                        }}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
+                        required
+                    >
+                        <NumberInput.Label>Minute</NumberInput.Label>
+                        <NumberInput.Scrubber />
+                        <NumberInput.Input />
+                    </NumberInput.Root>
+
+                    <NumberInput.Root
+                        value={String(data.hitTime.second)}
+                        onValueChange={(e) => {
+                            const numericValue = Number(e.value);
+
+                            if (isNaN(numericValue)) {
+                                handleUpdateRallyHit("second", 0);
+                                return;
+                            }
+
+                            if (numericValue < 0) {
+                                handleUpdateRallyHit("second", 59);
+                                return;
+                            }
+
+                            handleUpdateRallyHit("second", Math.abs(numericValue) % 60);
+                        }}
+                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
+                        width="100px"
+                        required
+                    >
+                        <NumberInput.Label>Second</NumberInput.Label>
+                        <NumberInput.Scrubber />
+                        <NumberInput.Input />
+                    </NumberInput.Root>
+                </HStack>
+
                 <HStack gap={2} flexWrap="wrap">
                     {QUICK_SET_OPTIONS.map((option) => (
                         <Button
                             key={option.label}
                             type="button"
                             onClick={() => handleQuickSetTime(option.minutes)}
-                            variant="solid"
-                            colorPalette="green"
+                            variant={
+                                data.selectedQuickSetMinutes === option.minutes
+                                    ? "solid"
+                                    : "outline"
+                            }
+                            colorPalette={
+                                data.selectedQuickSetMinutes === option.minutes ? "blue" : "green"
+                            }
                             size="md"
                         >
                             <LuClock /> {option.label}
                         </Button>
                     ))}
                 </HStack>
-                <NumberInput.Root
-                    value={String(data.hitTime.hour)}
-                    onValueChange={(e) => {
-                        const numericValue = Number(e.value);
-
-                        if (isNaN(numericValue)) {
-                            handleUpdateRallyHit("hour", 0);
-                            return;
-                        }
-
-                        if (numericValue < 0) {
-                            handleUpdateRallyHit("hour", 23);
-                            return;
-                        }
-
-                        handleUpdateRallyHit("hour", Math.abs(numericValue) % 24);
-                    }}
-                    onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                    width="100px"
-                    required
-                >
-                    <NumberInput.Label>Hour</NumberInput.Label>
-                    <NumberInput.Scrubber />
-                    <NumberInput.Input />
-                </NumberInput.Root>
-
-                <NumberInput.Root
-                    value={String(data.hitTime.minute)}
-                    onValueChange={(e) => {
-                        const numericValue = Number(e.value);
-
-                        if (isNaN(numericValue)) {
-                            handleUpdateRallyHit("minute", 0);
-                            return;
-                        }
-
-                        if (numericValue < 0) {
-                            handleUpdateRallyHit("minute", 59);
-                            return;
-                        }
-
-                        handleUpdateRallyHit("minute", Math.abs(numericValue) % 60);
-                    }}
-                    onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                    width="100px"
-                    required
-                >
-                    <NumberInput.Label>Minute</NumberInput.Label>
-                    <NumberInput.Scrubber />
-                    <NumberInput.Input />
-                </NumberInput.Root>
-
-                <NumberInput.Root
-                    value={String(data.hitTime.second)}
-                    onValueChange={(e) => {
-                        const numericValue = Number(e.value);
-
-                        if (isNaN(numericValue)) {
-                            handleUpdateRallyHit("second", 0);
-                            return;
-                        }
-
-                        if (numericValue < 0) {
-                            handleUpdateRallyHit("second", 59);
-                            return;
-                        }
-
-                        handleUpdateRallyHit("second", Math.abs(numericValue) % 60);
-                    }}
-                    onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                    width="100px"
-                    required
-                >
-                    <NumberInput.Label>Second</NumberInput.Label>
-                    <NumberInput.Scrubber />
-                    <NumberInput.Input />
-                </NumberInput.Root>
-            </HStack>
+            </VStack>
             <Text fontSize={12} color="gray.400">
                 Quick set buttons add 6:00, 6:30, or 7:00 minutes to the current time.
             </Text>
@@ -217,23 +228,22 @@ const RallyTimeForm = ({
 
             <Box maxWidth="600px" width="100%">
                 <Grid
-                    gap={4}
-                    gridTemplateColumns={{ base: "auto 1fr", md: "auto 1fr 1fr auto auto auto" }}
+                    gap={{
+                        base: 1,
+                        md: 4,
+                    }}
+                    gridTemplateColumns={{
+                        base: "auto 1fr 1fr auto auto auto",
+                    }}
                     width="100%"
                     alignItems={"center"}
                 >
                     <GridItem></GridItem>
-                    <GridItem fontSize={14}>Rally Starter</GridItem>
-                    <GridItem display={{ base: "none", md: "block" }} fontSize={14}>
-                        Rally March Time (seconds)
-                    </GridItem>
-                    <GridItem display={{ base: "none", md: "block" }} fontSize={14}>
-                        Counter
-                    </GridItem>
-                    <GridItem display={{ base: "none", md: "block" }} fontSize={14}>
-                        Counter Offset
-                    </GridItem>
-                    <GridItem display={{ base: "none", md: "block" }}></GridItem>
+                    <GridItem fontSize={14}>Leader</GridItem>
+                    <GridItem fontSize={14}>March Time (s)</GridItem>
+                    <GridItem fontSize={14}>Counter</GridItem>
+                    <GridItem fontSize={14}>Offset</GridItem>
+                    <GridItem></GridItem>
                     {data.rallyStarters.map((starter, index) => (
                         <Fragment key={index}>
                             <Switch.Root
@@ -248,6 +258,10 @@ const RallyTimeForm = ({
                                     };
                                     handleUpdateRallyStarters(updatedStarters);
                                 }}
+                                size={{
+                                    base: "sm",
+                                    md: "md",
+                                }}
                             >
                                 <Switch.HiddenInput />
                                 <Switch.Control>
@@ -255,7 +269,7 @@ const RallyTimeForm = ({
                                 </Switch.Control>
                                 <Switch.Label />
                             </Switch.Root>
-                            <GridItem>
+                            <GridItem opacity={starter.active ? 1 : 0.4}>
                                 <Field.Root>
                                     <Input
                                         value={starter.name}
@@ -277,7 +291,10 @@ const RallyTimeForm = ({
                                 </Field.Root>
                             </GridItem>
 
-                            <GridItem colSpan={{ base: 2, md: 1 }}>
+                            <GridItem
+                                colSpan={{ base: 1, md: 1 }}
+                                opacity={starter.active ? 1 : 0.4}
+                            >
                                 <NumberInput.Root
                                     value={String(starter.marchTimeSec)}
                                     onValueChange={(e) => {
@@ -302,7 +319,10 @@ const RallyTimeForm = ({
                                 </NumberInput.Root>
                             </GridItem>
 
-                            <GridItem colSpan={{ base: 1, md: 1 }}>
+                            <GridItem
+                                colSpan={{ base: 1, md: 1 }}
+                                opacity={starter.active ? 1 : 0.4}
+                            >
                                 <Switch.Root
                                     colorPalette={"blue"}
                                     checked={starter.counterShadow ?? false}
@@ -316,6 +336,10 @@ const RallyTimeForm = ({
                                         };
                                         handleUpdateRallyStarters(updatedStarters);
                                     }}
+                                    size={{
+                                        base: "sm",
+                                        md: "md",
+                                    }}
                                 >
                                     <Switch.HiddenInput />
                                     <Switch.Control>
@@ -324,7 +348,11 @@ const RallyTimeForm = ({
                                 </Switch.Root>
                             </GridItem>
 
-                            <GridItem colSpan={{ base: 2, md: 1 }}>
+                            <GridItem
+                                colSpan={{ base: 1, md: 1 }}
+                                opacity={starter.active ? 1 : 0.4}
+                                width="75px"
+                            >
                                 {starter.counterShadow ? (
                                     <CustomSelect
                                         label=""
@@ -341,9 +369,17 @@ const RallyTimeForm = ({
                                         }}
                                     />
                                 ) : (
-                                    <Text fontSize={12} color="gray.400">
-                                        Not counter
-                                    </Text>
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        height="46px"
+                                    >
+                                        <Text fontSize={12} color="gray.400">
+                                            Not counter
+                                        </Text>
+                                    </Box>
                                 )}
                             </GridItem>
 
@@ -359,7 +395,10 @@ const RallyTimeForm = ({
                                     }}
                                     colorPalette={"red"}
                                     variant="ghost"
-                                    size="md"
+                                    size={{
+                                        base: "sm",
+                                        md: "md",
+                                    }}
                                     disabled={data.rallyStarters.length === 1}
                                 >
                                     <LuUserRoundMinus />

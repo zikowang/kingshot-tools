@@ -11,7 +11,7 @@ const ReallyCountdown = ({ targetTime }: { targetTime: Date }) => {
             const now = getUTC(new Date()).getTime();
             const distance = (targetTime.getTime() - now) / 1000; // in seconds
 
-            setTimeLeft(distance > 0 ? distance : 0);
+            setTimeLeft(distance);
         }, 1000);
 
         return () => clearInterval(interval);

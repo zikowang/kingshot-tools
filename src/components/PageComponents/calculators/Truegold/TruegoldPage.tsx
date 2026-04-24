@@ -19,6 +19,7 @@ const defaultResultValue: TruegoldCalculatorResult = {
     stone: 0,
     iron: 0,
     truegold: 0,
+    tempered: 0,
 };
 
 const TruegoldPage = () => {
