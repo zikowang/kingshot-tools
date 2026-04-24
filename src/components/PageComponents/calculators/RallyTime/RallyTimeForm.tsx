@@ -1,8 +1,10 @@
 /** @format */
 
+import CustomSelect from "@/components/ui/select";
 import {
     Box,
     Button,
+    createListCollection,
     Field,
     Grid,
     GridItem,
@@ -23,19 +25,34 @@ import RallyTimeResult, {
     type RallyTimerResult,
 } from "./RallyTimerResult";
 
-const QUICK_SET_MINUTES = 7;
+const QUICK_SET_OPTIONS = [
+    { label: "6:00 minutes", minutes: 6 },
+    { label: "6:30 minutes", minutes: 6.5 },
+    { label: "7:00 minutes", minutes: 7 },
+] as const;
+const COUNTER_RALLY_OFFSET_OPTIONS = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60] as const;
+const DEFAULT_QUICK_SET_MINUTES = 7;
 const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+const counterRallyOffsetCollection = createListCollection({
+    items: COUNTER_RALLY_OFFSET_OPTIONS.map((offsetSeconds) => ({
+        label: `+${offsetSeconds}s`,
+        value: String(offsetSeconds),
+    })),
+});
 
 const defaultRallyStarter: RallyStarterResult = {
     name: "Starter 1",
     marchTimeSec: 60,
     rallyStartTime: new Date(),
     active: true,
+    counterShadow: false,
+    counterRallyOffsetSec: 15,
 };
 
-function getHitTimeData(value?: Date, isUtc = false) {
+function getHitTimeData(value?: Date, minutesToAdd = DEFAULT_QUICK_SET_MINUTES, isUtc = false) {
     const now = !isUtc ? getUTC(value ?? new Date()) : (value ?? new Date());
-    const defaultSet = new Date(now.getTime() + QUICK_SET_MINUTES * 60000); // 7 minutes later
+    const defaultSet = new Date(now.getTime() + minutesToAdd * 60000);
     const hour = defaultSet.getHours();
     const minute = defaultSet.getMinutes();
     const second = defaultSet.getSeconds();
@@ -50,8 +67,8 @@ const RallyTimeForm = ({
     data: RallyTimerResult;
     updateData: (value: RallyTimerResult) => void;
 }) => {
-    const handleQuickSetTime = () => {
-        const updatedRallyHit = getHitTimeData();
+    const handleQuickSetTime = (minutesToAdd: number) => {
+        const updatedRallyHit = getHitTimeData(undefined, minutesToAdd);
 
         updateData({
             ...data,
@@ -92,16 +109,21 @@ const RallyTimeForm = ({
 
     return (
         <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
-            <HStack justifyContent={"flex-start"} alignItems="flex-end">
-                <Button
-                    type="button"
-                    onClick={handleQuickSetTime}
-                    variant="solid"
-                    colorPalette="green"
-                    size="md"
-                >
-                    <LuClock /> Quick Set
-                </Button>
+            <HStack justifyContent={"flex-start"} alignItems="flex-end" flexWrap="wrap">
+                <HStack gap={2} flexWrap="wrap">
+                    {QUICK_SET_OPTIONS.map((option) => (
+                        <Button
+                            key={option.label}
+                            type="button"
+                            onClick={() => handleQuickSetTime(option.minutes)}
+                            variant="solid"
+                            colorPalette="green"
+                            size="md"
+                        >
+                            <LuClock /> {option.label}
+                        </Button>
+                    ))}
+                </HStack>
                 <NumberInput.Root
                     value={String(data.hitTime.hour)}
                     onValueChange={(e) => {
@@ -181,7 +203,10 @@ const RallyTimeForm = ({
                 </NumberInput.Root>
             </HStack>
             <Text fontSize={12} color="gray.400">
-                The "Quick Set" button will add {QUICK_SET_MINUTES} minutes to the current time
+                Quick set buttons add 6:00, 6:30, or 7:00 minutes to the current time.
+            </Text>
+            <Text fontSize={12} color="gray.400">
+                Set counter rally offsets per starter below after marking them as counter.
             </Text>
 
             <Separator size="lg" width="100%" />
@@ -193,14 +218,22 @@ const RallyTimeForm = ({
             <Box maxWidth="600px" width="100%">
                 <Grid
                     gap={4}
-                    gridTemplateColumns={"auto 1fr 1fr auto"}
+                    gridTemplateColumns={{ base: "auto 1fr", md: "auto 1fr 1fr auto auto auto" }}
                     width="100%"
                     alignItems={"center"}
                 >
                     <GridItem></GridItem>
                     <GridItem fontSize={14}>Rally Starter</GridItem>
-                    <GridItem fontSize={14}>Rally March Time (seconds)</GridItem>
-                    <GridItem></GridItem>
+                    <GridItem display={{ base: "none", md: "block" }} fontSize={14}>
+                        Rally March Time (seconds)
+                    </GridItem>
+                    <GridItem display={{ base: "none", md: "block" }} fontSize={14}>
+                        Counter
+                    </GridItem>
+                    <GridItem display={{ base: "none", md: "block" }} fontSize={14}>
+                        Counter Offset
+                    </GridItem>
+                    <GridItem display={{ base: "none", md: "block" }}></GridItem>
                     {data.rallyStarters.map((starter, index) => (
                         <Fragment key={index}>
                             <Switch.Root
@@ -244,7 +277,7 @@ const RallyTimeForm = ({
                                 </Field.Root>
                             </GridItem>
 
-                            <GridItem>
+                            <GridItem colSpan={{ base: 2, md: 1 }}>
                                 <NumberInput.Root
                                     value={String(starter.marchTimeSec)}
                                     onValueChange={(e) => {
@@ -267,6 +300,51 @@ const RallyTimeForm = ({
                                     <NumberInput.Scrubber />
                                     <NumberInput.Input />
                                 </NumberInput.Root>
+                            </GridItem>
+
+                            <GridItem colSpan={{ base: 1, md: 1 }}>
+                                <Switch.Root
+                                    colorPalette={"blue"}
+                                    checked={starter.counterShadow ?? false}
+                                    onCheckedChange={(e) => {
+                                        const updatedStarters = [...data.rallyStarters];
+                                        updatedStarters[index] = {
+                                            ...updatedStarters[index],
+                                            counterShadow: e.checked,
+                                            counterRallyOffsetSec:
+                                                updatedStarters[index].counterRallyOffsetSec ?? 15,
+                                        };
+                                        handleUpdateRallyStarters(updatedStarters);
+                                    }}
+                                >
+                                    <Switch.HiddenInput />
+                                    <Switch.Control>
+                                        <Switch.Thumb />
+                                    </Switch.Control>
+                                </Switch.Root>
+                            </GridItem>
+
+                            <GridItem colSpan={{ base: 2, md: 1 }}>
+                                {starter.counterShadow ? (
+                                    <CustomSelect
+                                        label=""
+                                        placeholder="Select offset"
+                                        value={String(starter.counterRallyOffsetSec ?? 15)}
+                                        options={counterRallyOffsetCollection}
+                                        onChange={(value) => {
+                                            const updatedStarters = [...data.rallyStarters];
+                                            updatedStarters[index] = {
+                                                ...updatedStarters[index],
+                                                counterRallyOffsetSec: Number(value),
+                                            };
+                                            handleUpdateRallyStarters(updatedStarters);
+                                        }}
+                                    />
+                                ) : (
+                                    <Text fontSize={12} color="gray.400">
+                                        Not counter
+                                    </Text>
+                                )}
                             </GridItem>
 
                             <GridItem>

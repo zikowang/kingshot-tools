@@ -9,6 +9,8 @@ export type RallyStarterResult = {
     marchTimeSec: number;
     rallyStartTime: Date;
     active: boolean;
+    counterShadow?: boolean;
+    counterRallyOffsetSec?: number;
 };
 
 export type RallyTimerResult = {
@@ -30,20 +32,37 @@ const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
             hour12: false,
         })} UTC - Rally Hit`;
 
-        const starterText = result.rallyStarters
+        const activeStarters = result.rallyStarters
             .filter((starter) => starter.active)
-            .map(
-                (starter) =>
-                    `${starter.rallyStartTime.toLocaleTimeString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: false,
-                    })} UTC - ${starter.name}`
-            )
-            .join("\n");
+            .sort((left, right) => left.rallyStartTime.getTime() - right.rallyStartTime.getTime());
 
-        navigator.clipboard.writeText(`${rallyHitText}\n\n${starterText}`);
+        const groupedStarterText = [
+            {
+                title: "Rally",
+                starters: activeStarters.filter((starter) => !starter.counterShadow),
+            },
+            {
+                title: "Counter Rally",
+                starters: activeStarters.filter((starter) => starter.counterShadow),
+            },
+        ]
+            .filter((group) => group.starters.length > 0)
+            .map((group) => {
+                const lines = group.starters.map(
+                    (starter) =>
+                        `${starter.rallyStartTime.toLocaleTimeString(undefined, {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: false,
+                        })} UTC - ${starter.name}${starter.counterShadow ? ` (+${starter.counterRallyOffsetSec ?? 0}s)` : ""}`
+                );
+
+                return `${group.title}\n${lines.join("\n")}`;
+            })
+            .join("\n\n");
+
+        navigator.clipboard.writeText(`${rallyHitText}\n\n${groupedStarterText}`);
     };
 
     return (
@@ -88,7 +107,10 @@ const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
                                         </Text>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Text fontWeight="bold">{starter.name}</Text>
+                                        <Text fontWeight="bold">
+                                            {starter.name}
+                                            {starter.counterShadow ? " (Counter)" : ""}
+                                        </Text>
                                     </Table.Cell>
                                     <Table.Cell textAlign="end">
                                         <ReallyCountdown targetTime={starter.rallyStartTime} />

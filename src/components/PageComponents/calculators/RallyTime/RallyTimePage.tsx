@@ -11,6 +11,7 @@ import { type RallyStarterResult, type RallyTimerResult } from "./RallyTimerResu
 const { MODE } = import.meta.env;
 const KINGDOMS = ["298", "351"];
 const QUICK_SET_MINUTES = 7;
+const DEFAULT_COUNTER_RALLY_OFFSET_SEC = 15;
 const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 function getHitTimeData(value?: Date) {
@@ -28,6 +29,8 @@ const defaultRallyStarter: RallyStarterResult = {
     marchTimeSec: 60,
     rallyStartTime: new Date(),
     active: true,
+    counterShadow: false,
+    counterRallyOffsetSec: DEFAULT_COUNTER_RALLY_OFFSET_SEC,
 };
 
 function loadPreset() {
@@ -44,6 +47,11 @@ function loadPreset() {
             marchTimeSec: Number(item.marchTimeSec) >= 0 ? Number(item.marchTimeSec) : 60,
             rallyStartTime: item.rallyStartTime ? new Date(item.rallyStartTime) : new Date(),
             active: typeof item.active === "boolean" ? item.active : true,
+            counterShadow: typeof item.counterShadow === "boolean" ? item.counterShadow : false,
+            counterRallyOffsetSec:
+                Number(item.counterRallyOffsetSec) >= 0
+                    ? Number(item.counterRallyOffsetSec)
+                    : DEFAULT_COUNTER_RALLY_OFFSET_SEC,
         }));
 
         return fixedPreset as RallyStarterResult[];
@@ -57,14 +65,28 @@ function savePreset(starters: RallyStarterResult[]) {
     localStorage.setItem(`presets.rallyTime`, JSON.stringify(starters));
 }
 
+function getRallyStartTime(
+    hitTime: Date,
+    marchTimeSec: number,
+    counterShadow = false,
+    counterRallyOffsetSec = DEFAULT_COUNTER_RALLY_OFFSET_SEC
+) {
+    const counterOffsetMs = counterShadow ? counterRallyOffsetSec * 1000 : 0;
+
+    return new Date(hitTime.getTime() - marchTimeSec * 1000 - DEFAULT_RALLY_TIME + counterOffsetMs);
+}
+
 const RallyTimePage = () => {
     const [result, setResult] = useState<RallyTimerResult>(() => {
         const hitTime = getHitTimeData();
         const loadedStarters = loadPreset();
         const rallyStarters = loadedStarters?.length
             ? loadedStarters.map((starter) => {
-                  const rallyStartTime = new Date(
-                      hitTime.datetime.getTime() - starter.marchTimeSec * 1000 - DEFAULT_RALLY_TIME
+                  const rallyStartTime = getRallyStartTime(
+                      hitTime.datetime,
+                      starter.marchTimeSec,
+                      starter.counterShadow,
+                      starter.counterRallyOffsetSec
                   );
                   return { ...starter, rallyStartTime };
               })
@@ -89,10 +111,11 @@ const RallyTimePage = () => {
 
     const updateResult = (newResult: RallyTimerResult) => {
         const updatedStarters = newResult.rallyStarters.map((starter) => {
-            const rallyStartTime = new Date(
-                newResult.hitTime.datetime.getTime() -
-                    starter.marchTimeSec * 1000 -
-                    DEFAULT_RALLY_TIME
+            const rallyStartTime = getRallyStartTime(
+                newResult.hitTime.datetime,
+                starter.marchTimeSec,
+                starter.counterShadow,
+                starter.counterRallyOffsetSec
             );
             return { ...starter, rallyStartTime };
         });
