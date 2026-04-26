@@ -144,7 +144,7 @@ const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
                                             </Text>
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <Text fontWeight="bold">
+                                            <Text opacity={0.5}>
                                                 {getStarterHitTimeText(starter)}
                                             </Text>
                                         </Table.Cell>

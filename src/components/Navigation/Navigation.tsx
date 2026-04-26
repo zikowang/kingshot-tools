@@ -3,6 +3,7 @@
 import { Box, HoverCard, HStack, Image, Link, Portal, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
+import { ColorModeButton } from "../ui/color-mode";
 
 const calculators = [
     {
@@ -13,10 +14,10 @@ const calculators = [
         label: "Truegold",
         href: "/calculators/truegold",
     },
-    {
-        label: "Replenishment Time",
-        href: "/calculators/replenishment-time",
-    },
+    // {
+    //     label: "Replenishment Time",
+    //     href: "/calculators/replenishment-time",
+    // },
     // {
     //     label: "Rally Time",
     //     href: "/calculators/rally-time",
@@ -43,6 +44,7 @@ const Navigation = () => {
             </Link>
 
             <HStack gap={4}>
+                <ColorModeButton />
                 <Link
                     key={"Calendar"}
                     href={"/calendar"}

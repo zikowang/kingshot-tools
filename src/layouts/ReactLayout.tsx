@@ -15,6 +15,9 @@ const ReactLayout = ({ children }: PropsWithChildren) => {
                 px={{ base: 4 }}
                 maxW="1280px"
                 pb={8}
+                minH="100vh"
+                color="fg"
+                bg="bg"
             >
                 <Navigation />
                 {children}
