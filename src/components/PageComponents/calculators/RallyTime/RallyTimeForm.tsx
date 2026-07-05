@@ -30,7 +30,9 @@ const QUICK_SET_OPTIONS = [
     { label: "6:30", minutes: 6.5 },
     { label: "7:00", minutes: 7 },
 ] as const;
-const COUNTER_RALLY_OFFSET_OPTIONS = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60] as const;
+const COUNTER_RALLY_OFFSET_OPTIONS = [
+    10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90, 120, 150, 180, 210, 240, 270, 300,
+] as const;
 const DEFAULT_QUICK_SET_MINUTES = 7;
 const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
