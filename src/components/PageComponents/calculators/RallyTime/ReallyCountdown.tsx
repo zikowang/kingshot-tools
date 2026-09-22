@@ -26,9 +26,18 @@ const ReallyCountdown = ({ targetTime }: { targetTime: Date }) => {
         return "grey";
     }, [timeLeft]);
 
-    return (
-        <strong style={{ color }}>{timeLeft !== null ? `${timeLeft.toFixed(0)} s` : "-"}</strong>
-    );
+    const formattedTimeLeft = useMemo(() => {
+        if (timeLeft === null) return "";
+
+        const remainingSeconds = Math.round(Math.abs(timeLeft));
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        const prefix = timeLeft < 0 && remainingSeconds > 0 ? "-" : "";
+
+        return `${prefix}${minutes}:${String(seconds).padStart(2, "0")}`;
+    }, [timeLeft]);
+
+    return <strong style={{ color }}>{formattedTimeLeft}</strong>;
 };
 
 export default ReallyCountdown;

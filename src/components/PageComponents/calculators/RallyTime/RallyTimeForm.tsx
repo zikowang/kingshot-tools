@@ -34,6 +34,7 @@ const HIT_TIME_QUICK_SET_OPTIONS = [
 ] as const;
 const START_TIME_QUICK_SET_OPTIONS = [
     { label: "30s", minutes: 0.5 },
+    { label: "45s", minutes: 0.75 },
     { label: "1m", minutes: 1 },
     { label: "2m", minutes: 2 },
     { label: "3m", minutes: 3 },
