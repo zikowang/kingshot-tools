@@ -18,20 +18,29 @@ import {
 } from "@chakra-ui/react";
 import { LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
 
-import { Fragment } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { getUTC } from "../../Calendar/CalendarPage";
 import RallyTimeResult, {
     type RallyStarterResult,
     type RallyTimerResult,
 } from "./RallyTimerResult";
 
-const QUICK_SET_OPTIONS = [
+const HIT_TIME_QUICK_SET_OPTIONS = [
     { label: "6:00", minutes: 6 },
     { label: "6:30", minutes: 6.5 },
     { label: "7:00", minutes: 7 },
+    { label: "10:00", minutes: 10 },
+    { label: "15:00", minutes: 15 },
+] as const;
+const START_TIME_QUICK_SET_OPTIONS = [
+    { label: "30s", minutes: 0.5 },
+    { label: "1m", minutes: 1 },
+    { label: "2m", minutes: 2 },
+    { label: "3m", minutes: 3 },
+    { label: "5m", minutes: 5 },
 ] as const;
 const COUNTER_RALLY_OFFSET_OPTIONS = [
-    10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90, 120, 150, 180, 210, 240, 270, 300,
+    1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90, 120, 150, 180, 210, 240, 270, 300,
 ] as const;
 const DEFAULT_QUICK_SET_MINUTES = 7;
 const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -62,6 +71,21 @@ function getHitTimeData(value?: Date, minutesToAdd = DEFAULT_QUICK_SET_MINUTES, 
     return { datetime: defaultSet, hour, minute, second };
 }
 
+function getTimeData(value: Date) {
+    return {
+        datetime: value,
+        hour: value.getHours(),
+        minute: value.getMinutes(),
+        second: value.getSeconds(),
+    };
+}
+
+function getEarliestStarter(starters: RallyStarterResult[]) {
+    return starters
+        .filter((starter) => starter.active)
+        .sort((left, right) => left.rallyStartTime.getTime() - right.rallyStartTime.getTime())[0];
+}
+
 const RallyTimeForm = ({
     data,
     updateData,
@@ -69,58 +93,98 @@ const RallyTimeForm = ({
     data: RallyTimerResult;
     updateData: (value: RallyTimerResult) => void;
 }) => {
-    const handleQuickSetTime = (minutesToAdd: number) => {
-        const updatedRallyHit = getHitTimeData(undefined, minutesToAdd);
+    const [timeInputMode, setTimeInputMode] = useState<"hit" | "start">("hit");
+    const earliestStarter = getEarliestStarter(data.rallyStarters);
+    const inputTime =
+        timeInputMode === "start" && earliestStarter
+            ? getTimeData(earliestStarter.rallyStartTime)
+            : data.hitTime;
+    const quickSetOptions =
+        timeInputMode === "start" ? START_TIME_QUICK_SET_OPTIONS : HIT_TIME_QUICK_SET_OPTIONS;
 
-        updateData({
-            ...data,
-            hitTime: updatedRallyHit,
-            selectedQuickSetMinutes: minutesToAdd,
-        });
-    };
-
-    const handleUpdateRallyHit = (key: "hour" | "minute" | "second", value: number) => {
-        const newHitTime = new Date(data.hitTime.datetime);
-
-        if (key === "hour") {
-            newHitTime.setUTCHours(value);
-        } else if (key === "minute") {
-            newHitTime.setUTCMinutes(value);
-        } else if (key === "second") {
-            newHitTime.setUTCSeconds(value);
+    const getHitTimeFromInput = (inputTimeValue: Date) => {
+        if (timeInputMode !== "start" || !earliestStarter) {
+            return inputTimeValue;
         }
 
-        const updatedRallyHit = {
-            datetime: newHitTime,
-            hour: newHitTime.getHours(),
-            minute: newHitTime.getMinutes(),
-            second: newHitTime.getSeconds(),
-        };
+        const counterOffsetMs = earliestStarter.counterShadow
+            ? (earliestStarter.counterRallyOffsetSec ?? 15) * 1000
+            : 0;
 
-        updateData({
-            ...data,
-            hitTime: updatedRallyHit,
-            selectedQuickSetMinutes: null,
-        });
+        return new Date(
+            inputTimeValue.getTime() +
+                earliestStarter.marchTimeSec * 1000 +
+                DEFAULT_RALLY_TIME -
+                counterOffsetMs
+        );
     };
 
-    const handleUpdateRallyStarters = (starters: RallyStarterResult[]) => {
-        updateData({
-            ...data,
-            rallyStarters: starters,
-        });
-    };
+    const handleQuickSetTime = useCallback(
+        (minutesToAdd: number) => {
+            const updatedInputTime = getHitTimeData(undefined, minutesToAdd);
+            const updatedRallyHit = getHitTimeFromInput(updatedInputTime.datetime);
+
+            updateData({
+                ...data,
+                hitTime: getTimeData(updatedRallyHit),
+                selectedQuickSetMinutes: minutesToAdd,
+            });
+        },
+        [data, earliestStarter, timeInputMode, updateData]
+    );
+
+    const handleUpdateRallyHit = useCallback(
+        (key: "hour" | "minute" | "second", value: number) => {
+            const newInputTime = new Date(inputTime.datetime);
+
+            if (key === "hour") {
+                newInputTime.setHours(value);
+            } else if (key === "minute") {
+                newInputTime.setMinutes(value);
+            } else if (key === "second") {
+                newInputTime.setSeconds(value);
+            }
+
+            const updatedRallyHit = getHitTimeFromInput(newInputTime);
+
+            updateData({
+                ...data,
+                hitTime: getTimeData(updatedRallyHit),
+                selectedQuickSetMinutes: null,
+            });
+        },
+        [data, getHitTimeFromInput, inputTime, updateData]
+    );
+
+    const handleUpdateRallyStarters = useCallback(
+        (starters: RallyStarterResult[]) => {
+            updateData({
+                ...data,
+                rallyStarters: starters,
+            });
+        },
+        [data, updateData]
+    );
 
     return (
         <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
             <VStack justifyContent="flex-start" alignItems="flex-start" flexWrap="wrap">
+                <Switch.Root
+                    checked={timeInputMode === "start"}
+                    onCheckedChange={(e) => setTimeInputMode(e.checked ? "start" : "hit")}
+                    colorPalette="blue"
+                >
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                    <Switch.Label>Enter earliest next start time</Switch.Label>
+                </Switch.Root>
                 <HStack gap={2} flexWrap="wrap">
                     <NumberInput.Root
-                        value={String(data.hitTime.hour)}
+                        value={String(inputTime.hour)}
                         onValueChange={(e) => {
                             const numericValue = Number(e.value);
 
-                            if (isNaN(numericValue)) {
+                            if (isNaN(numericValue) || numericValue > 23) {
                                 handleUpdateRallyHit("hour", 0);
                                 return;
                             }
@@ -130,19 +194,22 @@ const RallyTimeForm = ({
                                 return;
                             }
 
-                            handleUpdateRallyHit("hour", Math.abs(numericValue) % 24);
+                            handleUpdateRallyHit("hour", Math.abs(numericValue));
                         }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         width="100px"
+                        step={1}
                         required
                     >
-                        <NumberInput.Label>Hour</NumberInput.Label>
+                        <NumberInput.Label>
+                            {timeInputMode === "start" ? "Start hour" : "Hit hour"}
+                        </NumberInput.Label>
                         <NumberInput.Scrubber />
                         <NumberInput.Input />
                     </NumberInput.Root>
 
                     <NumberInput.Root
-                        value={String(data.hitTime.minute)}
+                        value={String(inputTime.minute)}
                         onValueChange={(e) => {
                             const numericValue = Number(e.value);
 
@@ -160,15 +227,18 @@ const RallyTimeForm = ({
                         }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         width="100px"
+                        step={1}
                         required
                     >
-                        <NumberInput.Label>Minute</NumberInput.Label>
+                        <NumberInput.Label>
+                            {timeInputMode === "start" ? "Start minute" : "Hit minute"}
+                        </NumberInput.Label>
                         <NumberInput.Scrubber />
                         <NumberInput.Input />
                     </NumberInput.Root>
 
                     <NumberInput.Root
-                        value={String(data.hitTime.second)}
+                        value={String(inputTime.second)}
                         onValueChange={(e) => {
                             const numericValue = Number(e.value);
 
@@ -186,16 +256,19 @@ const RallyTimeForm = ({
                         }}
                         onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
                         width="100px"
+                        step={1}
                         required
                     >
-                        <NumberInput.Label>Second</NumberInput.Label>
+                        <NumberInput.Label>
+                            {timeInputMode === "start" ? "Start second" : "Hit second"}
+                        </NumberInput.Label>
                         <NumberInput.Scrubber />
                         <NumberInput.Input />
                     </NumberInput.Root>
                 </HStack>
 
                 <HStack gap={2} flexWrap="wrap">
-                    {QUICK_SET_OPTIONS.map((option) => (
+                    {quickSetOptions.map((option) => (
                         <Button
                             key={option.label}
                             type="button"
@@ -216,7 +289,9 @@ const RallyTimeForm = ({
                 </HStack>
             </VStack>
             <Text fontSize={12} color="gray.400">
-                Quick set buttons add 6:00, 6:30, or 7:00 minutes to the current time.
+                {timeInputMode === "start"
+                    ? "Quick set buttons add 30 seconds, 1, 2, 3, or 5 minutes to the current time."
+                    : "Quick set buttons add 6:00, 6:30, or 7:00 minutes to the current time."}
             </Text>
             <Text fontSize={12} color="gray.400">
                 Set counter rally offsets per starter below after marking them as counter.

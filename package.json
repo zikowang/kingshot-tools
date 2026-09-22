@@ -11,14 +11,14 @@
         "check": "tsc --noEmit"
     },
     "dependencies": {
-        "@astrojs/mdx": "^4.3.4",
-        "@astrojs/react": "^4.3.0",
+        "@astrojs/mdx": "^8.0.1",
+        "@astrojs/react": "^6.0.6",
         "@chakra-ui/icons": "^2.2.4",
         "@chakra-ui/react": "^3.25.0",
         "@emotion/react": "^11.14.0",
         "@types/react": "^19.1.10",
         "@types/react-dom": "^19.1.7",
-        "astro": "^5.13.2",
+        "astro": "^7.3.3",
         "clsx": "^2.1.1",
         "next-themes": "^0.4.6",
         "react": "^19.1.1",
