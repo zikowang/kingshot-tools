@@ -1,16 +1,10 @@
 /** @format */
 
-const utcTimeFormatter = new Intl.DateTimeFormat(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-    timeZone: "UTC",
-});
+const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Format a real Date as HH:MM:SS in UTC. */
+/** Format a real Date as HH:MM:SS in UTC. Fixed format, same in every locale. */
 export function formatUtcTime(date: Date) {
-    return utcTimeFormatter.format(date);
+    return `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`;
 }
 
 /**

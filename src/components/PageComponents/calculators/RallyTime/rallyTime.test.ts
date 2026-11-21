@@ -10,9 +10,12 @@ import {
     getQuickSetHelpText,
     getRallyStartTime,
     getTimeData,
-    normalizeTimePart,
+    getSegmentAt,
+    maskTimeInput,
     parseRallyPreset,
-    setTimePart,
+    parseTimeInput,
+    truncateName,
+    resolveClockTime,
     withStartTimes,
 } from "./rallyTime";
 
@@ -44,21 +47,83 @@ describe("time parts", () => {
     it("reads UTC parts", () => {
         expect(getTimeData(HIT)).toMatchObject({ hour: 0, minute: 59, second: 30 });
     });
+});
 
-    it("sets UTC parts without moving other parts", () => {
-        const next = setTimePart(HIT, "hour", 2);
-        expect(next.toISOString()).toBe("2026-03-29T02:59:30.000Z");
+describe("time input", () => {
+    it.each([
+        ["1", "1"],
+        ["11", "11"],
+        ["112", "11:2"],
+        ["11:2", "11:2"],
+        ["11:23", "11:23"],
+        ["11:234", "11:23:4"],
+        ["11:23:30", "11:23:30"],
+        ["11:23:301", "11:23:30"],
+        ["112330", "11:23:30"],
+        ["9:5", "9:5"],
+        ["9::5", "9:5"],
+        ["ab12:3x4", "12:34"],
+    ])("mask %s -> %s", (raw, expected) => {
+        expect(maskTimeInput(raw)).toBe(expected);
     });
 
     it.each([
-        ["hour", 24, 0],
-        ["hour", -1, 23],
-        ["hour", NaN, 0],
-        ["minute", 60, 0],
-        ["minute", -1, 59],
-        ["second", 75, 15],
-    ] as const)("normalize %s %d -> %d", (key, input, expected) => {
-        expect(normalizeTimePart(key, input)).toBe(expected);
+        ["11", "11:"],
+        ["11:23", "11:23:"],
+        ["11:23:30", "11:23:30"],
+        ["1", "1"],
+        ["11:2", "11:2"],
+    ])("mask while typing %s -> %s", (raw, expected) => {
+        expect(maskTimeInput(raw, true)).toBe(expected);
+    });
+
+    it.each([
+        ["11:23:30", { hour: 11, minute: 23, second: 30 }],
+        ["9:5", { hour: 9, minute: 5, second: 0 }],
+        ["112330", { hour: 11, minute: 23, second: 30 }],
+        ["1123", { hour: 11, minute: 23, second: 0 }],
+        ["00:00:00", { hour: 0, minute: 0, second: 0 }],
+    ])("parse %s", (text, expected) => {
+        expect(parseTimeInput(text)).toEqual(expected);
+    });
+
+    it.each(["", "24:00:00", "12:60", "12:00:60", "1:2:3:4", "abc", "123:4"])(
+        "rejects %j",
+        (text) => {
+            expect(parseTimeInput(text)).toBeNull();
+        }
+    );
+
+    it("resolves to today when close", () => {
+        const now = new Date("2026-11-21T11:22:00Z");
+        expect(resolveClockTime({ hour: 11, minute: 30, second: 0 }, now).toISOString()).toBe(
+            "2026-11-21T11:30:00.000Z"
+        );
+    });
+
+    it("rolls past midnight forward", () => {
+        const now = new Date("2026-11-21T23:58:00Z");
+        expect(resolveClockTime({ hour: 0, minute: 5, second: 0 }, now).toISOString()).toBe(
+            "2026-11-22T00:05:00.000Z"
+        );
+    });
+
+    it("rolls back when just after midnight", () => {
+        const now = new Date("2026-11-22T00:02:00Z");
+        expect(resolveClockTime({ hour: 23, minute: 59, second: 0 }, now).toISOString()).toBe(
+            "2026-11-21T23:59:00.000Z"
+        );
+    });
+
+    it("caret maps to segment", () => {
+        expect([0, 2, 3, 5, 6, 8].map(getSegmentAt)).toEqual([
+            "hour",
+            "hour",
+            "minute",
+            "minute",
+            "second",
+            "second",
+        ]);
     });
 });
 
@@ -130,5 +195,21 @@ describe("result helpers", () => {
         expect(getQuickSetHelpText(["30s", "45s", "1m"])).toBe(
             "Quick set buttons add 30s, 45s, or 1m to the current time."
         );
+    });
+});
+
+describe("truncateName", () => {
+    it("keeps names up to 16 chars", () => {
+        expect(truncateName("Exactly16Chars!!")).toBe("Exactly16Chars!!");
+    });
+
+    it("cuts longer names to 16 chars with an ellipsis", () => {
+        const result = truncateName("VeryLongLeaderNameXYZ");
+        expect(result).toBe("VeryLongLeaderN…");
+        expect([...result]).toHaveLength(16);
+    });
+
+    it("does not split emoji", () => {
+        expect(truncateName("🔥".repeat(20))).toBe("🔥".repeat(15) + "…");
     });
 });

@@ -5,7 +5,6 @@ import {
     Box,
     Button,
     createListCollection,
-    Field,
     Grid,
     GridItem,
     HStack,
@@ -18,8 +17,9 @@ import {
 } from "@chakra-ui/react";
 import { LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
 
-import { Fragment, useState, type FocusEvent } from "react";
+import { useState, type FocusEvent } from "react";
 import RallyTimeResult from "./RallyTimerResult";
+import TimeInput from "./TimeInput";
 import {
     createRallyStarter,
     DEFAULT_COUNTER_RALLY_OFFSET_SEC,
@@ -28,11 +28,8 @@ import {
     getQuickSetHelpText,
     getTimeData,
     getTimeFromNow,
-    normalizeTimePart,
-    setTimePart,
     type RallyStarterResult,
     type RallyTimerResult,
-    type TimePart,
 } from "./rallyTime";
 
 const HIT_TIME_QUICK_SET_OPTIONS = [
@@ -53,7 +50,6 @@ const START_TIME_QUICK_SET_OPTIONS = [
 const COUNTER_RALLY_OFFSET_OPTIONS = [
     1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90, 120, 150, 180, 210, 240, 270, 300,
 ] as const;
-const TIME_PARTS: TimePart[] = ["hour", "minute", "second"];
 const HIT_HELP_TEXT = getQuickSetHelpText(HIT_TIME_QUICK_SET_OPTIONS.map((o) => o.label));
 const START_HELP_TEXT = getQuickSetHelpText(START_TIME_QUICK_SET_OPTIONS.map((o) => o.label));
 
@@ -64,31 +60,25 @@ const counterRallyOffsetCollection = createListCollection({
     })),
 });
 
+// Phone: [active][name ......][remove] / [  ][march][counter][offset]
+// Desktop: one row, matching the column titles.
+const STARTER_COLUMNS = {
+    base: "44px minmax(0, 1fr) auto 80px",
+    md: "44px minmax(0, 1.4fr) minmax(0, 1fr) 60px 80px 44px",
+};
+const STARTER_AREAS = {
+    base: `"active name name remove" ". march counter offset"`,
+    md: `"active name march counter offset remove"`,
+};
+
+const PhoneLabel = ({ children }: { children: string }) => (
+    <Text hideFrom="md" fontSize="xs" color="fg.muted" mb={1}>
+        {children}
+    </Text>
+);
+
 const selectOnFocus = (e: FocusEvent<HTMLElement>) =>
     e.target instanceof HTMLInputElement && e.target.select();
-
-const TimeField = ({
-    label,
-    value,
-    onChange,
-}: {
-    label: string;
-    value: number;
-    onChange: (value: number) => void;
-}) => (
-    <NumberInput.Root
-        value={String(value)}
-        onValueChange={(e) => onChange(Number(e.value))}
-        onFocus={selectOnFocus}
-        width="100px"
-        step={1}
-        required
-    >
-        <NumberInput.Label>{label}</NumberInput.Label>
-        <NumberInput.Scrubber />
-        <NumberInput.Input />
-    </NumberInput.Root>
-);
 
 const RallyTimeForm = ({
     data,
@@ -117,9 +107,7 @@ const RallyTimeForm = ({
         });
     };
 
-    const handleUpdateTimePart = (key: TimePart, rawValue: number) => {
-        const newInputTime = setTimePart(inputTime.datetime, key, normalizeTimePart(key, rawValue));
-
+    const handleSetInputTime = (newInputTime: Date) => {
         updateData({
             ...data,
             hitTime: getTimeData(toHitTime(newInputTime)),
@@ -147,16 +135,11 @@ const RallyTimeForm = ({
                     <Switch.Control />
                     <Switch.Label>Enter earliest next start time</Switch.Label>
                 </Switch.Root>
-                <HStack gap={2} flexWrap="wrap">
-                    {TIME_PARTS.map((part) => (
-                        <TimeField
-                            key={part}
-                            label={`${isStartMode ? "Start" : "Hit"} ${part}`}
-                            value={inputTime[part]}
-                            onChange={(value) => handleUpdateTimePart(part, value)}
-                        />
-                    ))}
-                </HStack>
+                <TimeInput
+                    label={isStartMode ? "Earliest start" : "Hit time"}
+                    value={inputTime.datetime}
+                    onChange={handleSetInputTime}
+                />
 
                 <HStack gap={2} flexWrap="wrap">
                     {quickSetOptions.map((option) => {
@@ -190,160 +173,159 @@ const RallyTimeForm = ({
 
             <Separator size="lg" width="100%" />
 
-            <Box maxWidth="600px" width="100%">
-                <Grid
-                    gap={{
-                        base: 1,
-                        md: 4,
-                    }}
-                    gridTemplateColumns={{
-                        base: "auto 1fr 1fr auto auto auto",
-                    }}
-                    width="100%"
-                    alignItems={"center"}
-                >
-                    <GridItem></GridItem>
-                    <GridItem fontSize={14}>Leader</GridItem>
-                    <GridItem fontSize={14}>March Time (s)</GridItem>
-                    <GridItem fontSize={14}>Counter</GridItem>
-                    <GridItem fontSize={14}>Offset</GridItem>
-                    <GridItem></GridItem>
-                    {data.rallyStarters.map((starter, index) => {
-                        const rowOpacity = starter.active ? 1 : 0.4;
+            <VStack maxWidth="600px" width="100%" gap={{ base: 3, md: 2 }} alignItems="stretch">
+                {/* Column titles: desktop only. Phones show a small label per field. */}
+                <Grid hideBelow="md" gridTemplateColumns={STARTER_COLUMNS.md} gap={4} fontSize={14}>
+                    <GridItem />
+                    <GridItem>Leader</GridItem>
+                    <GridItem>March Time (s)</GridItem>
+                    <GridItem>Counter</GridItem>
+                    <GridItem>Offset</GridItem>
+                    <GridItem />
+                </Grid>
 
-                        return (
-                            <Fragment key={starter.id}>
+                {data.rallyStarters.map((starter, index) => {
+                    const rowOpacity = starter.active ? 1 : 0.4;
+
+                    return (
+                        // Phone: a small card in two rows. Desktop: one table-like row.
+                        <Grid
+                            key={starter.id}
+                            gridTemplateColumns={STARTER_COLUMNS}
+                            gridTemplateAreas={STARTER_AREAS}
+                            gap={{ base: 2, md: 4 }}
+                            alignItems="center"
+                            borderWidth={{ base: "1px", md: 0 }}
+                            borderRadius="md"
+                            p={{ base: 3, md: 0 }}
+                        >
+                            <GridItem gridArea="active">
                                 <Switch.Root
                                     colorPalette={"green"}
                                     checked={starter.active ?? true}
                                     onCheckedChange={(e) =>
                                         updateStarter(starter.id, { active: e.checked })
                                     }
-                                    size={{
-                                        base: "sm",
-                                        md: "md",
-                                    }}
+                                    aria-label="Active"
                                 >
                                     <Switch.HiddenInput />
                                     <Switch.Control>
                                         <Switch.Thumb />
                                     </Switch.Control>
-                                    <Switch.Label />
                                 </Switch.Root>
-                                <GridItem opacity={rowOpacity}>
-                                    <Field.Root>
-                                        <Input
-                                            value={starter.name}
-                                            placeholder={`Name Starter ${index + 1}`}
-                                            onChange={(e) =>
-                                                updateStarter(starter.id, { name: e.target.value })
-                                            }
-                                            onFocus={selectOnFocus}
-                                        />
-                                    </Field.Root>
-                                </GridItem>
+                            </GridItem>
 
-                                <GridItem opacity={rowOpacity}>
-                                    <NumberInput.Root
-                                        value={String(starter.marchTimeSec)}
-                                        onValueChange={(e) =>
-                                            updateStarter(starter.id, {
-                                                marchTimeSec: Math.max(0, Number(e.value) || 0),
-                                            })
-                                        }
-                                        onFocus={selectOnFocus}
-                                        required
-                                        min={0}
-                                        step={1}
-                                        width="100%"
-                                    >
-                                        <NumberInput.Scrubber />
-                                        <NumberInput.Input />
-                                    </NumberInput.Root>
-                                </GridItem>
+                            <GridItem gridArea="name" opacity={rowOpacity} minWidth={0}>
+                                <Input
+                                    value={starter.name}
+                                    placeholder={`Name Starter ${index + 1}`}
+                                    aria-label="Leader name"
+                                    onChange={(e) =>
+                                        updateStarter(starter.id, { name: e.target.value })
+                                    }
+                                    onFocus={selectOnFocus}
+                                />
+                            </GridItem>
 
-                                <GridItem opacity={rowOpacity}>
-                                    <Switch.Root
-                                        colorPalette={"blue"}
-                                        checked={starter.counterShadow ?? false}
-                                        onCheckedChange={(e) =>
-                                            updateStarter(starter.id, {
-                                                counterShadow: e.checked,
-                                                counterRallyOffsetSec:
-                                                    starter.counterRallyOffsetSec ??
-                                                    DEFAULT_COUNTER_RALLY_OFFSET_SEC,
-                                            })
-                                        }
-                                        size={{
-                                            base: "sm",
-                                            md: "md",
-                                        }}
-                                    >
-                                        <Switch.HiddenInput />
-                                        <Switch.Control>
-                                            <Switch.Thumb />
-                                        </Switch.Control>
-                                    </Switch.Root>
-                                </GridItem>
+                            <GridItem gridArea="march" opacity={rowOpacity} minWidth={0}>
+                                <PhoneLabel>March (s)</PhoneLabel>
+                                <NumberInput.Root
+                                    value={String(starter.marchTimeSec)}
+                                    onValueChange={(e) =>
+                                        updateStarter(starter.id, {
+                                            marchTimeSec: Math.max(0, Number(e.value) || 0),
+                                        })
+                                    }
+                                    onFocus={selectOnFocus}
+                                    required
+                                    min={0}
+                                    step={1}
+                                    width="100%"
+                                >
+                                    <NumberInput.Scrubber />
+                                    <NumberInput.Input
+                                        inputMode="numeric"
+                                        aria-label="March time in seconds"
+                                    />
+                                </NumberInput.Root>
+                            </GridItem>
 
-                                <GridItem opacity={rowOpacity} width="75px">
-                                    {starter.counterShadow ? (
-                                        <CustomSelect
-                                            label=""
-                                            placeholder="Select offset"
-                                            value={String(
+                            <GridItem gridArea="counter" opacity={rowOpacity}>
+                                <PhoneLabel>Counter</PhoneLabel>
+                                <Switch.Root
+                                    colorPalette={"blue"}
+                                    checked={starter.counterShadow ?? false}
+                                    onCheckedChange={(e) =>
+                                        updateStarter(starter.id, {
+                                            counterShadow: e.checked,
+                                            counterRallyOffsetSec:
                                                 starter.counterRallyOffsetSec ??
-                                                    DEFAULT_COUNTER_RALLY_OFFSET_SEC
-                                            )}
-                                            options={counterRallyOffsetCollection}
-                                            onChange={(value) =>
-                                                updateStarter(starter.id, {
-                                                    counterRallyOffsetSec: Number(value),
-                                                })
-                                            }
-                                        />
-                                    ) : (
-                                        <Box
-                                            display="flex"
-                                            flexDirection="column"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            height="46px"
-                                        >
-                                            <Text fontSize={12} color="gray.400">
-                                                Not counter
-                                            </Text>
-                                        </Box>
-                                    )}
-                                </GridItem>
+                                                DEFAULT_COUNTER_RALLY_OFFSET_SEC,
+                                        })
+                                    }
+                                    aria-label="Counter rally"
+                                    height="40px"
+                                >
+                                    <Switch.HiddenInput />
+                                    <Switch.Control>
+                                        <Switch.Thumb />
+                                    </Switch.Control>
+                                </Switch.Root>
+                            </GridItem>
 
-                                <GridItem>
-                                    <Button
-                                        type="button"
-                                        tabIndex={-1}
-                                        onClick={() =>
-                                            setStarters(
-                                                data.rallyStarters.filter(
-                                                    (s) => s.id !== starter.id
-                                                )
-                                            )
+                            <GridItem gridArea="offset" opacity={rowOpacity}>
+                                <PhoneLabel>Offset</PhoneLabel>
+                                {starter.counterShadow ? (
+                                    <CustomSelect
+                                        label=""
+                                        placeholder="Select offset"
+                                        value={String(
+                                            starter.counterRallyOffsetSec ??
+                                                DEFAULT_COUNTER_RALLY_OFFSET_SEC
+                                        )}
+                                        options={counterRallyOffsetCollection}
+                                        onChange={(value) =>
+                                            updateStarter(starter.id, {
+                                                counterRallyOffsetSec: Number(value),
+                                            })
                                         }
-                                        colorPalette={"red"}
-                                        variant="ghost"
-                                        size={{
-                                            base: "sm",
-                                            md: "md",
-                                        }}
-                                        disabled={data.rallyStarters.length === 1}
+                                    />
+                                ) : (
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        height="40px"
                                     >
-                                        <LuUserRoundMinus />
-                                    </Button>
-                                </GridItem>
-                            </Fragment>
-                        );
-                    })}
-                </Grid>
-            </Box>
+                                        <Text fontSize={12} color="gray.400">
+                                            Not counter
+                                        </Text>
+                                    </Box>
+                                )}
+                            </GridItem>
+
+                            <GridItem gridArea="remove" justifySelf="end">
+                                <Button
+                                    type="button"
+                                    tabIndex={-1}
+                                    onClick={() =>
+                                        setStarters(
+                                            data.rallyStarters.filter((s) => s.id !== starter.id)
+                                        )
+                                    }
+                                    colorPalette={"red"}
+                                    variant="ghost"
+                                    size="md"
+                                    aria-label="Remove leader"
+                                    disabled={data.rallyStarters.length === 1}
+                                >
+                                    <LuUserRoundMinus />
+                                </Button>
+                            </GridItem>
+                        </Grid>
+                    );
+                })}
+            </VStack>
 
             <Button
                 type="button"

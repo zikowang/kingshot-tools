@@ -30,10 +30,10 @@ const Navigation = () => {
     const pathname = window.location.pathname;
 
     return (
-        <HStack justifyContent="space-between" mb={4}>
+        <HStack justifyContent="space-between" mb={4} gap={2}>
             <Link href="/" textDecoration="none">
                 <VStack gap={0}>
-                    <Image src="/img/kingshot-logo.webp" width={{ base: 100, md: 200 }} />
+                    <Image src="/img/kingshot-logo.webp" width={{ base: 90, sm: 100, md: 200 }} />
                     <HStack gap={0} alignItems="baseline">
                         <Text fontWeight="bold" color="orange">
                             FAN
@@ -43,7 +43,7 @@ const Navigation = () => {
                 </VStack>
             </Link>
 
-            <HStack gap={4}>
+            <HStack gap={{ base: 2, sm: 4 }}>
                 <ColorModeButton />
                 <Link
                     key={"Calendar"}

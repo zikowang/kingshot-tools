@@ -2,7 +2,7 @@
 
 import { formatUtcTime } from "@/lib/time";
 import { useNow } from "@/lib/useNow";
-import { Button, HStack, Stat, Table, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, Stat, Table, Text, VStack } from "@chakra-ui/react";
 import { LuClipboardCopy } from "react-icons/lu";
 import RallyCountdown from "./RallyCountdown";
 import {
@@ -10,6 +10,7 @@ import {
     getGroupedStarters,
     getStarterArrivalTime,
     sortByStartTime,
+    truncateName,
     type RallyTimerResult,
 } from "./rallyTime";
 
@@ -22,18 +23,36 @@ const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
     };
 
     return (
-        <VStack gap={8} alignItems="flex-start">
-            <Stat.Root>
-                <Stat.Label>Hit Time</Stat.Label>
-                <Stat.ValueText>{formatUtcTime(result.hitTime.datetime)}</Stat.ValueText>
-            </Stat.Root>
+        <VStack gap={8} alignItems="flex-start" width="100%" minWidth={0}>
+            <HStack gap={4} alignItems="center">
+                <Stat.Root>
+                    <Stat.Label>Hit Time</Stat.Label>
+                    <Stat.ValueText>{formatUtcTime(result.hitTime.datetime)}</Stat.ValueText>
+                </Stat.Root>
+                <Button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={onCopyToClipboard}
+                    colorPalette={"blue"}
+                    variant="outline"
+                    size="md"
+                    disabled={activeStarters.length < 1}
+                >
+                    <LuClipboardCopy /> Copy
+                </Button>
+            </HStack>
 
-            <HStack gap={8} alignItems="flex-start">
-                <Table.Root size="sm">
+            {/* Safety net: very long names scroll inside the table, not the page. */}
+            <Box maxWidth="100%" overflowX="auto">
+                <Table.Root
+                    size="sm"
+                    css={{ "& th, & td": { paddingInline: { base: "6px", md: "8px" } } }}
+                >
                     <Table.Header>
                         <Table.Row>
                             <Table.ColumnHeader>Start</Table.ColumnHeader>
-                            <Table.ColumnHeader>Hit</Table.ColumnHeader>
+                            {/* Phones: hit time moves under the start time. */}
+                            <Table.ColumnHeader hideBelow="sm">Hit</Table.ColumnHeader>
                             <Table.ColumnHeader>Leader</Table.ColumnHeader>
                             <Table.ColumnHeader textAlign="end">Start In</Table.ColumnHeader>
                         </Table.Row>
@@ -53,14 +72,23 @@ const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
                                         <Text fontWeight="bold">
                                             {formatUtcTime(starter.rallyStartTime)}
                                         </Text>
+                                        <Text hideFrom="sm" fontSize="xs" opacity={0.5}>
+                                            hit {formatUtcTime(getStarterArrivalTime(starter))}
+                                        </Text>
                                     </Table.Cell>
-                                    <Table.Cell>
+                                    <Table.Cell hideBelow="sm">
                                         <Text opacity={0.5}>
                                             {formatUtcTime(getStarterArrivalTime(starter))}
                                         </Text>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Text fontWeight="bold">{starter.name}</Text>
+                                        <Text
+                                            fontWeight="bold"
+                                            wordBreak="break-word"
+                                            title={starter.name}
+                                        >
+                                            {truncateName(starter.name)}
+                                        </Text>
                                     </Table.Cell>
                                     <Table.Cell textAlign="end">
                                         <RallyCountdown
@@ -73,19 +101,7 @@ const RallyTimeResult = ({ result }: { result: RallyTimerResult }) => {
                         ])}
                     </Table.Body>
                 </Table.Root>
-
-                <Button
-                    type="button"
-                    tabIndex={-1}
-                    onClick={onCopyToClipboard}
-                    colorPalette={"blue"}
-                    variant="outline"
-                    size="md"
-                    disabled={activeStarters.length < 1}
-                >
-                    <LuClipboardCopy /> Copy
-                </Button>
-            </HStack>
+            </Box>
         </VStack>
     );
 };
