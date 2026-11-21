@@ -18,7 +18,8 @@ import {
     Text,
     VStack,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useRef, type PropsWithChildren } from "react";
+import { getUTC } from "@/lib/time";
+import { useEffect, useRef, type PropsWithChildren } from "react";
 
 const INTERVAL_SIZE = 28;
 const INTERVAL_DAYS = new Array(INTERVAL_SIZE).fill(0).map((_, i) => i + 1);
@@ -29,10 +30,6 @@ const LOCAL_NOW = new Date();
 const UTC_START_OF_TODAY = getUTC(new Date(`${LOCAL_NOW.toISOString().split("T")[0]}`));
 
 const firstColumnWidth = { base: "100px", md: "200px" };
-
-export function getUTC(date: Date) {
-    return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-}
 
 export function getIsWinterTime() {
     const test = Array.from({ length: 12 }, (_, i) => {
@@ -64,21 +61,6 @@ function getIntervalDay() {
     const result = (daysSinceServerStart % INTERVAL_SIZE) + (isWinterTime ? 0 : 1);
 
     return result || INTERVAL_SIZE;
-}
-
-function getKvKRotationNumber(currentWeekNumber: number) {
-    const intervalDay = getIntervalDay();
-    const intervalWeek = Math.ceil(intervalDay / 7);
-    const isNextKvK = intervalWeek > currentWeekNumber;
-
-    const result =
-        Math.ceil(
-            (FIRST_DAY_AFTER_FIRST_KVK.getTime() - UTC_START_OF_TODAY.getTime()) /
-                (1000 * 60 * 60 * 24) /
-                INTERVAL_SIZE
-        ) + (isNextKvK ? 3 : 2);
-
-    return result;
 }
 
 function getDayDiffsForDate(day: number): [string, Date] {
@@ -273,10 +255,7 @@ const CalendarRow = ({ event }: { event: Event }) => {
             {INTERVAL_DAYS.map((day) => {
                 const isActive = event.days.includes(day);
                 const isActiveDay = intervalDay === day;
-                const [dayDiffText, date] = useMemo(
-                    () => getDayDiffsForDate(day),
-                    [intervalDay, day]
-                );
+                const [dayDiffText, date] = getDayDiffsForDate(day);
 
                 if (!isActive) {
                     return (
@@ -327,7 +306,7 @@ const CalendarDaysHeader = () => {
 
             {INTERVAL_DAYS.map((day) => {
                 const isActiveDay = intervalDay === day;
-                const [_, date] = useMemo(() => getDayDiffsForDate(day), [intervalDay, day]);
+                const [, date] = getDayDiffsForDate(day);
 
                 return (
                     <Table.ColumnHeader

@@ -2,16 +2,30 @@
 
 import type { TroopsFormValues, TruegoldFormValues } from "@/types/forms";
 
-export function getTroopsPreset(): TroopsFormValues | null {
-    const storageData = localStorage.getItem(`presets.troop`);
-    const presets = storageData ? JSON.parse(storageData) : null;
+/** Read and parse JSON from localStorage. Returns null on missing or broken data. */
+export function readJson<T>(key: string): T | null {
+    try {
+        const storageData = localStorage.getItem(key);
 
-    return presets;
+        return storageData ? (JSON.parse(storageData) as T) : null;
+    } catch (e) {
+        console.error(`Failed to read "${key}" from localStorage:`, e);
+        return null;
+    }
+}
+
+export function writeJson(key: string, value: unknown) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+        console.error(`Failed to write "${key}" to localStorage:`, e);
+    }
+}
+
+export function getTroopsPreset(): TroopsFormValues | null {
+    return readJson<TroopsFormValues>(`presets.troop`);
 }
 
 export function getTruegoldPreset(): TruegoldFormValues | null {
-    const storageData = localStorage.getItem(`presets.truegold`);
-    const presets = storageData ? JSON.parse(storageData) : null;
-
-    return presets;
+    return readJson<TruegoldFormValues>(`presets.truegold`);
 }

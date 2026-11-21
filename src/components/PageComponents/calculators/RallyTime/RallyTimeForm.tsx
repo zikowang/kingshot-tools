@@ -18,12 +18,22 @@ import {
 } from "@chakra-ui/react";
 import { LuClock, LuUserPlus, LuUserRoundMinus } from "react-icons/lu";
 
-import { Fragment, useCallback, useState } from "react";
-import { getUTC } from "../../Calendar/CalendarPage";
-import RallyTimeResult, {
+import { Fragment, useState, type FocusEvent } from "react";
+import RallyTimeResult from "./RallyTimerResult";
+import {
+    createRallyStarter,
+    DEFAULT_COUNTER_RALLY_OFFSET_SEC,
+    getEarliestStarter,
+    getHitTimeFromStartTime,
+    getQuickSetHelpText,
+    getTimeData,
+    getTimeFromNow,
+    normalizeTimePart,
+    setTimePart,
     type RallyStarterResult,
     type RallyTimerResult,
-} from "./RallyTimerResult";
+    type TimePart,
+} from "./rallyTime";
 
 const HIT_TIME_QUICK_SET_OPTIONS = [
     { label: "6:00", minutes: 6 },
@@ -43,8 +53,9 @@ const START_TIME_QUICK_SET_OPTIONS = [
 const COUNTER_RALLY_OFFSET_OPTIONS = [
     1, 2, 3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90, 120, 150, 180, 210, 240, 270, 300,
 ] as const;
-const DEFAULT_QUICK_SET_MINUTES = 7;
-const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+const TIME_PARTS: TimePart[] = ["hour", "minute", "second"];
+const HIT_HELP_TEXT = getQuickSetHelpText(HIT_TIME_QUICK_SET_OPTIONS.map((o) => o.label));
+const START_HELP_TEXT = getQuickSetHelpText(START_TIME_QUICK_SET_OPTIONS.map((o) => o.label));
 
 const counterRallyOffsetCollection = createListCollection({
     items: COUNTER_RALLY_OFFSET_OPTIONS.map((offsetSeconds) => ({
@@ -53,39 +64,31 @@ const counterRallyOffsetCollection = createListCollection({
     })),
 });
 
-const defaultRallyStarter: RallyStarterResult = {
-    name: "Starter 1",
-    marchTimeSec: 60,
-    rallyStartTime: new Date(),
-    active: true,
-    counterShadow: false,
-    counterRallyOffsetSec: 15,
-};
+const selectOnFocus = (e: FocusEvent<HTMLElement>) =>
+    e.target instanceof HTMLInputElement && e.target.select();
 
-function getHitTimeData(value?: Date, minutesToAdd = DEFAULT_QUICK_SET_MINUTES, isUtc = false) {
-    const now = !isUtc ? getUTC(value ?? new Date()) : (value ?? new Date());
-    const defaultSet = new Date(now.getTime() + minutesToAdd * 60000);
-    const hour = defaultSet.getHours();
-    const minute = defaultSet.getMinutes();
-    const second = defaultSet.getSeconds();
-
-    return { datetime: defaultSet, hour, minute, second };
-}
-
-function getTimeData(value: Date) {
-    return {
-        datetime: value,
-        hour: value.getHours(),
-        minute: value.getMinutes(),
-        second: value.getSeconds(),
-    };
-}
-
-function getEarliestStarter(starters: RallyStarterResult[]) {
-    return starters
-        .filter((starter) => starter.active)
-        .sort((left, right) => left.rallyStartTime.getTime() - right.rallyStartTime.getTime())[0];
-}
+const TimeField = ({
+    label,
+    value,
+    onChange,
+}: {
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+}) => (
+    <NumberInput.Root
+        value={String(value)}
+        onValueChange={(e) => onChange(Number(e.value))}
+        onFocus={selectOnFocus}
+        width="100px"
+        step={1}
+        required
+    >
+        <NumberInput.Label>{label}</NumberInput.Label>
+        <NumberInput.Scrubber />
+        <NumberInput.Input />
+    </NumberInput.Root>
+);
 
 const RallyTimeForm = ({
     data,
@@ -95,83 +98,48 @@ const RallyTimeForm = ({
     updateData: (value: RallyTimerResult) => void;
 }) => {
     const [timeInputMode, setTimeInputMode] = useState<"hit" | "start">("hit");
+    const isStartMode = timeInputMode === "start";
     const earliestStarter = getEarliestStarter(data.rallyStarters);
     const inputTime =
-        timeInputMode === "start" && earliestStarter
-            ? getTimeData(earliestStarter.rallyStartTime)
-            : data.hitTime;
-    const quickSetOptions =
-        timeInputMode === "start" ? START_TIME_QUICK_SET_OPTIONS : HIT_TIME_QUICK_SET_OPTIONS;
+        isStartMode && earliestStarter ? getTimeData(earliestStarter.rallyStartTime) : data.hitTime;
+    const quickSetOptions = isStartMode ? START_TIME_QUICK_SET_OPTIONS : HIT_TIME_QUICK_SET_OPTIONS;
 
-    const getHitTimeFromInput = (inputTimeValue: Date) => {
-        if (timeInputMode !== "start" || !earliestStarter) {
-            return inputTimeValue;
-        }
+    const toHitTime = (inputDate: Date) =>
+        isStartMode && earliestStarter
+            ? getHitTimeFromStartTime(inputDate, earliestStarter)
+            : inputDate;
 
-        const counterOffsetMs = earliestStarter.counterShadow
-            ? (earliestStarter.counterRallyOffsetSec ?? 15) * 1000
-            : 0;
-
-        return new Date(
-            inputTimeValue.getTime() +
-                earliestStarter.marchTimeSec * 1000 +
-                DEFAULT_RALLY_TIME -
-                counterOffsetMs
-        );
+    const handleQuickSetTime = (minutesToAdd: number) => {
+        updateData({
+            ...data,
+            hitTime: getTimeData(toHitTime(getTimeFromNow(minutesToAdd).datetime)),
+            selectedQuickSetMinutes: minutesToAdd,
+        });
     };
 
-    const handleQuickSetTime = useCallback(
-        (minutesToAdd: number) => {
-            const updatedInputTime = getHitTimeData(undefined, minutesToAdd);
-            const updatedRallyHit = getHitTimeFromInput(updatedInputTime.datetime);
+    const handleUpdateTimePart = (key: TimePart, rawValue: number) => {
+        const newInputTime = setTimePart(inputTime.datetime, key, normalizeTimePart(key, rawValue));
 
-            updateData({
-                ...data,
-                hitTime: getTimeData(updatedRallyHit),
-                selectedQuickSetMinutes: minutesToAdd,
-            });
-        },
-        [data, earliestStarter, timeInputMode, updateData]
-    );
+        updateData({
+            ...data,
+            hitTime: getTimeData(toHitTime(newInputTime)),
+            selectedQuickSetMinutes: null,
+        });
+    };
 
-    const handleUpdateRallyHit = useCallback(
-        (key: "hour" | "minute" | "second", value: number) => {
-            const newInputTime = new Date(inputTime.datetime);
+    const setStarters = (starters: RallyStarterResult[]) => {
+        updateData({ ...data, rallyStarters: starters });
+    };
 
-            if (key === "hour") {
-                newInputTime.setHours(value);
-            } else if (key === "minute") {
-                newInputTime.setMinutes(value);
-            } else if (key === "second") {
-                newInputTime.setSeconds(value);
-            }
-
-            const updatedRallyHit = getHitTimeFromInput(newInputTime);
-
-            updateData({
-                ...data,
-                hitTime: getTimeData(updatedRallyHit),
-                selectedQuickSetMinutes: null,
-            });
-        },
-        [data, getHitTimeFromInput, inputTime, updateData]
-    );
-
-    const handleUpdateRallyStarters = useCallback(
-        (starters: RallyStarterResult[]) => {
-            updateData({
-                ...data,
-                rallyStarters: starters,
-            });
-        },
-        [data, updateData]
-    );
+    const updateStarter = (id: string, patch: Partial<RallyStarterResult>) => {
+        setStarters(data.rallyStarters.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+    };
 
     return (
         <VStack justifyContent={"flex-start"} alignItems="flex-start" gap={4} mt={8}>
             <VStack justifyContent="flex-start" alignItems="flex-start" flexWrap="wrap">
                 <Switch.Root
-                    checked={timeInputMode === "start"}
+                    checked={isStartMode}
                     onCheckedChange={(e) => setTimeInputMode(e.checked ? "start" : "hit")}
                     colorPalette="blue"
                 >
@@ -180,119 +148,37 @@ const RallyTimeForm = ({
                     <Switch.Label>Enter earliest next start time</Switch.Label>
                 </Switch.Root>
                 <HStack gap={2} flexWrap="wrap">
-                    <NumberInput.Root
-                        value={String(inputTime.hour)}
-                        onValueChange={(e) => {
-                            const numericValue = Number(e.value);
-
-                            if (isNaN(numericValue) || numericValue > 23) {
-                                handleUpdateRallyHit("hour", 0);
-                                return;
-                            }
-
-                            if (numericValue < 0) {
-                                handleUpdateRallyHit("hour", 23);
-                                return;
-                            }
-
-                            handleUpdateRallyHit("hour", Math.abs(numericValue));
-                        }}
-                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                        width="100px"
-                        step={1}
-                        required
-                    >
-                        <NumberInput.Label>
-                            {timeInputMode === "start" ? "Start hour" : "Hit hour"}
-                        </NumberInput.Label>
-                        <NumberInput.Scrubber />
-                        <NumberInput.Input />
-                    </NumberInput.Root>
-
-                    <NumberInput.Root
-                        value={String(inputTime.minute)}
-                        onValueChange={(e) => {
-                            const numericValue = Number(e.value);
-
-                            if (isNaN(numericValue)) {
-                                handleUpdateRallyHit("minute", 0);
-                                return;
-                            }
-
-                            if (numericValue < 0) {
-                                handleUpdateRallyHit("minute", 59);
-                                return;
-                            }
-
-                            handleUpdateRallyHit("minute", Math.abs(numericValue) % 60);
-                        }}
-                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                        width="100px"
-                        step={1}
-                        required
-                    >
-                        <NumberInput.Label>
-                            {timeInputMode === "start" ? "Start minute" : "Hit minute"}
-                        </NumberInput.Label>
-                        <NumberInput.Scrubber />
-                        <NumberInput.Input />
-                    </NumberInput.Root>
-
-                    <NumberInput.Root
-                        value={String(inputTime.second)}
-                        onValueChange={(e) => {
-                            const numericValue = Number(e.value);
-
-                            if (isNaN(numericValue)) {
-                                handleUpdateRallyHit("second", 0);
-                                return;
-                            }
-
-                            if (numericValue < 0) {
-                                handleUpdateRallyHit("second", 59);
-                                return;
-                            }
-
-                            handleUpdateRallyHit("second", Math.abs(numericValue) % 60);
-                        }}
-                        onFocus={(e) => e.target instanceof HTMLInputElement && e.target.select()}
-                        width="100px"
-                        step={1}
-                        required
-                    >
-                        <NumberInput.Label>
-                            {timeInputMode === "start" ? "Start second" : "Hit second"}
-                        </NumberInput.Label>
-                        <NumberInput.Scrubber />
-                        <NumberInput.Input />
-                    </NumberInput.Root>
+                    {TIME_PARTS.map((part) => (
+                        <TimeField
+                            key={part}
+                            label={`${isStartMode ? "Start" : "Hit"} ${part}`}
+                            value={inputTime[part]}
+                            onChange={(value) => handleUpdateTimePart(part, value)}
+                        />
+                    ))}
                 </HStack>
 
                 <HStack gap={2} flexWrap="wrap">
-                    {quickSetOptions.map((option) => (
-                        <Button
-                            key={option.label}
-                            type="button"
-                            onClick={() => handleQuickSetTime(option.minutes)}
-                            variant={
-                                data.selectedQuickSetMinutes === option.minutes
-                                    ? "solid"
-                                    : "outline"
-                            }
-                            colorPalette={
-                                data.selectedQuickSetMinutes === option.minutes ? "blue" : "green"
-                            }
-                            size="md"
-                        >
-                            <LuClock /> {option.label}
-                        </Button>
-                    ))}
+                    {quickSetOptions.map((option) => {
+                        const isSelected = data.selectedQuickSetMinutes === option.minutes;
+
+                        return (
+                            <Button
+                                key={option.label}
+                                type="button"
+                                onClick={() => handleQuickSetTime(option.minutes)}
+                                variant={isSelected ? "solid" : "outline"}
+                                colorPalette={isSelected ? "blue" : "green"}
+                                size="md"
+                            >
+                                <LuClock /> {option.label}
+                            </Button>
+                        );
+                    })}
                 </HStack>
             </VStack>
             <Text fontSize={12} color="gray.400">
-                {timeInputMode === "start"
-                    ? "Quick set buttons add 30 seconds, 1, 2, 3, or 5 minutes to the current time."
-                    : "Quick set buttons add 6:00, 6:30, or 7:00 minutes to the current time."}
+                {isStartMode ? START_HELP_TEXT : HIT_HELP_TEXT} All times are UTC.
             </Text>
             <Text fontSize={12} color="gray.400">
                 Set counter rally offsets per starter below after marking them as counter.
@@ -322,98 +208,17 @@ const RallyTimeForm = ({
                     <GridItem fontSize={14}>Counter</GridItem>
                     <GridItem fontSize={14}>Offset</GridItem>
                     <GridItem></GridItem>
-                    {data.rallyStarters.map((starter, index) => (
-                        <Fragment key={index}>
-                            <Switch.Root
-                                colorPalette={"green"}
-                                checked={starter.active ?? true}
-                                onCheckedChange={(e) => {
-                                    const newActive = e.checked;
-                                    const updatedStarters = [...data.rallyStarters];
-                                    updatedStarters[index] = {
-                                        ...updatedStarters[index],
-                                        active: newActive,
-                                    };
-                                    handleUpdateRallyStarters(updatedStarters);
-                                }}
-                                size={{
-                                    base: "sm",
-                                    md: "md",
-                                }}
-                            >
-                                <Switch.HiddenInput />
-                                <Switch.Control>
-                                    <Switch.Thumb />
-                                </Switch.Control>
-                                <Switch.Label />
-                            </Switch.Root>
-                            <GridItem opacity={starter.active ? 1 : 0.4}>
-                                <Field.Root>
-                                    <Input
-                                        value={starter.name}
-                                        placeholder={`Name Starter ${index + 1}`}
-                                        onChange={(e) => {
-                                            const newName = e.target.value;
-                                            const updatedStarters = [...data.rallyStarters];
-                                            updatedStarters[index] = {
-                                                ...updatedStarters[index],
-                                                name: newName,
-                                            };
-                                            handleUpdateRallyStarters(updatedStarters);
-                                        }}
-                                        onFocus={(e) =>
-                                            e.target instanceof HTMLInputElement &&
-                                            e.target.select()
-                                        }
-                                    />
-                                </Field.Root>
-                            </GridItem>
+                    {data.rallyStarters.map((starter, index) => {
+                        const rowOpacity = starter.active ? 1 : 0.4;
 
-                            <GridItem
-                                colSpan={{ base: 1, md: 1 }}
-                                opacity={starter.active ? 1 : 0.4}
-                            >
-                                <NumberInput.Root
-                                    value={String(starter.marchTimeSec)}
-                                    onValueChange={(e) => {
-                                        const updatedStarters = [...data.rallyStarters];
-                                        updatedStarters[index] = {
-                                            ...updatedStarters[index],
-                                            marchTimeSec:
-                                                Number(e.value) >= 0 ? Number(e.value) : 0,
-                                        };
-                                        handleUpdateRallyStarters(updatedStarters);
-                                    }}
-                                    onFocus={(e) =>
-                                        e.target instanceof HTMLInputElement && e.target.select()
-                                    }
-                                    required
-                                    min={0}
-                                    step={1}
-                                    width="100%"
-                                >
-                                    <NumberInput.Scrubber />
-                                    <NumberInput.Input />
-                                </NumberInput.Root>
-                            </GridItem>
-
-                            <GridItem
-                                colSpan={{ base: 1, md: 1 }}
-                                opacity={starter.active ? 1 : 0.4}
-                            >
+                        return (
+                            <Fragment key={starter.id}>
                                 <Switch.Root
-                                    colorPalette={"blue"}
-                                    checked={starter.counterShadow ?? false}
-                                    onCheckedChange={(e) => {
-                                        const updatedStarters = [...data.rallyStarters];
-                                        updatedStarters[index] = {
-                                            ...updatedStarters[index],
-                                            counterShadow: e.checked,
-                                            counterRallyOffsetSec:
-                                                updatedStarters[index].counterRallyOffsetSec ?? 15,
-                                        };
-                                        handleUpdateRallyStarters(updatedStarters);
-                                    }}
+                                    colorPalette={"green"}
+                                    checked={starter.active ?? true}
+                                    onCheckedChange={(e) =>
+                                        updateStarter(starter.id, { active: e.checked })
+                                    }
                                     size={{
                                         base: "sm",
                                         md: "md",
@@ -423,80 +228,132 @@ const RallyTimeForm = ({
                                     <Switch.Control>
                                         <Switch.Thumb />
                                     </Switch.Control>
+                                    <Switch.Label />
                                 </Switch.Root>
-                            </GridItem>
+                                <GridItem opacity={rowOpacity}>
+                                    <Field.Root>
+                                        <Input
+                                            value={starter.name}
+                                            placeholder={`Name Starter ${index + 1}`}
+                                            onChange={(e) =>
+                                                updateStarter(starter.id, { name: e.target.value })
+                                            }
+                                            onFocus={selectOnFocus}
+                                        />
+                                    </Field.Root>
+                                </GridItem>
 
-                            <GridItem
-                                colSpan={{ base: 1, md: 1 }}
-                                opacity={starter.active ? 1 : 0.4}
-                                width="75px"
-                            >
-                                {starter.counterShadow ? (
-                                    <CustomSelect
-                                        label=""
-                                        placeholder="Select offset"
-                                        value={String(starter.counterRallyOffsetSec ?? 15)}
-                                        options={counterRallyOffsetCollection}
-                                        onChange={(value) => {
-                                            const updatedStarters = [...data.rallyStarters];
-                                            updatedStarters[index] = {
-                                                ...updatedStarters[index],
-                                                counterRallyOffsetSec: Number(value),
-                                            };
-                                            handleUpdateRallyStarters(updatedStarters);
-                                        }}
-                                    />
-                                ) : (
-                                    <Box
-                                        display="flex"
-                                        flexDirection="column"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        height="46px"
+                                <GridItem opacity={rowOpacity}>
+                                    <NumberInput.Root
+                                        value={String(starter.marchTimeSec)}
+                                        onValueChange={(e) =>
+                                            updateStarter(starter.id, {
+                                                marchTimeSec: Math.max(0, Number(e.value) || 0),
+                                            })
+                                        }
+                                        onFocus={selectOnFocus}
+                                        required
+                                        min={0}
+                                        step={1}
+                                        width="100%"
                                     >
-                                        <Text fontSize={12} color="gray.400">
-                                            Not counter
-                                        </Text>
-                                    </Box>
-                                )}
-                            </GridItem>
+                                        <NumberInput.Scrubber />
+                                        <NumberInput.Input />
+                                    </NumberInput.Root>
+                                </GridItem>
 
-                            <GridItem>
-                                <Button
-                                    type="button"
-                                    tabIndex={-1}
-                                    onClick={() => {
-                                        const updatedStarters = data.rallyStarters.filter(
-                                            (_, i) => i !== index
-                                        );
-                                        handleUpdateRallyStarters(updatedStarters);
-                                    }}
-                                    colorPalette={"red"}
-                                    variant="ghost"
-                                    size={{
-                                        base: "sm",
-                                        md: "md",
-                                    }}
-                                    disabled={data.rallyStarters.length === 1}
-                                >
-                                    <LuUserRoundMinus />
-                                </Button>
-                            </GridItem>
-                        </Fragment>
-                    ))}
+                                <GridItem opacity={rowOpacity}>
+                                    <Switch.Root
+                                        colorPalette={"blue"}
+                                        checked={starter.counterShadow ?? false}
+                                        onCheckedChange={(e) =>
+                                            updateStarter(starter.id, {
+                                                counterShadow: e.checked,
+                                                counterRallyOffsetSec:
+                                                    starter.counterRallyOffsetSec ??
+                                                    DEFAULT_COUNTER_RALLY_OFFSET_SEC,
+                                            })
+                                        }
+                                        size={{
+                                            base: "sm",
+                                            md: "md",
+                                        }}
+                                    >
+                                        <Switch.HiddenInput />
+                                        <Switch.Control>
+                                            <Switch.Thumb />
+                                        </Switch.Control>
+                                    </Switch.Root>
+                                </GridItem>
+
+                                <GridItem opacity={rowOpacity} width="75px">
+                                    {starter.counterShadow ? (
+                                        <CustomSelect
+                                            label=""
+                                            placeholder="Select offset"
+                                            value={String(
+                                                starter.counterRallyOffsetSec ??
+                                                    DEFAULT_COUNTER_RALLY_OFFSET_SEC
+                                            )}
+                                            options={counterRallyOffsetCollection}
+                                            onChange={(value) =>
+                                                updateStarter(starter.id, {
+                                                    counterRallyOffsetSec: Number(value),
+                                                })
+                                            }
+                                        />
+                                    ) : (
+                                        <Box
+                                            display="flex"
+                                            flexDirection="column"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            height="46px"
+                                        >
+                                            <Text fontSize={12} color="gray.400">
+                                                Not counter
+                                            </Text>
+                                        </Box>
+                                    )}
+                                </GridItem>
+
+                                <GridItem>
+                                    <Button
+                                        type="button"
+                                        tabIndex={-1}
+                                        onClick={() =>
+                                            setStarters(
+                                                data.rallyStarters.filter(
+                                                    (s) => s.id !== starter.id
+                                                )
+                                            )
+                                        }
+                                        colorPalette={"red"}
+                                        variant="ghost"
+                                        size={{
+                                            base: "sm",
+                                            md: "md",
+                                        }}
+                                        disabled={data.rallyStarters.length === 1}
+                                    >
+                                        <LuUserRoundMinus />
+                                    </Button>
+                                </GridItem>
+                            </Fragment>
+                        );
+                    })}
                 </Grid>
             </Box>
 
             <Button
                 type="button"
                 tabIndex={-1}
-                onClick={() => {
-                    const newStarter: RallyStarterResult = {
-                        ...defaultRallyStarter,
-                        name: `Starter ${data.rallyStarters.length + 1}`,
-                    };
-                    handleUpdateRallyStarters([...data.rallyStarters, newStarter]);
-                }}
+                onClick={() =>
+                    setStarters([
+                        ...data.rallyStarters,
+                        createRallyStarter(data.rallyStarters.length),
+                    ])
+                }
                 colorPalette={"green"}
                 variant="ghost"
                 size="md"

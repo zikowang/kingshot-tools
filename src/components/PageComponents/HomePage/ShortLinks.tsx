@@ -2,12 +2,9 @@
 
 import { CardHorizontal } from "@/components/ui/card-horizontal";
 import CardVertical from "@/components/ui/card-vertical";
-import { useColorMode } from "@/components/ui/color-mode";
 import { Badge, Stack } from "@chakra-ui/react";
 
 const ShortLinks = () => {
-    const { colorMode } = useColorMode();
-
     return (
         <>
             <Stack

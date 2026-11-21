@@ -1,7 +1,6 @@
 /** @format */
 
 import PresetButton from "@/components/PresetButton/PresetButton";
-import { toaster } from "@/components/ui/toaster";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import {
     allBuildings,
@@ -14,7 +13,9 @@ import {
     townCenter,
     warAcademy,
 } from "@/data/buildings";
+import { getInitialFormValues } from "@/lib/formParams";
 import { getTruegoldPreset } from "@/lib/localStorage";
+import { useFormPersistence } from "@/lib/useFormPersistence";
 import type { BuildingStage } from "@/types/building";
 import type { TruegoldFormValues } from "@/types/forms";
 import type { TruegoldCalculatorResult } from "@/types/result";
@@ -219,39 +220,12 @@ const TruegoldForm = ({
 }: {
     setResult: Dispatch<React.SetStateAction<TruegoldCalculatorResult>>;
 }) => {
-    let toasterTimeout: NodeJS.Timeout | null = null;
+    const [{ values: initialValues, presetLoaded }] = useState(() =>
+        getInitialFormValues(defaultFormValues, window.location.search, getTruegoldPreset)
+    );
+    const [formValues, setFormValues] = useState<TruegoldFormValues>(initialValues);
 
-    const [formValues, setFormValues] = useState(() => {
-        const params = new URLSearchParams(window.location.search);
-        let initialValues = { ...defaultFormValues };
-
-        if (params.size === 0) {
-            const preset = getTruegoldPreset();
-
-            if (preset) {
-                initialValues = { ...initialValues, ...preset };
-                toasterTimeout = setTimeout(() => {
-                    toaster.success({
-                        description: "Preset loaded",
-                    });
-                }, 300);
-            }
-        } else {
-            Object.keys(initialValues).forEach((key) => {
-                const value = params.get(key);
-
-                if (key in initialValues && value !== null) {
-                    if (Array.isArray(defaultFormValues[key as keyof typeof defaultFormValues])) {
-                        initialValues[key as keyof typeof initialValues] = value.split(",") as any;
-                    } else {
-                        initialValues[key as keyof typeof initialValues] = value as any;
-                    }
-                }
-            });
-        }
-
-        return initialValues;
-    });
+    useFormPersistence(formValues, presetLoaded);
 
     useEffect(() => {
         const currentTc = townCenter.find(
@@ -409,21 +383,7 @@ const TruegoldForm = ({
 
             buildingList: resultBuildings,
         });
-    }, [formValues]);
-
-    useEffect(() => {
-        const params = new URLSearchParams();
-
-        Object.entries(formValues).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                if (value.length > 0) params.set(key, value.join(","));
-            } else if (value !== "0" && value !== "" && value !== undefined) {
-                params.set(key, value);
-            }
-        });
-
-        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
-    }, [formValues]);
+    }, [formValues, setResult]);
 
     return (
         <Box style={{ width: "100%" }}>

@@ -1,11 +1,12 @@
 /** @format */
 
 import PresetButton from "@/components/PresetButton/PresetButton";
-import { toaster } from "@/components/ui/toaster";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import { tierList } from "@/data/troops/sharedTroops";
 import trainingData from "@/data/troops/train";
+import { getInitialFormValues } from "@/lib/formParams";
 import { getTroopsPreset } from "@/lib/localStorage";
+import { useFormPersistence } from "@/lib/useFormPersistence";
 import type { TroopsFormValues } from "@/types/forms";
 import type { TroopCalculatorResult } from "@/types/result";
 import type { Tier } from "@/types/tier";
@@ -24,7 +25,7 @@ import {
     Text,
     VStack,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState, type Dispatch } from "react";
+import { useEffect, useState, type Dispatch } from "react";
 import {
     LuArrowBigUpDash,
     LuCirclePlus,
@@ -70,45 +71,12 @@ const TroopsForm = ({
 }: {
     setResult: Dispatch<React.SetStateAction<TroopCalculatorResult>>;
 }) => {
-    let toasterTimeout: NodeJS.Timeout | null = null;
+    const [{ values: initialValues, presetLoaded }] = useState(() =>
+        getInitialFormValues(defaultFormValues, window.location.search, getTroopsPreset)
+    );
+    const [formValues, setFormValues] = useState<TroopsFormValues>(initialValues);
 
-    const initialFormSet = useRef(false);
-
-    const onLoad = () => {
-        const params = new URLSearchParams(window.location.search);
-        let initialValues = { ...defaultFormValues };
-
-        if (params.size === 0) {
-            const preset = getTroopsPreset();
-
-            if (preset) {
-                initialValues = { ...initialValues, ...preset };
-                toasterTimeout = setTimeout(() => {
-                    toaster.success({
-                        description: "Preset loaded",
-                    });
-                }, 300);
-            }
-        } else {
-            Object.keys(initialValues).forEach((key) => {
-                const value = params.get(key);
-
-                if (key in initialValues && value !== null) {
-                    if (Array.isArray(defaultFormValues[key as keyof typeof defaultFormValues])) {
-                        initialValues[key as keyof typeof initialValues] = value.split(",") as any;
-                    } else {
-                        initialValues[key as keyof typeof initialValues] = value as any;
-                    }
-                }
-            });
-        }
-
-        initialFormSet.current = true;
-
-        return initialValues;
-    };
-
-    const [formValues, setFormValues] = useState<TroopsFormValues>(() => onLoad());
+    useFormPersistence(formValues, presetLoaded);
 
     const isCalculateAmountOfTroops = formValues.calculationType === "amount-of-troops";
     const isCalculateAmountOfTime = formValues.calculationType === "amount-of-time";
@@ -116,8 +84,6 @@ const TroopsForm = ({
 
     const onReset = () => {
         setFormValues(defaultFormValues);
-
-        initialFormSet.current = true;
     };
 
     useEffect(() => {
@@ -250,29 +216,7 @@ const TroopsForm = ({
             strongestGovernorPoints,
             ...resultCost,
         });
-    }, [formValues]);
-
-    useEffect(() => {
-        const params = new URLSearchParams();
-
-        Object.entries(formValues).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                if (value.length > 0) params.set(key, value.join(","));
-            } else if (value !== "0" && value !== "" && value !== undefined) {
-                params.set(key, value);
-            }
-        });
-
-        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
-    }, [formValues, isPromotion]);
-
-    useEffect(() => {
-        return () => {
-            if (toasterTimeout) {
-                clearTimeout(toasterTimeout);
-            }
-        };
-    }, []);
+    }, [formValues, isPromotion, setResult]);
 
     return (
         <Box style={{ width: "100%" }}>

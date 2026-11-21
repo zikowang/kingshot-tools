@@ -35,7 +35,6 @@ function getSelectButtonColorAndVariant(isStart: boolean, isEnd: boolean, isBetw
 
 const SelectTier = ({
     label,
-    placeholder,
     formValues,
     fromKey,
     toKey,

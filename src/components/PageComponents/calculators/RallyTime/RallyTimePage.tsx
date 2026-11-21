@@ -1,132 +1,67 @@
 /** @format */
 
+import { writeJson } from "@/lib/localStorage";
 import ReactLayout from "@/layouts/ReactLayout";
 import { Text } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
-import { getUTC } from "../../Calendar/CalendarPage";
 import RallyTimeForm from "./RallyTimeForm";
-import { type RallyStarterResult, type RallyTimerResult } from "./RallyTimerResult";
+import {
+    createRallyStarter,
+    DEFAULT_QUICK_SET_MINUTES,
+    getTimeFromNow,
+    parseRallyPreset,
+    PRESET_STORAGE_KEY,
+    withStartTimes,
+    type RallyTimerResult,
+} from "./rallyTime";
 
 const { MODE } = import.meta.env;
 const KINGDOMS = ["298", "351"];
-const QUICK_SET_MINUTES = 7;
-const DEFAULT_COUNTER_RALLY_OFFSET_SEC = 15;
-const DEFAULT_RALLY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-function getHitTimeData(value?: Date) {
-    const now = getUTC(value ?? new Date());
-    const defaultSet = new Date(now.getTime() + QUICK_SET_MINUTES * 60000); // 7 minutes later
-    const hour = defaultSet.getHours();
-    const minute = defaultSet.getMinutes();
-    const second = defaultSet.getSeconds();
+// NOTE: client-side gate only. Anyone reading the bundle can build a token.
+function hasValidAuth() {
+    if (MODE === "development") return true;
 
-    return { datetime: defaultSet, hour, minute, second };
-}
-
-const defaultRallyStarter: RallyStarterResult = {
-    name: "Starter 1",
-    marchTimeSec: 60,
-    rallyStartTime: new Date(),
-    active: true,
-    counterShadow: false,
-    counterRallyOffsetSec: DEFAULT_COUNTER_RALLY_OFFSET_SEC,
-};
-
-function loadPreset() {
-    const preset = JSON.parse(localStorage.getItem(`presets.rallyTime`) || "[]");
-
-    if (!preset?.length) {
-        return null;
-    }
-
-    try {
-        const fixedPreset = preset.map((item: any, index: number) => ({
-            ...item,
-            name: item.name || `Starter ${index + 1}`,
-            marchTimeSec: Number(item.marchTimeSec) >= 0 ? Number(item.marchTimeSec) : 60,
-            rallyStartTime: item.rallyStartTime ? new Date(item.rallyStartTime) : new Date(),
-            active: typeof item.active === "boolean" ? item.active : true,
-            counterShadow: typeof item.counterShadow === "boolean" ? item.counterShadow : false,
-            counterRallyOffsetSec:
-                Number(item.counterRallyOffsetSec) >= 0
-                    ? Number(item.counterRallyOffsetSec)
-                    : DEFAULT_COUNTER_RALLY_OFFSET_SEC,
-        }));
-
-        return fixedPreset as RallyStarterResult[];
-    } catch (e) {
-        console.error("Failed to load preset:", e);
-        return null;
-    }
-}
-
-function savePreset(starters: RallyStarterResult[]) {
-    localStorage.setItem(`presets.rallyTime`, JSON.stringify(starters));
-}
-
-function getRallyStartTime(
-    hitTime: Date,
-    marchTimeSec: number,
-    counterShadow = false,
-    counterRallyOffsetSec = DEFAULT_COUNTER_RALLY_OFFSET_SEC
-) {
-    const counterOffsetMs = counterShadow ? counterRallyOffsetSec * 1000 : 0;
-
-    return new Date(hitTime.getTime() - marchTimeSec * 1000 - DEFAULT_RALLY_TIME + counterOffsetMs);
-}
-
-const RallyTimePage = () => {
-    const [result, setResult] = useState<RallyTimerResult>(() => {
-        const hitTime = getHitTimeData();
-        const loadedStarters = loadPreset();
-        const rallyStarters = loadedStarters?.length
-            ? loadedStarters.map((starter) => {
-                  const rallyStartTime = getRallyStartTime(
-                      hitTime.datetime,
-                      starter.marchTimeSec,
-                      starter.counterShadow,
-                      starter.counterRallyOffsetSec
-                  );
-                  return { ...starter, rallyStartTime };
-              })
-            : [defaultRallyStarter];
-
-        return {
-            hitTime,
-            selectedQuickSetMinutes: QUICK_SET_MINUTES,
-            rallyStarters,
-        };
-    });
-
-    // # AUTHORIZATION CHECK
-    const validAuth = KINGDOMS.map((kingdom) => {
-        return Array.from({ length: 7 }, (_, i) => {
+    const validAuth = KINGDOMS.flatMap((kingdom) =>
+        Array.from({ length: 7 }, (_, i) => {
             const date = new Date();
             date.setDate(date.getDate() - i);
             return btoa(`${kingdom}-${date.toISOString().split("T")[0]}`);
-        });
-    }).flat();
-    const searchParam = new URLSearchParams(window.location.search);
-    const isValidAuth = validAuth.includes(searchParam.get("auth") || "") || MODE === "development";
+        })
+    );
+    const auth = new URLSearchParams(window.location.search).get("auth") || "";
+
+    return validAuth.includes(auth);
+}
+
+function getInitialResult(): RallyTimerResult {
+    const hitTime = getTimeFromNow(DEFAULT_QUICK_SET_MINUTES);
+    const starters = parseRallyPreset(localStorage.getItem(PRESET_STORAGE_KEY)) ?? [
+        createRallyStarter(0),
+    ];
+
+    return {
+        hitTime,
+        selectedQuickSetMinutes: DEFAULT_QUICK_SET_MINUTES,
+        rallyStarters: withStartTimes(hitTime.datetime, starters),
+    };
+}
+
+const RallyTimePage = () => {
+    const [isValidAuth] = useState(hasValidAuth);
+    const [result, setResult] = useState(getInitialResult);
 
     const updateResult = (newResult: RallyTimerResult) => {
-        const updatedStarters = newResult.rallyStarters.map((starter) => {
-            const rallyStartTime = getRallyStartTime(
-                newResult.hitTime.datetime,
-                starter.marchTimeSec,
-                starter.counterShadow,
-                starter.counterRallyOffsetSec
-            );
-            return { ...starter, rallyStartTime };
+        setResult({
+            ...newResult,
+            rallyStarters: withStartTimes(newResult.hitTime.datetime, newResult.rallyStarters),
         });
-
-        setResult({ ...newResult, rallyStarters: updatedStarters });
     };
 
     useEffect(() => {
-        savePreset(result.rallyStarters);
-    }, [result]);
+        writeJson(PRESET_STORAGE_KEY, result.rallyStarters);
+    }, [result.rallyStarters]);
 
     return (
         <ReactLayout>

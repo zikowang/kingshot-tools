@@ -1,6 +1,7 @@
 /** @format */
 
-import { toaster } from "@/components//ui/toaster";
+import { toaster } from "@/components/ui/toaster";
+import { writeJson } from "@/lib/localStorage";
 import type { TroopsFormValues, TruegoldFormValues } from "@/types/forms";
 import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react";
 import type { Dispatch } from "react";
@@ -23,9 +24,7 @@ const PresetDialog = ({
     const hasPresets = !!localStorage.getItem(`presets.${type}`);
 
     const handleSave = () => {
-        let presets = JSON.parse(localStorage.getItem(`presets.${type}`) || "{}");
-        presets = formValues;
-        localStorage.setItem(`presets.${type}`, JSON.stringify(presets));
+        writeJson(`presets.${type}`, formValues);
 
         toaster.create({
             description: "Preset saved",

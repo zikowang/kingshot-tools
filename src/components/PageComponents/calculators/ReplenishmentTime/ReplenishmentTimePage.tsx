@@ -5,7 +5,7 @@ import { Box, Button, Group, HStack, NumberInput, Stat, Text, VStack } from "@ch
 import { useEffect, useState } from "react";
 import { LuClock } from "react-icons/lu";
 
-import { getUTC } from "../../Calendar/CalendarPage";
+import { getUTC } from "@/lib/time";
 
 const ReplenishmentTimePage = () => {
     const [result, setResult] = useState(getUTC(new Date()));
