@@ -16,6 +16,6 @@ export default defineConfig({
 
     server: {
         open: true,
-        allowedHosts: ["localhost", "kingshot-tools-production.up.railway.app", "zikoscheng.de"],
+        allowedHosts: ["localhost", "zikoscheng.de"],
     },
 });
